@@ -2,6 +2,24 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: an instance owns its mind, and a service owns the state
+
+Operator correction, mid-campaign, after three Soul passes spent propping up a
+repo-owned store: "I think someone needs to own Epiphany/Eureka state. Each
+store should be canonical to one instance, the store is that instance's mind,
+and that instance can be assigned stewardship over multiple repos."
+
+- **The lesson for this skill:** when a design needs escalating machinery to
+  hold together (a per-clone lease, git-directory resolution, committed
+  attribute checks, a merge tool), the missing piece is usually an owner, not
+  another guard. Soul kept confirming the guards were weak; the guards were the
+  symptom.
+- Mind state does not belong in version control. Git offers branches, merges and
+  history rewriting; a mind wants one owner and an append-only record.
+- Eureka's typed state will live in a memory organ service (Huginn) that owns
+  each instance's mind, depends on Qdrant directly, and refuses loudly when
+  unreachable rather than letting a second writer exist.
+
 ## 2026-09-15: the operator channel is the session
 
 Operator ruling. Spec iteration proved to be the load-bearing part of a Eureka
