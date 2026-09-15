@@ -80,6 +80,9 @@ When a claim is "behaviour unchanged", a value captured from the new code is not
 evidence. Pin it with a value computed at the base commit.
 Detached scripts: confirm the log starts within 60 s; a script that dies on a
 parse error is silent otherwise.
+Shared build caches: record a full path list before building, not only counts,
+and delete exactly the new paths afterwards. Counts cannot attribute hardlinked
+or rewritten outputs.
 
 Commits:
 - Small and pushed.

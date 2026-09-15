@@ -9,6 +9,9 @@ Record each change to the skill together with the evidence that motivated it.
 - **"Unchanged" is proven against the base commit.** Cut 2 pinned a Mind
   receipt digest captured from the new code. Soul had to rerun the test at the
   base commit to show it matched.
+- **Baseline shared build caches by path list.** A Cut 2 Soul pass left about
+  401 MB in the shared cargo target that it could not attribute. It had
+  recorded only counts, so it did not delete blind.
 - **Check that a detached script started.** A Cut 1 mutation script died on a
   PowerShell parse error, and its monitor sat silent for 30 minutes.
 
