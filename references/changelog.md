@@ -2,6 +2,16 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-15: Hands brief rules from the Eureka pipeline-state campaign
+
+- **Define every mutation in the report.** Soul could not rerun Hands' Cut 2
+  mutations "C1-C5" because the report named them without saying what changed.
+- **"Unchanged" is proven against the base commit.** Cut 2 pinned a Mind
+  receipt digest captured from the new code. Soul had to rerun the test at the
+  base commit to show it matched.
+- **Check that a detached script started.** A Cut 1 mutation script died on a
+  PowerShell parse error, and its monitor sat silent for 30 minutes.
+
 ## 2026-09-15: renamed to Eureka; postmortem rules folded in
 
 - **Rename.** The operator named the skill-and-MCP form of the pipeline

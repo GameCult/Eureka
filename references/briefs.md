@@ -74,7 +74,12 @@ Standing rulings: <short list>.
 
 Every rule the spec or the operator names gets a test that fails under its own
 mutation. Run the mutations against the final spelling of the code and restore
-afterwards.
+afterwards. In the report, define each mutation exactly (what line changed and
+how) so Soul can rerun it; a mutation named only "C3" cannot be checked.
+When a claim is "behaviour unchanged", a value captured from the new code is not
+evidence. Pin it with a value computed at the base commit.
+Detached scripts: confirm the log starts within 60 s; a script that dies on a
+parse error is silent otherwise.
 
 Commits:
 - Small and pushed.
