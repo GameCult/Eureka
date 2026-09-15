@@ -2,6 +2,20 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-15: the operator channel is the session
+
+Operator ruling. Spec iteration proved to be the load-bearing part of a Eureka
+run, so the question path matters as much as the cut loop.
+
+- Eureka has no Persona. Self is the operator surface.
+- Blocking questions may be pushed through any notification MCP the user
+  configures. Eureka owns no transport, so other people can swap in their own.
+- Answering over a chat channel is a later campaign; it needs identity binding
+  before a reply can become a ruling.
+- The operator's framing: Epiphany gives each repo an identity, memories and a
+  Persona to talk to; Eureka is "the cut-down Claude-native version anyone can
+  use".
+
 ## 2026-09-15: Hands brief rules from the Eureka pipeline-state campaign
 
 - **Define every mutation in the report.** Soul could not rerun Hands' Cut 2

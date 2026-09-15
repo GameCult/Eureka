@@ -131,6 +131,14 @@ operator's words when they carry meaning the paraphrase would lose. When a rulin
 supersedes an earlier one, mark the old text as history instead of leaving two
 live designs.
 
+**The operator channel is this session.** Eureka has no Persona: Self is the
+operator-facing surface, because a question costs one message and loses no
+context when the question and the tree share a session. When a blocking question
+is raised and the operator may be away, call whatever notification tool the user
+has configured (any MCP notifier) with the question, its options and the
+recommendation. Eureka owns no transport and names no provider. Answers come back
+in the session.
+
 Distinguish a real fork from a default. "Should I use the conventional thing" is
 not a question. "3-5 are not decisions," as the operator put it, is the failure
 of asking about non-decisions.
