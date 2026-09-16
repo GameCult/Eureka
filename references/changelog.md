@@ -31,6 +31,12 @@ harness audit").
   Ghostlight run; the Soul brief did not, and two consecutive Soul passes on
   Cut 6b ended their turn with "waiting on the script" and had to be resumed
   by Self before any finding arrived.
+- **"Default model" means the root's model.** After the operator switched
+  the root session to Fable, every Hands and steward dispatched without an
+  explicit model inherited Fable, against the skill's own allocation. The
+  operator noticed. Self now names the model on every dispatch: the strong
+  model for Imagination and for Soul on foundation cuts, the default tier by
+  name for Hands, Eyes, probes and stewards.
 - **"Wait" now names the mechanism.** A Hands pass with the rule in its brief
   still ended its turn on "waiting on the suite", the third such yield in one
   day. The rule said what, not how; an agent that starts a detached job

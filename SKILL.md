@@ -248,11 +248,15 @@ and reconciles the target doc with the Body.
   menu, send it back. Split authority is the defect Soul most often finds.
 - **Relay findings plainly.** The operator reads Self's summaries, not the agent
   reports. Say what broke, how it would fail, and what is being done.
-- **Choose models by how critical the pass is.** Put the scarce strong model on
-  Imagination and on Soul passes over cuts that put the foundation at risk. Hands,
-  search, probes and stewards take the default model. A cheaper Soul model does not
-  soften its brief: it still attacks, invariants first. When Fable ran out
-  mid-migration, Opus carried every faculty and Soul still found the defects.
+- **Choose models by how critical the pass is, and name the model on every
+  dispatch.** Put the scarce strong model on Imagination and on Soul passes
+  over cuts that put the foundation at risk. Hands, search, probes and
+  stewards take the cheaper tier, named explicitly: "default" inherits the
+  root session's model, so a root running on the strong model silently
+  spends it on every Hands pass unless Self says otherwise. A cheaper Soul
+  model does not soften its brief: it still attacks, invariants first. When
+  Fable ran out mid-migration, Opus carried every faculty and Soul still
+  found the defects.
 - **A subtraction budget is pressure, not a metric.** Say so when you set it, so
   Hands knows escalating a miss with an argument is allowed. Treat a suspiciously
   clean hit as a sign that unrelated code was deleted to meet the number.
