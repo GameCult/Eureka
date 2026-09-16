@@ -83,6 +83,13 @@ parse error is silent otherwise.
 Shared build caches: record a full path list before building, not only counts,
 and delete exactly the new paths afterwards. Counts cannot attribute hardlinked
 or rewritten outputs.
+A mutation that never applied is not a passing mutation. Make the script fail
+loudly when its anchor does not match, and check line endings: a multi-line
+anchor silently matched nothing on a CRLF tree for a whole cut, so the verdict
+it reported was fiction.
+When a cut deletes, list every rule that had a test before and has none after.
+A rule that still exists in code with its only test deleted is the failure mode
+of subtraction; either the rule goes too, or it gets a test in the same cut.
 
 Commits:
 - Small and pushed.

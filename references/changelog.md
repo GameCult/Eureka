@@ -2,6 +2,17 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: subtraction rules, from the Eureka campaign's own cuts
+
+- **A deletion can take a live rule's only test with it.** Cut 4 deleted a store
+  module; the epoch guard that survived in another file then passed a `if false`
+  mutation, and nothing could construct the state needed to reach it. The fix
+  was to delete the unreachable rule too, not to write a test for state nothing
+  can build.
+- **A mutation that never applied is not a passing mutation.** A multi-line
+  anchor matched nothing on a CRLF working tree, so one mutation never ran while
+  reporting success. Scripts must fail loudly on a stale anchor.
+
 ## 2026-09-16: an instance owns its mind, and a service owns the state
 
 Operator correction, mid-campaign, after three Soul passes spent propping up a
