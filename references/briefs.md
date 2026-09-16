@@ -91,7 +91,11 @@ When a cut deletes, list every rule that had a test before and has none after.
 A rule that still exists in code with its only test deleted is the failure mode
 of subtraction; either the rule goes too, or it gets a test in the same cut.
 Long jobs: wait for them and finish. Never end the turn with a to-do list in
-place of a report.
+place of a report. "Wait" means a foreground poll you run yourself: a shell
+loop that sleeps and checks the job's status file or log tail, in chunks
+short enough for the tool timeout, repeated until the job exits. Do not
+start a detached job and then end the turn expecting to be woken; nothing
+wakes you, and the tree stays mutated until Self notices.
 Mutations: restore with a reverse edit or run against committed code; `git
 checkout` also reverts uncommitted fix code and silently invalidates the run.
 The suite is a committed script under `tools/`, and its first entry is a
@@ -155,6 +159,8 @@ Report findings only.
 - Long jobs: poll the log until they finish and then report. Never end the
   turn while a build or a mutation run is still going; a turn that ends on
   "waiting for cargo" delivers no findings and has to be resumed by hand.
+  Polling is a foreground shell loop you run, in chunks under the tool
+  timeout, until the job exits; nothing wakes you if you stop.
 
 Scope: <repo> <branch>, commits <range> (base <sha>). Spec: <section>.
 

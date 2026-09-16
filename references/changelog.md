@@ -31,6 +31,12 @@ harness audit").
   Ghostlight run; the Soul brief did not, and two consecutive Soul passes on
   Cut 6b ended their turn with "waiting on the script" and had to be resumed
   by Self before any finding arrived.
+- **"Wait" now names the mechanism.** A Hands pass with the rule in its brief
+  still ended its turn on "waiting on the suite", the third such yield in one
+  day. The rule said what, not how; an agent that starts a detached job
+  reads "wait" as "stop and be woken", and nothing wakes it. Both briefs now
+  say: a foreground poll loop you run yourself, in chunks under the tool
+  timeout, until the job exits.
 
 ## 2026-09-16: record the gap, and absence is the hardest claim
 
