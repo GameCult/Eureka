@@ -10,8 +10,15 @@ Record each change to the skill together with the evidence that motivated it.
   was to delete the unreachable rule too, not to write a test for state nothing
   can build.
 - **A mutation that never applied is not a passing mutation.** A multi-line
-  anchor matched nothing on a CRLF working tree, so one mutation never ran while
-  reporting success. Scripts must fail loudly on a stale anchor.
+  anchor matched nothing on a CRLF working tree. Scripts must fail loudly on a
+  stale anchor, and should also assert the anchor matches exactly once, since a
+  multi-site replace can read as "killed" when its test failed for another
+  reason.
+  - **Correction, same day.** Self first recorded this as "one mutation reported
+    a verdict it never earned". Soul checked the committed history: the script
+    already threw on a missing anchor, the affected mutation existed only in
+    Hands' working copy, and every committed verdict was real. The rule stands;
+    the incident was narrower than first written.
 
 ## 2026-09-16: an instance owns its mind, and a service owns the state
 
