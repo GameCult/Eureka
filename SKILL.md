@@ -9,8 +9,9 @@ Eureka is the pipeline used by Claude Code agents. It sits next to **Epiphany**,
 the running organism in `F:\Projects\Epiphany`, and shares its faculty
 vocabulary. The difference is substrate:
 - **Epiphany** keeps its findings in typed, admitted state that can be queried
-  by exact filter. Semantic search over that state is planned through voidbot;
-  Epiphany removed her own vector stack in `856648de`.
+  by exact filter. Epiphany removed her own vector stack in `856648de`;
+  semantic search is planned through the Huginn memory organ, which depends on
+  Qdrant directly.
 - **Eureka** currently keeps them in committed docs (the target and the cut
   map), subagent reports and memory files.
 
