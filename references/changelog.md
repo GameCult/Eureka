@@ -2,6 +2,33 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: record the gap, and absence is the hardest claim
+
+Evidence: ghostlight-77's requirements message to the Eureka pipeline-state
+campaign, drawn from Ghostlight `docs/architecture/ghostlight-library-extraction-cut.md`
+and its postmortem. Both rules come from the same run as the entry below.
+
+- **Record the substrate you needed and did not have.** That campaign hit the
+  missing typed-state primitive six separate ways — supersession tracked in
+  "(supersedes …)" prose and fixed by substring surgery, an "Open:" question
+  line hand-edited about eight times, three ad-hoc finding namespaces, verdicts
+  linked to nothing, a subtraction ledger reconciled only at close-out where it
+  showed a +65 → +210 overrun, and a status header rewritten by hand at every
+  landing. Each workaround worked, so each requirement nearly evaporated. The
+  agent named this itself: the failure was working around the gap silently
+  rather than flagging it while hitting it. A run that hits one gap six times is
+  the best requirements evidence a design will ever get, and it survives only if
+  someone writes it down while it hurts. Working around the gap is still
+  correct — doctrine says do not wait on a service that does not exist — but
+  leave the evidence.
+- **Proving something is gone is the claim most likely to be wrong.** A Mind
+  Steward reported a stale phrase retired because a line break had split it from
+  its grep. The phrase was still there, still steering. A verification that
+  cannot see its own target reports a clean pass, which is worse than no
+  verification: it closes the question. Prose reflows, so an exact search over
+  it is a tripwire with the same limits as any other text scanner — the
+  scanner rule below is not only about code.
+
 ## 2026-09-16: sealing, forgeries, scanners and proportion, from Ghostlight L0
 
 Evidence: Ghostlight `docs/architecture/ghostlight-library-extraction-postmortem.md`

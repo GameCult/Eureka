@@ -253,6 +253,14 @@ and reconciles the target doc with the Body.
   anything across cuts, ask whether it has started confirming instead of
   attacking. Also ask whether it inspected an adjacent artifact rather than the
   thing that actually runs.
+- **Record the substrate you needed and did not have.** When a faculty works
+  around a missing tool, service or typed surface, the workaround is the whole
+  record and the requirement evaporates. Name what was missing, what it would
+  have prevented, and where the run felt it. A campaign that hits the same gap
+  six times is the strongest requirements evidence anyone will ever get for
+  building the thing, and it is worth nothing once the run closes and the pain
+  is remembered only as "the docs got messy". This is not a reason to wait on
+  the missing thing or route work to it: work around it and leave evidence.
 - **Never claim an agent's result before its notification arrives.**
 
 ## Git and tooling rules (scars)

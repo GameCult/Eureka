@@ -99,6 +99,9 @@ replays warnings only when it actually rebuilds.
 Semantic properties ("exactly one call site", "this step actually runs"):
 prefer a semantic tool (a Clippy lint, the type system) over a text scanner,
 or state the scanner's limits in the test itself.
+If you work around a missing tool, service or typed surface, report what was
+missing and what it would have prevented. The workaround is not the finding;
+the gap is.
 
 Commits:
 - Small and pushed.
@@ -188,8 +191,16 @@ claims instead of adding corrections next to them.
 
 Falsify at least one persisted claim against the Body.
 
+Proving something is gone is the claim most likely to be wrong, because the
+check that looks for it is usually a grep and prose reflows. A phrase split
+across a line break, rewrapped, re-cased or re-spelled is still live steering
+text and an exact search will not see it. Search for the shortest distinctive
+fragment, search the concept and not the phrasing, and read the surrounding
+text before reporting a removal.
+
 Report: surfaces inspected, the claim you checked, mutations made, and proposals
-for operator-owned surfaces.
+for operator-owned surfaces. If you worked around a missing tool or surface, say
+what was missing and what it would have prevented.
 ```
 
 ## Eyes: gather evidence
