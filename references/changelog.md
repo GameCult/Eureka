@@ -27,6 +27,10 @@ harness audit").
 - **The committed suites forbade a control by shape.** Each threw when a
   replacement changed nothing. A table shape that cannot express "change
   nothing" cannot test itself.
+- **Soul brief: wait for long jobs.** The Hands brief had this rule since the
+  Ghostlight run; the Soul brief did not, and two consecutive Soul passes on
+  Cut 6b ended their turn with "waiting on the script" and had to be resumed
+  by Self before any finding arrived.
 
 ## 2026-09-16: record the gap, and absence is the hardest claim
 

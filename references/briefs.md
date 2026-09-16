@@ -152,6 +152,9 @@ Report findings only.
 - Use a temporary detached worktree for other checkouts, and remove it
   afterwards.
 - Do not run <expensive runtime> unless told.
+- Long jobs: poll the log until they finish and then report. Never end the
+  turn while a build or a mutation run is still going; a turn that ends on
+  "waiting for cargo" delivers no findings and has to be resumed by hand.
 
 Scope: <repo> <branch>, commits <range> (base <sha>). Spec: <section>.
 
