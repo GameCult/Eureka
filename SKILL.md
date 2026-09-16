@@ -142,7 +142,10 @@ in the session.
 
 Distinguish a real fork from a default. "Should I use the conventional thing" is
 not a question. "3-5 are not decisions," as the operator put it, is the failure
-of asking about non-decisions.
+of asking about non-decisions. Weigh proportion too: a fork that guards only
+against the project's own code, such as how strictly to enforce an internal
+tripwire, gets a default and a recorded follow-up. Asked how much one such
+question mattered, the operator said not at all.
 
 ### 3. Hands executes one cut
 

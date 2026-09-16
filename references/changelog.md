@@ -2,6 +2,34 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: sealing, forgeries, scanners and proportion, from Ghostlight L0
+
+Evidence: Ghostlight `docs/architecture/ghostlight-library-extraction-postmortem.md`
+and its cut map.
+
+- **Soul attacks constructibility, not names.** Ruling Q1-4 said sealed
+  constructors must be unreachable. Ten compile_fail doc-tests passed while
+  every public ID type derived `Deserialize`, so an external crate built any of
+  them from JSON; an ID-minting `Default` impl left all ten green. It was found
+  only because Self added the serde route to the Soul brief by hand. On stable
+  rustc the compile_fail error codes are not enforced either.
+- **Rejection tests need realistic forgeries.** Short fake digests passed
+  against kernels comparing only length, a prefix, all but the last character,
+  case-insensitively, or only the hex after the label. Five mutants survived
+  across two Soul passes.
+- **Text scanners are tripwires.** Every one written in the campaign lost to a
+  short evasion: a single-minter count to an alias, a subdirectory, a type
+  alias and a function value; a deploy wiring test to a two-line deletion that
+  reattached the pinned line to the wrong container, and its fix to `if false`
+  around exact lines. Prefer a semantic tool, or state the limits.
+- **Default proportionate forks.** Asked how much the single-minter enforcement
+  question mattered, the operator said not at all. A fork that guards only
+  against the project's own code is a default plus a recorded follow-up.
+- **Hands brief additions:** wait for long jobs instead of reporting a to-do
+  list (one Hands agent did); restore mutations without `git checkout` (one
+  run was invalidated that way); measure warnings from forced rebuilds (a
+  cached build reported zero).
+
 ## 2026-09-16: subtraction rules, from the Eureka campaign's own cuts
 
 - **A deletion can take a live rule's only test with it.** Cut 4 deleted a store

@@ -90,6 +90,15 @@ it reported was fiction.
 When a cut deletes, list every rule that had a test before and has none after.
 A rule that still exists in code with its only test deleted is the failure mode
 of subtraction; either the rule goes too, or it gets a test in the same cut.
+Long jobs: wait for them and finish. Never end the turn with a to-do list in
+place of a report.
+Mutations: restore with a reverse edit or run against committed code; `git
+checkout` also reverts uncommitted fix code and silently invalidates the run.
+Warnings: measure from a forced rebuild and compare distinct messages; cargo
+replays warnings only when it actually rebuilds.
+Semantic properties ("exactly one call site", "this step actually runs"):
+prefer a semantic tool (a Clippy lint, the type system) over a text scanner,
+or state the scanner's limits in the test itself.
 
 Commits:
 - Small and pushed.
@@ -147,6 +156,17 @@ Falsify specifically:
   including ones that are not plain reverts>
 - <the layer where the invariant really fails: wire bytes, another runtime's
   decoder, the editor, the compiler, a legacy file decoded independently>
+- <for a sealed or private boundary: attack constructibility from an external
+  scratch crate or consumer, not path privacy. Try every public constructor the
+  language gives away: Deserialize and other derives, Default/From impls,
+  public fields, functions returning mutable references. A compile_fail test
+  pins a name; on stable rustc it does not even pin the error code>
+- <for rejection tests: forgeries must be shaped like real values (same length,
+  prefix, case and alphabet), or a weakened comparison passes them all>
+- <for any text scanner, grep assertion or line pin: try evasions (aliases,
+  function values, formatting, control flow around the pinned text such as
+  `if false` or `true ||`). A scanner is a tripwire with stated limits, not
+  proof of a semantic property>
 - <leftover greps>
 - rerun the builds, tests and captures yourself
 
