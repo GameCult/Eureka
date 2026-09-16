@@ -94,6 +94,16 @@ Long jobs: wait for them and finish. Never end the turn with a to-do list in
 place of a report.
 Mutations: restore with a reverse edit or run against committed code; `git
 checkout` also reverts uncommitted fix code and silently invalidates the run.
+The suite is a committed script under `tools/`, and its first entry is a
+no-op control: rewrite the target through the same I/O path with no change
+and run the suite; every test must stay green, or the harness is broken and
+nothing it reports counts. Read and write bytes symmetrically (in PowerShell,
+`[IO.File]::ReadAllText`/`WriteAllText` with an explicit UTF-8 encoding, never
+a bare `Get-Content`/`Set-Content`; in Python, `encoding="utf-8", newline=""`
+both ways). A `-Raw`-less read or a line join rewrites every line ending, and
+`core.autocrlf` hides that from `git diff`. Sources carry non-ASCII literals
+on purpose, so a lossy round-trip fails tests on its own and fakes a kill on
+every mutation.
 Warnings: measure from a forced rebuild and compare distinct messages; cargo
 replays warnings only when it actually rebuilds.
 Semantic properties ("exactly one call site", "this step actually runs"):
@@ -172,6 +182,12 @@ Falsify specifically:
   proof of a semantic property>
 - <leftover greps>
 - rerun the builds, tests and captures yourself
+
+Your own mutations obey the same harness rules as Hands': write them as a
+script in <scratchpad>, run a no-op control through it first, use byte-exact
+symmetric I/O, and name the script in the report so the run can be checked.
+An inline harness typed for one run is not evidence, and it is where the one
+known fake kill came from.
 
 Report each finding as CONFIRMED or PLAUSIBLE, with file:line, a failure
 scenario and severity. Then give a short list of the promises that held.

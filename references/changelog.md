@@ -2,6 +2,32 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: a mutation suite needs a no-op control and byte-exact I/O
+
+Evidence: the Eureka pipeline-state campaign's third Soul pass on Cut 6, and the
+Eyes audit that followed (Epiphany `notes/eureka-pipeline-state-cut.md`, "Mutation
+harness audit").
+
+- **A no-op control is the test of the harness.** Soul ran a mutation that
+  changed nothing and it killed `bounds_refuse_in_utf8_bytes`. The harness's
+  text round-trip had collapsed an `é` literal to one byte, so the corruption
+  alone failed the test and every mutation through that path would have
+  reported a kill. Nothing else in the loop could have noticed: a killed
+  mutation is what a working suite looks like.
+- **The defect was not where it was feared.** The audit found every committed
+  suite using byte-lossless I/O. The corrupting harness was Soul's own inline
+  script, never written to disk, so its text is unrecoverable and its verdicts
+  are unverifiable. That is the same shape as the standing finding that
+  mutations without artifacts cannot be checked; it now applies to Soul too.
+- **Encoding symmetry and line endings, not a flag.** Measured on the host:
+  mixed-encoding round-trips corrupt non-ASCII; any read that splits lines
+  rewrites every line ending regardless of encoding, and `core.autocrlf` hides
+  the rewrite from `git diff`. One ad-hoc Cut 1 script did exactly that, so
+  three early verdicts are recorded as suspect.
+- **The committed suites forbade a control by shape.** Each threw when a
+  replacement changed nothing. A table shape that cannot express "change
+  nothing" cannot test itself.
+
 ## 2026-09-16: record the gap, and absence is the hardest claim
 
 Evidence: ghostlight-77's requirements message to the Eureka pipeline-state

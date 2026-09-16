@@ -163,6 +163,13 @@ briefly, and the verification. The brief says:
 - **Every operator ruling and every new rule gets a test that fails under its own
   mutation.** Hands runs the mutations against the final spelling of the code and
   restores afterwards.
+- **Every mutation suite is a committed script with a no-op control.** The
+  control rewrites the target through the same I/O path with no change and must
+  leave every test green; if it kills anything, the harness is broken and every
+  verdict from it is fiction. File I/O is byte-exact (symmetric UTF-8, line
+  endings preserved), anchors match exactly once, and restore is a reverse
+  write. This applies to Soul's harness as much as Hands': the one that faked a
+  kill was Soul's own inline script, and it is not on disk to be checked.
 - Report: commits (and which don't build), verification output, mutation
   results, spec discrepancies, forks, structural delta. Hands never updates the
   map.
