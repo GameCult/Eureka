@@ -2,6 +2,35 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: agents must be told how to wait, not only to wait
+
+Evidence: Ghostlight L1, the stock lenses
+(`docs/architecture/ghostlight-stock-lenses-cut.md` and its postmortem).
+
+- **"Wait for long jobs" was not enough.** Three agents in one campaign ended
+  their turns while a build they had started was still running: a Soul pass
+  on Cut 1 and a Hands pass on Cut 2, twice. Each launched cargo detached,
+  then ended the turn "to wait". A detached process is not a tracked
+  child of the agent, so its completion never woke it; the work stopped until
+  the root agent resumed it by hand. The rule to wait was already in the
+  briefs. What worked was naming the mechanism: block inside a tool call,
+  with cargo in the foreground under a long tool timeout, or `Wait-Process` on
+  the pid, and never start a second cargo run while one holds the target
+  lock. After that sentence entered the briefs, no agent stalled again.
+- **A green test can be a coin flip.** A Cut 3 test that rewrote a session's
+  lens to a fixed value collided with a randomly drawn lens about one run in
+  eight; Hands' single green run was luck. It failed 3 of 40 looped runs and
+  passed 120 of 120 after a deterministic fix. For any test built on a random
+  draw or a random identity, looping it is part of verification.
+- **An operator question can hide the design fault.** Self told the operator
+  a lens "has to be recorded" in the command identity. The planner then found
+  that keying identity on mutable weights strands rows, and the operator's
+  follow-up ("are you relying on some deterministic code outputting the same
+  id rather than just checking the state?") exposed a pre-existing defect: the
+  elaborator's repair loop had never worked across sweeps. When the operator
+  asks why a mechanism works, answer from the Body and probe it; it may be
+  the most valuable question of the campaign.
+
 ## 2026-09-16: a mutation suite needs a no-op control and byte-exact I/O
 
 Evidence: the Eureka pipeline-state campaign's third Soul pass on Cut 6, and the
