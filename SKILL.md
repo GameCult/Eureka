@@ -209,6 +209,28 @@ briefly, and the verification. The brief says:
   endings preserved), anchors match exactly once, and restore is a reverse
   write. This applies to Soul's harness as much as Hands': the one that faked a
   kill was Soul's own inline script, and it is not on disk to be checked.
+- **"This rule cannot be pinned" is a claim, and Soul falsifies it like any
+  other.** Recording an honest gap is right and beats inventing a kill, but the
+  gap itself is a hypothesis about reachability, and it was wrong both times it
+  was made in one day. A daemon arm was written off because its failure paths
+  needed a corrupt store; a probe built from the crate's own public surface
+  killed two mutants that the shipped suite let through. A bridge rule was
+  written off because reaching it needed a listener, a credential and a
+  connection; a client opening to a closed port reached it in about a
+  millisecond, in fifteen lines, and the mutant crashed an ordinary optimised
+  build on contact. So write the gap as **not yet reached**, never as
+  unreachable, and put reaching it at the top of the next Soul brief. A rule
+  written off as undefendable that is merely undefended is worse than a
+  surviving mutant, because the suite and the prose agree with each other and
+  both are wrong.
+- **Put the observation where the rule is decided, not after it.** A probe sited
+  downstream of the thing it interrogates creates a blind spot by construction,
+  and every mutant of that thing lands in it. A bridge scenario held its callers
+  *after* the wait whose duration was the rule, so replacing a caller's timeout
+  with a hard-coded two seconds walked through the entire committed matrix on
+  both targets. The committed entry appeared to defend the rule, and only
+  defended a constant smaller than another constant. When a mutant dies, ask
+  which of the two it actually contradicted.
 - **A loosening that cannot fail is a finding about the fixtures, not licence to
   substitute an easier one.** When the mutant that weakens a rule still passes,
   the usual cause is that every fixture differs in more ways than the rule cares
@@ -340,6 +362,11 @@ and reconciles the target doc with the Body.
 
 - **Stage explicit paths. Never `git add -A`.** It swept an untracked local
   settings file into history.
+- **Never `git archive` to export source for a byte comparison.** It applies
+  text conversion. An export used for a reproducibility check carried 1,459
+  inserted carriage returns against the worktree, which poisons every byte
+  count built on it. Read raw blobs and verify against the worktree's hash
+  before comparing anything.
 - **Write commit messages with the Write tool to a uniquely named scratch file,
   then `git commit -F`.** PowerShell 5 here-strings break `-m` quoting, and its
   `Out-File`/`Set-Content` write a BOM into message files.

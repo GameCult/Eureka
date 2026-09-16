@@ -2,6 +2,44 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-17: both honest gaps were wrong, and one probe was blind by design
+
+Evidence: two Soul passes on the same day, in different repositories, each
+falsifying a gap that Hands had recorded honestly rather than faking.
+
+**The daemon arm.** Hands wrote that the open-items dispatch arm could carry no
+mutation entry, because it raises no refusal of its own and its only failing
+paths need a corrupt store, and said so in the entries header rather than
+substituting an easier target. That was the discipline working. Soul then built
+a store-integrity probe from the crate's own public surface and killed both the
+swallowing and the rewrapping mutant, neither of which the shipped suite caught.
+
+**The bridge rule.** Hands wrote that popping before copying was unreachable
+without a listener, a credential and a connection. A client opening to a closed
+loopback port reaches it in about a millisecond, in fifteen lines, because the
+failure path always publishes a non-empty reason; and the mutant crashes an
+ordinary optimised build twice out of two while both committed scenarios stay
+green on that same binary.
+
+So an unreachability claim is a hypothesis, and the same pass that would
+falsify a promise must falsify it. Recorded in the Soul section: write the gap
+as not yet reached, never as unreachable, and open the next brief with reaching
+it. A rule written off as undefendable that is merely undefended is worse than
+a surviving mutant, because the suite and the prose agree and both are wrong.
+
+**The blind spot.** The same pass found why a rule kept being pinned by
+constants: the scenario held its callers *after* the wait whose duration was
+the rule, so every timeout mutant landed behind the observation. Replacing a
+caller's timeout with a hard-coded two seconds survived the entire committed
+matrix on both targets; a host asking for five seconds would silently get two
+forever. The committed entry that appeared to defend the rule died only because
+one millisecond is less than a fifty-millisecond settle. Added: put the
+observation where the rule is decided, and when a mutant dies, ask which of the
+two things it actually contradicted.
+
+Also added, from the same pass: never use `git archive` to export source for a
+byte comparison, after an export carried 1,459 inserted carriage returns.
+
 ## 2026-09-16: a green suite is not evidence when its harness is gone
 
 Evidence: two findings from the same afternoon, both about mutation suites
