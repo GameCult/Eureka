@@ -73,9 +73,15 @@ Standing rulings: <short list>.
 - Delete before adding. No shims.
 
 Every rule the spec or the operator names gets a test that fails under its own
-mutation. Run the mutations against the final spelling of the code and restore
+mutation, and under two mutations, not one: a revert (delete the check) and a
+loosening that keeps the check in place and weakens it (`>=` for `==`, the
+first item only, the image without the batch, case-insensitive, off by one).
+The revert proves the test sees the rule; only the loosening proves it sees
+the rule's edge, and the loosening is what Soul would otherwise write on its
+second pass. Run both against the final spelling of the code and restore
 afterwards. In the report, define each mutation exactly (what line changed and
-how) so Soul can rerun it; a mutation named only "C3" cannot be checked.
+how) so Soul can rerun it; a mutation named only "C3" cannot be checked. A
+loosening that survives is reported, not hidden and not deleted.
 When a claim is "behaviour unchanged", a value captured from the new code is not
 evidence. Pin it with a value computed at the base commit.
 Detached scripts: confirm the log starts within 60 s; a script that dies on a
@@ -135,14 +141,17 @@ boundary with no half-deleted authority, and report what remains.
 
 Don't update the map.
 
-Report:
+Report, in this shape and nothing else:
 - commits (and which don't build)
-- verification output
-- mutation results
+- verification output, pasted, not summarised
+- mutation results: each entry, its exact edit, its killer or SURVIVED
 - spec discrepancies you fixed
 - forks
 - structural delta (lines, dependencies and formats removed or added)
 - what remains
+No narrative of the pass, no restating the brief, no reasoning about what you
+might have done. Self reads the three things above the discrepancies first
+and needs them in that order.
 ```
 
 ## Soul: falsify executed work
@@ -199,7 +208,15 @@ An inline harness typed for one run is not evidence, and it is where the one
 known fake kill came from.
 
 Report each finding as CONFIRMED or PLAUSIBLE, with file:line, a failure
-scenario and severity. Then give a short list of the promises that held.
+scenario and severity. Then the promises that held, one line of evidence
+each. Then the numbers: test counts, entries killed, path delta, script
+paths. Nothing else: no narrative of the pass, no reasoning about mutants
+that died. Rerun Hands' loosening mutations; design your own only where a
+rule has none or the loosening was weak.
+
+<For a second or later pass on the same cut:> scope is the fix batch's diff
+plus one rerun of the suite. Do not re-derive the whole cut unless an
+invariant moved. Say in one sentence whether the cut closes.
 ```
 
 ## Mind Steward: phase boundary

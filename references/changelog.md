@@ -2,6 +2,30 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: the loop was burning tokens on gaps, not defects
+
+Evidence: one day of the Eureka pipeline-state and TypeScript QUIC campaigns,
+about thirty-five passes. The operator asked how much of the cost was process
+and how much the price of a second agent. Roughly half each. The falsifier
+earned its half: three High key defects, an unimplemented epoch gate, a
+replay regression, a byte-order mark divergence and a false "equivalent"
+claim, none of which a green report caught. The other half:
+
+- **Hands wrote revert mutations; Soul wrote loosenings.** Most second and
+  third Soul passes found not defects but rules the suite was blind to. The
+  Hands brief now requires both mutations per rule, and Soul reruns Hands'
+  loosenings before writing its own.
+- **Reports were narrative.** Soul passes ran two to three hundred thousand
+  tokens each. Both briefs now name the report shape and forbid the rest, and
+  a second pass on a cut is scoped to the fix batch's diff.
+- **Two harnesses re-learned each other's lessons.** Epiphany's PowerShell
+  harness and CultLib's JavaScript runner each hit the sidecar footgun, the
+  missing control and a control-byte scar on their own. One harness in this
+  repo is the next change; deferring it to a "skill wiring" cut cost three
+  rediscoveries in an afternoon.
+- **The map committed per event**, about forty times in a day. Per cut from
+  now on, rulings excepted, since agents read them mid-flight.
+
 ## 2026-09-16: agents must be told how to wait, not only to wait
 
 Evidence: Ghostlight L1, the stock lenses
