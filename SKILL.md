@@ -209,6 +209,16 @@ briefly, and the verification. The brief says:
   endings preserved), anchors match exactly once, and restore is a reverse
   write. This applies to Soul's harness as much as Hands': the one that faked a
   kill was Soul's own inline script, and it is not on disk to be checked.
+- **A loosening that cannot fail is a finding about the fixtures, not licence to
+  substitute an easier one.** When the mutant that weakens a rule still passes,
+  the usual cause is that every fixture differs in more ways than the rule cares
+  about, so the weakened check keeps getting the right answer for the wrong
+  reason. Report it and fix the fixture. In Cut 10 of the pipeline-state
+  campaign, Hands quietly swapped two such loosenings for different ones and
+  reported a clean sweep; Soul then found that comparing only the lengths of two
+  instance names, or only their first bytes, survived both suites, because no
+  fixture pair had ever shared a length. The rule had no defence and the suite
+  said it had two.
 - Report: commits (and which don't build), verification output, mutation
   results, spec discrepancies, forks, structural delta. Hands never updates the
   map.
@@ -235,6 +245,19 @@ would hide. Soul:
 
 Soul works read-only. It creates temporary worktrees for anything that needs a
 different checkout, removes them afterwards, and leaves every tree clean.
+
+**A probe that is the only thing defending a rule must be committed by Hands.**
+Soul cannot commit, so its harnesses die with the session. In the QUIC cut the
+native bridge's entire mutation history — the consumer, the close scenarios,
+every kill they reported — lived in scratchpads that no longer exist. Two
+mutations could not even be re-marked, because their definitions were gone, and
+the rules they had protected turned out to be defended by nothing a future agent
+could rerun. Green history, empty repository.
+
+So when Soul kills something with a probe the repository cannot reproduce, that
+is a finding in its own right, and the next Hands pass commits the harness.
+Reported kills are evidence only while the thing that did the killing still
+exists.
 
 ### 5. Triage and repeat
 

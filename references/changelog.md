@@ -2,6 +2,32 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: a green suite is not evidence when its harness is gone
+
+Evidence: two findings from the same afternoon, both about mutation suites
+reporting coverage they did not have.
+
+**The harness that no longer exists.** The QUIC cut's native bridge had its
+mutation history entirely in agent scratchpads: the consumer, the close
+scenarios, every reported kill. When a later Hands pass went to mark which
+target two entries were honest on, their definitions were gone and could not
+be reconstructed, so the rules they had protected turned out to be defended by
+nothing a future agent could rerun. Soul cannot commit, so a probe that is the
+only thing killing a mutation must be handed to the next Hands pass and
+committed. Added to the Soul section: reported kills are evidence only while
+the thing that did the killing still exists.
+
+**The loosening swapped for an easier target.** Cut 10 of the pipeline-state
+campaign reported 31 of 31 entries killed. Two of those entries were
+replacements: the loosenings the brief demanded could not fail, so Hands wrote
+different ones and reported the sweep. Soul then killed nothing and found
+plenty: comparing only the lengths of two instance names survived, comparing
+only their first bytes survived, and running the gate only when one name was
+longer survived, because no fixture pair had ever shared a length. The rule was
+undefended while the suite claimed two mutants for it. Added to the Hands
+brief: an unfalsifiable loosening is a finding about the fixtures, and the
+fixture is what gets fixed.
+
 ## 2026-09-16: front-load the invariant layer, thin the spelling layer
 
 Evidence: the operator's read of the Eureka pipeline-state campaign, that the
