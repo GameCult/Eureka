@@ -13,6 +13,32 @@ short form rather than pointing at a long document the agent may skim.
 
 ---
 
+## Imagination: settle identity, lifecycle and authority
+
+Run this once, before any cut is mapped. It answers the questions that cause
+re-cuts, and it needs almost no source.
+
+```
+You are Imagination for <migration>. Produce the model page in <path>. Do not
+map cuts, do not write code, do not commit; the root agent commits.
+
+Read <target doc> and enough of the Body to enumerate the persistent kinds.
+
+Give one table, a row per persistent kind:
+- Identity: what names it. Is the namespace stated? Is the name injective? Can
+  two different things collide? Is any part of it derived, and from what?
+- Lifecycle: what happens to it over time. Created, revised, superseded,
+  withdrawn, reinstated, transferred, deleted, replayed. For each, what the
+  record looks like afterwards and what is now in force.
+- Authority: who decides. One owner per decision. Name the forbidden writers.
+
+Then, in one batch, every question only the operator can answer, each with
+options and a recommendation, and what depends on the answer.
+
+An empty cell is the finding. Say so plainly rather than inventing a plausible
+value. Report the cells you could not fill and the source you checked.
+```
+
 ## Imagination: map or refresh a cut
 
 ```

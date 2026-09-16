@@ -2,6 +2,48 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-16: front-load the invariant layer, thin the spelling layer
+
+Evidence: the operator's read of the Eureka pipeline-state campaign, that the
+design kept being discovered as the work went, producing re-cutting and
+repeated Imagination passes with no good reason for the map to diverge that
+far. The campaign's own record agrees, and says which layer was at fault.
+Every backtrack was identity, lifecycle or authority, and every one was
+answerable before a line of source was read:
+
+- The repo-owned store was specified before anyone asked who owns a mind, and
+  died whole in Cut 4: 1,302 lines deleted.
+- The key grammar was patched twice and redesigned on the third occurrence,
+  because ids had no namespace to be specified over.
+- Cut 6d retrofitted sequences into landed keys, because each document's shape
+  was specified and its life was not.
+- The operator's forks surfaced across five cuts, so rulings kept landing on
+  code that was already written. Two of them reversed defaults the agents had
+  already implemented.
+
+None of that was a shortfall of `file:line` detail. The maps had plenty:
+Cut 10's section ran to roughly eight hundred lines against a crate that did
+not exist. The operator named the trap for what it is, a 1:1 map, where the
+only sufficient spec is the code.
+
+- **Added step 0b.** A model table before any cut is mapped, a row per
+  persistent kind, three columns: what names it, what happens to it over time,
+  who decides. No cut is mapped while a cell is empty. Operator forks are
+  assembled in the same pass as one batch.
+- **Added the model-page brief** to `briefs.md`, before the cut-mapping brief.
+  An empty cell is the finding; inventing a plausible value is the failure.
+- **Qualified the per-file anchors.** They are required for code that exists,
+  where they say what to delete and what not to touch. For code that does not
+  exist, name the types, the boundaries and the rules that must die under their
+  own mutation, then stop.
+- **Stated what cutting faster means:** less prose per cut, never more code per
+  cut. Small commits stay small.
+
+Not treated as waste: the operator changing their mind. Learning that the
+intent differs is the job. It is only expensive when it is learned after the
+code lands, which is an argument for surfacing forks earlier rather than for
+mapping deeper.
+
 ## 2026-09-16: the loop was burning tokens on gaps, not defects
 
 Evidence: one day of the Eureka pipeline-state and TypeScript QUIC campaigns,

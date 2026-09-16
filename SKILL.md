@@ -70,6 +70,32 @@ finished when Hands can go straight to the cut.
   pipeline.
 - Dispatch the Mind Steward before the first consequential action.
 
+### 0b. Settle identity, lifecycle and authority before any cut is mapped
+
+Re-cutting is not usually caused by a map that was insufficiently detailed. It
+is caused by a question that was answerable on day one and got asked on day
+three. In the Eureka pipeline-state campaign every backtrack was one of three
+questions, and none of them needed a line of source to answer:
+
+- **Identity.** The key grammar was redesigned after three patches because ids
+  had no namespace. Every earlier cut specified behaviour over an unnamed
+  space, so the same invariant kept reappearing one level up.
+- **Lifecycle.** Cut 6d exists because the shape of each document was specified
+  and its life was not: a subject that is resolved, withdrawn, resolved again,
+  and transferred to another steward. Sequences had to be retrofitted into
+  keys that were already landed.
+- **Authority.** The repo-owned store died whole in Cut 4 because who owns a
+  mind was never asked before the store was specified.
+
+So produce one table before mapping any cut, with a row per persistent kind and
+three columns: what names it, what happens to it over time, and who decides.
+**No cut is mapped while a cell is empty.** This costs a page and an hour.
+
+Assemble the operator's forks in the same pass, as one batch. In that campaign
+they surfaced across five cuts instead, so rulings kept landing on code that was
+already written. Discovering that the operator wants something different is not
+waste; discovering it after the code lands is.
+
 ### 1. Imagination maps the cut
 
 Brief an Imagination agent to produce the **cut map**: an ordered list of cuts
@@ -79,12 +105,25 @@ against the current Body. Each cut carries:
 - **deletes first**, with exact paths and line counts;
 - keeps and moves;
 - adds;
-- per-file changes with `file:line` against a named HEAD;
+- per-file changes with `file:line` against a named HEAD, **for code that
+  exists**;
 - an **authority map** for anything that changes ownership: owner, inputs,
   outputs, derived state, forbidden writers, shared paths, deletion line;
 - **verification**: exact builds, tests with the rule each one pins, negative
   greps, and what only the operator can check;
 - a subtraction-ledger estimate.
+
+**Spend the detail where the map can be wrong, not where Hands will rewrite it
+anyway.** Anchors against existing code earn their length: they say what to
+delete and what not to touch. Transcribing the body of code that does not exist
+yet does not. A cut section that runs to eight hundred lines against a crate
+nobody has written is a 1:1 map, and the only spec complete enough at that scale
+is the code itself. Soul catches a wrong function body cheaply; it cannot catch
+a missing namespace. So for new code, name the types, the rules that must die
+under their own mutation, and the boundaries, then stop.
+
+Cutting faster means less prose per cut, never more code per cut. Small commits
+stay small.
 
 **Subtraction comes from a consumer audit of the public surface,** not from
 taste:
