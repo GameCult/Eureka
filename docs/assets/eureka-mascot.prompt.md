@@ -3,8 +3,7 @@
 Intended output: `docs/assets/eureka-mascot-4x.png`, square, referenced from
 `README.md` the way Epiphany's avatar is referenced from its own.
 
-Model: OpenAI image model, operator-run, 2026-09-17. **Record the exact model
-identifier here** — it is the one piece of provenance still missing.
+Model: **GPT-Image-2.5 Flare** (OpenAI), operator-run, 2026-09-17.
 
 ## What actually shipped, and how to rebuild it
 
