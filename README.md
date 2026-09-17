@@ -1,5 +1,9 @@
 # Eureka
 
+<p align="center">
+  <img src="docs/assets/eureka-mascot-4x.png" width="1024" alt="A pixel-art inspector crouched on a cracked ALL TESTS PASSING monument, prying up a floor panel stencilled GREEN to look at the broken machinery underneath, beside a specimen case of pinned mutants with one still moving, labelled SURVIVED" />
+</p>
+
 **An agent that plans, implements, tests and reports on its own work will hand
 you green tests and a clean report over a broken machine.** Not because it lies,
 but because its tests pin its own spelling, and its report is written by the

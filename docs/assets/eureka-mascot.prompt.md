@@ -3,8 +3,44 @@
 Intended output: `docs/assets/eureka-mascot-4x.png`, square, referenced from
 `README.md` the way Epiphany's avatar is referenced from its own.
 
-Model: OpenAI image model (operator-run). Record the exact model identifier here
-when the render lands, beside the render actually chosen.
+Model: OpenAI image model, operator-run, 2026-09-17. **Record the exact model
+identifier here** — it is the one piece of provenance still missing.
+
+## What actually shipped, and how to rebuild it
+
+1. **The render**, `eureka-mascot-source.png`, 1254×1254, straight from the
+   model on the prompt below. Kept because a render without its prompt has lost
+   its provenance, and a prompt without its render cannot be checked.
+2. **Repixelized** to a true lattice at 627×627. The render is fake pixel art:
+   it looks pixelated without committing to one grid. Rebuild it with:
+
+   ```
+   F:\Projects\repixelizer\.venv\Scripts\python.exe -c "from repixelizer.pipeline import run_pipeline; run_pipeline(r'eureka-mascot-source.png', r'out.png', seed=7, steps=48, device='cuda', max_inferred_target_size=1024)"
+   ```
+
+   **Do not use `repixelize run` with its defaults for this.** The command line
+   is the same pipeline as the hosted service minus two things the service sets:
+   it never passes `max_inferred_target_size`, so a large source infers whatever
+   it likes, and it defaults to 200 steps where the service uses 48. Configured
+   as above it takes about 87 seconds on a GTX 1070; configured by the command
+   line's defaults it was still running after four minutes. The service's own
+   numbers are in `gui.py`'s `HostedDemoConfig`.
+
+   Also note `python -m repixelizer.cli` does nothing and exits zero: that module
+   has no main guard. Use the console script or call the API.
+3. **Cropped and lettered by the operator** in Krita, to 441×441. The crop drops
+   the tombstones and the balance scale and keeps the specimen case, the
+   character and the panel — less busy, and it survives being displayed with big
+   chunky pixels. The wordmark is **Ubuntu Light in small caps**, which is the
+   brand's prose face rather than its display face; that is deliberate.
+   `eureka-mascot.kra` is the editable original.
+4. **`eureka-mascot-4x.png`** is `eureka-mascot.png` upscaled ×4 with nearest
+   neighbour, to 1764×1764. GitHub's markdown cannot ask a browser for hard
+   pixel edges, so the only way to show chunky pixels in a README is to ship an
+   image that is already large. Epiphany's avatar uses the same convention.
+
+The intermediate uncropped 627×627 repixelization is not kept, because step 2
+rebuilds it exactly.
 
 Style anchor: `F:\Projects\Epiphany\docs\assets\epiphany-avatar-4x.png` —
 detailed pixel art, anime-styled figure, dense labelled environment, one HUD
