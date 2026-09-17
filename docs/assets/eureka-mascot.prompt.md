@@ -42,6 +42,23 @@ identifier here** — it is the one piece of provenance still missing.
 The intermediate uncropped 627×627 repixelization is not kept, because step 2
 rebuilds it exactly.
 
+## The two crops
+
+- **`eureka-mascot.png`** carries the wordmark burned in, and is what the README
+  shows through `eureka-mascot-4x.png`. Use it where the surface cannot set
+  type: a README, a repository card, anywhere the image has to arrive as one
+  thing.
+- **`eureka-mascot-clean.png`** is the same crop with **no wordmark**, for
+  surfaces that set their own type — the site, a header that wants the name in
+  live Ubuntu Light small caps rather than in pixels. Live type there is better
+  than burned-in: it stays selectable, it scales without the mascot's lattice
+  fighting the text's antialiasing, and it will track the brand if the brand
+  moves.
+
+Each has its editable Krita original beside it. **When one crop changes, change
+the other**, or the two will drift and the site will quietly disagree with the
+README about what Eureka looks like.
+
 Style anchor: `F:\Projects\Epiphany\docs\assets\epiphany-avatar-4x.png` —
 detailed pixel art, anime-styled figure, dense labelled environment, one HUD
 panel of typed state, a single saturated accent doing the lighting. Eureka is
