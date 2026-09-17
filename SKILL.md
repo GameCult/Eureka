@@ -202,6 +202,14 @@ briefly, and the verification. The brief says:
 - **Every operator ruling and every new rule gets a test that fails under its own
   mutation.** Hands runs the mutations against the final spelling of the code and
   restores afterwards.
+- **The harness lives here, in `tools/eureka-mutations.ps1`,** not in whichever
+  repo happened to need it first. It takes `-Repo`, `-Entries`, `-Target`,
+  `-Test` and `-TimeoutSeconds`, so one copy serves every campaign and a fix to
+  it fixes all of them; it was moved out of Epiphany once a second repo started
+  reaching across for it. A repo whose suites cannot run under PowerShell keeps
+  its own runner and owes the same contract by name: a no-op control, byte-exact
+  restore verified by hash, a sidecar written before any write, anchors matching
+  exactly once, an honest exit status, and the child's output on a red control.
 - **Every mutation suite is a committed script with a no-op control.** The
   control rewrites the target through the same I/O path with no change and must
   leave every test green; if it kills anything, the harness is broken and every
