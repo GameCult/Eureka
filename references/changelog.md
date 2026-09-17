@@ -2,6 +2,40 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-17: three passes to pin one line, because each proved a cousin
+
+Evidence: the QUIC bridge's "the wait is the timeout the host asked for", over
+three Soul passes and three fix batches in one day. Each fix was real, and each
+proved a property slightly stronger than the last and still weaker than the
+rule.
+
+- The committed entry proved the wait was **not one particular constant**. It
+  died only because one millisecond is less than a fifty-millisecond settle.
+  A different constant, two seconds, walked the whole matrix on both targets: a
+  host asking for five seconds would silently get two, forever.
+- The fix proved the wait was **not any constant**, with a scenario measuring
+  elapsed time at two values whose tolerance bands do not overlap. Sound as far
+  as it goes.
+- Soul then defeated it with a **clamp**, and with an offset and a scale beside
+  it, all three surviving every scenario. Capping a wait so that shutdown gets
+  noticed is the most ordinary spelling that line will ever be given, and it is
+  a function of the argument rather than a replacement for it. Any mapping that
+  is identity at both probe values passes for free, and both probes sat below
+  any plausible ceiling.
+
+Added to the Hands brief: name the weakest thing that would still pass and ask
+whether it is the rule; when a rule says a value is derived from an input, at
+least one mutant must itself be a function of that input, and probe values must
+sit where such a function would show. Constants are never the hard case, only
+the first one.
+
+The same pass found that a fresh Windows clone could not run the documented
+Linux path at all: `.gitattributes` carried no line-ending rule for shell
+scripts, so the container died complaining about a carriage return in the
+interpreter line. Worth noting as a shape rather than a one-off: the path was
+declared runnable-as-committed and verified by an agent who had never cloned it
+fresh.
+
 ## 2026-09-17: both honest gaps were wrong, and one probe was blind by design
 
 Evidence: two Soul passes on the same day, in different repositories, each

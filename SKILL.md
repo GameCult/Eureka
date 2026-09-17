@@ -223,6 +223,20 @@ briefly, and the verification. The brief says:
   written off as undefendable that is merely undefended is worse than a
   surviving mutant, because the suite and the prose agree with each other and
   both are wrong.
+- **Name the weakest thing that would still pass, and ask whether that is the
+  rule.** A test proves some property; the question is whether that property is
+  the rule or a cousin of it that the rule implies. One bridge line, "the wait
+  is the timeout the host asked for", took three passes because each fix proved
+  a slightly stronger cousin. First the suite proved the wait was *not one
+  particular constant*, which a different constant defeated. Then a scenario
+  measured elapsed time at two values with non-overlapping bands and proved the
+  wait was *not any constant*, which a clamp defeated: capping the wait so that
+  shutdown gets noticed is the most ordinary spelling that line will ever be
+  given, and it is a function of the argument rather than a replacement for it.
+  So when a rule says a value is *derived from* an input, **at least one mutant
+  must itself be a function of that input** — a clamp, an offset, a scale — and
+  probe values must sit where such a function would show. Constants are never
+  the hard case; they are only the first one.
 - **Put the observation where the rule is decided, not after it.** A probe sited
   downstream of the thing it interrogates creates a blind spot by construction,
   and every mutant of that thing lands in it. A bridge scenario held its callers
