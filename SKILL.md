@@ -414,6 +414,16 @@ and reconciles the target doc with the Body.
   checkout, such as Soul's clone or a parallel Hands worktree, gets its own
   target subdirectory. The mutation harness is immune because it bumps the time
   on every file it writes. A plain test run is not.
+- **The operator's workstation has a load budget, and Self owns it.** Running
+  stress under load there, with CPU burners, is forbidden: use a dedicated
+  host, or a container capped with `--cpus`. Run at most one heavy
+  verification job at a time, meaning a mutation harness, a repeated test
+  loop, or a workspace build. Parallel agents are sized to that limit, not to
+  the pipeline's appetite. On 2026-09-22 the operator had to force a
+  shutdown. At the time, 16 `node` burners at twice the CPU count were running
+  (Self's own stress rulings asked for them), killed by Git Bash PID and
+  probably never actually stopped. A 30-run test loop and a workspace build
+  were running beside them.
 - **Kill processes by the PID you started, never by image name.** A Hands pass
   cleared its CPU burners with `taskkill /IM node.exe /T`. That killed every
   Node process on the shared workstation, including other agents' and the
