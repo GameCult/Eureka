@@ -2,6 +2,39 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: verification moves off the operator's workstation
+
+Evidence: Starfire went from fine to unresponsive in seconds, and the operator
+had to force a shutdown. It was carrying four jobs at once:
+- 16 `node` CPU burners at twice the CPU count. They were started for a QUIC
+  stress run that Self's own rulings demanded. Git Bash's `$!` recorded MSYS
+  PIDs, and the burners were very likely never stopped.
+- A 30-iteration `dotnet test` loop.
+- A Huginn workspace build.
+- Two agents waiting on jobs that had already died.
+
+No single fork bomb was proven, because Windows audits no process creation.
+The load was Self's to schedule and Self did not budget it. The operator: "This
+is literally why we have Yggdrasil, so Starfire doesn't get overloaded with
+compiler jobs." The fleet inventory already said the same.
+
+- Ruled by the operator: **Idunn owns verification**, through a verify
+  transaction that seals nothing and sits outside the brake. It is mapped as
+  its own campaign.
+- The stopgap until then is `tools/stopgap/ygg-verify.sh` plus
+  `rust.Dockerfile`. It pushes an exact revision to a mirror on Yggdrasil and
+  runs the command in a container capped at 6 CPUs and 16 GiB, niced, with at
+  most two jobs at once. The target directory stays inside the scratch work
+  tree. Its header names its deletion line.
+- The smoke test found two bugs in the stopgap before any real job ran:
+  - `bash -lc` reset the image's `PATH`.
+  - `ssh` re-split the command, so `a && b` ran `b` on the host.
+
+  Arguments are now quoted with `printf %q`. After the fix, Huginn's mind
+  suite passed 67/67 on Yggdrasil.
+- SKILL.md: heavy verification goes to Yggdrasil. Starfire does only
+  Windows-bound work, one job at a time, with no burners.
+
 ## 2026-09-22: H1's kept sidecar looked like a crash, overwrites clobbered each other, case-blind no-op guard
 
 Evidence: Soul's H14 pass over the Huginn memory-organ campaign

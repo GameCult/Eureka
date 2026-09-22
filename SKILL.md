@@ -414,6 +414,14 @@ and reconciles the target doc with the Body.
   checkout, such as Soul's clone or a parallel Hands worktree, gets its own
   target subdirectory. The mutation harness is immune because it bumps the time
   on every file it writes. A plain test run is not.
+- **Heavy verification runs on Yggdrasil, not on the operator's workstation.**
+  Heavy verification means builds, test suites and mutation harnesses. The
+  owner is Idunn's verify transaction (a campaign in progress, ruled
+  2026-09-22). Until it lands, use the stopgap `tools/stopgap/ygg-verify.sh`.
+  It pushes an exact revision to a mirror on Yggdrasil and runs one command in
+  a container capped at 6 CPUs and 16 GiB, niced, with at most 2 jobs at a
+  time. Every Hands and Soul brief says so. Starfire runs only what has to run
+  on Windows, such as the QUIC win32 harness: one job at a time, never burners.
 - **The operator's workstation has a load budget, and Self owns it.** Running
   stress under load there, with CPU burners, is forbidden: use a dedicated
   host, or a container capped with `--cpus`. Run at most one heavy
