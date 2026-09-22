@@ -382,6 +382,14 @@ and reconciles the target doc with the Body.
   model does not soften its brief: it still attacks, invariants first. When
   Fable ran out mid-migration, Opus carried every faculty and Soul still
   found the defects.
+- **Give every parallel Hands its own worktree, and name it in the brief.**
+  Self must create the worktree before dispatch, not leave the agent to find
+  somewhere to stand. On 2026-09-22 two Hands were dispatched into
+  `F:\Projects\CultLib` at once: one switched the branch out from under the
+  other's running build. Nothing was lost, only because the second agent
+  stopped and reported a concurrency hazard instead of forcing the checkout.
+  **A brief that names a repo path without naming a worktree is a defect in
+  the brief.**
 - **Commit maps to `main`, not to whatever branch Self is standing on.** A map
   is only current if it is current on the branch the reader has. On 2026-09-22
   a Hands agent on the selection cut reported that the map had no fix-batch-4
