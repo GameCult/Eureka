@@ -33,6 +33,15 @@ What changed:
 - The committed suites in Huginn, the Epiphany leaf, Idunn and CultLib are
   deleted in their own repos. The tests those suites pointed at stay.
 
+## 2026-09-22: a test's inputs come from production
+
+Evidence: Ghostlight's play agent 8a-fix3 (`754c7fe`) ruled that the DM agent
+dispatches Personas by the id its world view prints. Every test built that id
+from a test-local copy of the printer, so changing what the view printed left
+all 735 tests green while every dispatch an agent could make was refused.
+There were four copies of one spelling, because the library's printer was
+private to its module.
+
 ## 2026-09-22: hand mutations target the rule's layer
 
 Evidence: in Ghostlight's play agent 8a-fix2 (`74b628d`), Hands reported every

@@ -106,6 +106,9 @@ test, killed by fixing a degenerate fixture, or equivalent with a one-line
 reason. A survivor that weakens a rule and cannot be killed is reported, not
 hidden. Code no tool reaches gets behavioural tests at the layer where the
 rule is decided, never a committed mutation suite (operator, 2026-09-22).
+A test's inputs come from the production path the rule is about. A helper
+that re-spells what production prints, parses or derives makes the test agree
+with a copy, and the rule then breaks in production with the suite green.
 A hand mutation hits the rule at the layer it protects: the production call
 site, observed where the consequence lands (disk, the kernel, the request
 sent). Mutating a helper or an in-memory mirror proves the helper, not the
