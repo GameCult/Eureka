@@ -384,6 +384,11 @@ and reconciles the target doc with the Body.
 
 - **Stage explicit paths. Never `git add -A`.** It swept an untracked local
   settings file into history.
+- **Never amend or force-push a shared branch.** In the Ghostlight play-agent
+  pass, a Hands agent amended its pushed kernel commit and force-pushed it
+  while Self was pushing map commits to the same branch. Nothing was lost,
+  only because Hands had rebased on those commits. Fix a commit with a new
+  commit.
 - **Never `git archive` to export source for a byte comparison.** It applies
   text conversion. An export used for a reproducibility check carried 1,459
   inserted carriage returns against the worktree, which poisons every byte

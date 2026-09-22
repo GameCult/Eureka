@@ -122,12 +122,37 @@ it reported was fiction.
 When a cut deletes, list every rule that had a test before and has none after.
 A rule that still exists in code with its only test deleted is the failure mode
 of subtraction; either the rule goes too, or it gets a test in the same cut.
+Context is a budget, and a worker that fills it gets careless before it gets
+stuck. Aetheria's stats and shield cuts ran Hands past 400k tokens and the late
+work in those runs is where the sloppy claims appeared: a mutation reported
+against code that had moved, a failure called environmental without a check, a
+table printing numbers the old code never produced. So Self sizes a cut to fit
+one worker's head, and the brief says how:
+
+- **Verify once, at the end.** Not after every edit. A full mutation sweep and
+  a batchmode compile per edit is most of a long run's spend and proves nothing
+  the final sweep will not.
+- **Carry the cut inline.** Quote the cut's own section in the brief instead of
+  pointing at a long map; a worker that reads 900 lines to find 60 has spent
+  its budget before it starts.
+- **Keep expensive scaffolding alive across cuts** (a pinned dependency
+  worktree, a warm build) rather than creating and removing it per pass.
+- **Hand back rather than push through.** A worker that finds itself far past
+  the work it was briefed for commits what is verified, reports the remainder
+  honestly, and stops. A partial with clean evidence is worth more than a
+  complete report written from a full head.
+
 Long jobs: wait for them and finish. Never end the turn with a to-do list in
 place of a report. "Wait" means a foreground poll you run yourself: a shell
 loop that sleeps and checks the job's status file or log tail, in chunks
 short enough for the tool timeout, repeated until the job exits. Do not
 start a detached job and then end the turn expecting to be woken; nothing
 wakes you, and the tree stays mutated until Self notices.
+Announcing the wait and then yielding is the violation, not a softer form of
+it: "I'll wait for the suite and then report" ends the turn exactly as a
+to-do list does. Aetheria's shield Cut 3 burned two round trips this way, the
+second one after being told. If a run is going, block on it in this turn or
+read its finished output; do not yield to say what you are about to do.
 Mutations: restore with a reverse edit or run against committed code; `git
 checkout` also reverts uncommitted fix code and silently invalidates the run.
 The suite is a committed script under `tools/`, and its first entry is a
@@ -152,6 +177,9 @@ the gap is.
 Commits:
 - Small and pushed.
 - Stage explicit paths only; never `git add -A`.
+- Never amend a commit or force-push. Self and other agents commit on the
+  same branch while you work. Fix a commit with a new commit. On a rejected
+  push, `git pull --rebase`, then push.
 - Write each message with the Write tool to <scratchpad>/<cut>-<n>.txt, then run
   `git commit -F`.
 - End each message with the attribution trailer.
@@ -196,6 +224,8 @@ Report findings only.
   "waiting for cargo" delivers no findings and has to be resumed by hand.
   Polling is a foreground shell loop you run, in chunks under the tool
   timeout, until the job exits; nothing wakes you if you stop.
+  Yielding to announce the wait is the same violation: block in-turn or read
+  the finished output, never end the turn to say you are waiting.
 
 Scope: <repo> <branch>, commits <range> (base <sha>). Spec: <section>.
 

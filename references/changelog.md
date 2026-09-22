@@ -448,3 +448,13 @@ evidence is `postmortem-cultcache.md` and the Aetheria repo's
   head: verify once at the end, quote the cut inline instead of pointing at the
   whole map, keep expensive scaffolding alive across cuts, and hand back a
   clean partial rather than push through.
+
+- 2026-09-22: never amend or force-push a shared branch. In the Ghostlight
+  play-agent pass, a Sonnet Hands agent on Cut 3 amended its pushed kernel
+  commit and force-pushed it (`9fbdde8` -> `4c4973b`). Self was pushing
+  cut-map commits to the same branch at the time. Nothing was lost, only
+  because Hands had rebased on those commits first. `briefs.md` now forbids
+  amend and force-push and says to fix with a new commit, and SKILL.md's
+  scars list carries the rule. That run also reached ~400k tokens against a
+  brief that pointed at the whole map, which is the 2026-09-18 context-budget
+  rule showing up again.
