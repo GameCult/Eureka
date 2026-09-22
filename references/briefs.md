@@ -104,8 +104,8 @@ suite with <the ecosystem's mutation tool>, scoped to this cut's diff
 code. Triage every survivor in the report by name and line: killed by a new
 test, killed by fixing a degenerate fixture, or equivalent with a one-line
 reason. A survivor that weakens a rule and cannot be killed is reported, not
-hidden. Code no tool reaches falls back to `tools/eureka-mutations.ps1`; say
-why the tool cannot reach it.
+hidden. Code no tool reaches gets behavioural tests at the layer where the
+rule is decided, never a committed mutation suite (operator, 2026-09-22).
 A hand mutation hits the rule at the layer it protects: the production call
 site, observed where the consequence lands (disk, the kernel, the request
 sent). Mutating a helper or an in-memory mirror proves the helper, not the
@@ -158,9 +158,9 @@ it: "I'll wait for the suite and then report" ends the turn exactly as a
 to-do list does. Aetheria's shield Cut 3 burned two round trips this way, the
 second one after being told. If a run is going, block on it in this turn or
 read its finished output; do not yield to say what you are about to do.
-Mutation tools run on schemata or copies and never edit the tree; a fallback
-entry through `eureka-mutations.ps1` restores by hash, and `git checkout` is
-never the restore, because it also reverts uncommitted fix code.
+Mutation tools run on schemata or copies and never edit the tree. A Soul
+probe that mutates by hand works on a scratch copy: the stopgap's container
+or a throwaway clone, never the working tree.
 Warnings: measure from a forced rebuild and compare distinct messages; cargo
 replays warnings only when it actually rebuilds.
 Semantic properties ("exactly one call site", "this step actually runs"):

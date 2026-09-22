@@ -73,8 +73,9 @@ Claude Code discovers the skill from the `name` and `description` in `SKILL.md`.
 
 - `SKILL.md`: the pipeline — the faculties, the loop, Self's discipline, and the
   git and tooling rules, each of which exists because something broke.
-- `tools/eureka-mutations.ps1`: the mutation harness, parameterised by repo so
-  one copy serves every campaign.
+- `tools/stopgap/ygg-verify.sh`: runs a verification job for an exact revision
+  on Yggdrasil in a capped container. It is a stopgap until Idunn's verify
+  transaction lands.
 - `references/briefs.md`: brief templates for each faculty.
 - `references/cut-map.md`: the shape of the target document and the cut map.
 - `references/postmortem-template.md` and `references/postmortem-cultcache.md`:

@@ -213,14 +213,17 @@ briefly, and the verification. The brief says:
   not a gate; the triaged survivor list is the record, and Self commits it in
   the map. Soul reruns the tool on the range rather than trusting Hands'
   triage.
-- **Hand-written mutation entries are the fallback, for code no tool
-  reaches:** editor probes, shaders, a runtime without a tool.
-  `tools/eureka-mutations.ps1` serves those, under its contract: a no-op
-  control, byte-exact restore verified by hash, anchors matching exactly
-  once, an honest exit status. Anchors couple the suite to the code's
-  spelling, strand on every refactor, and can keep matching while silently
-  re-targeting onto code the tests no longer run, so a campaign that falls
-  back says why the tool cannot reach and treats each entry as debt.
+- **No committed hand-written mutation suites, and no fallback harness.**
+  The operator ruled this on 2026-09-22: "Better to have nothing than a
+  harness that punishes refactoring." Anchors couple a suite to the code's
+  spelling. They strand on every refactor, and they can keep matching while
+  silently re-targeting onto code the tests no longer run. Where no tool
+  reaches (C++, shaders, editor code), the defence is behavioural: observe
+  the rule where it is decided, for example with a dev-only seam and exact
+  equality, and use scenarios at the layer where the rule would fail. Soul
+  may still mutate code by hand as a one-off probe during a pass. Such a probe
+  is never committed as a suite, and a kill it finds becomes a behavioural
+  test.
 - **"This rule cannot be pinned" is a claim, and Soul falsifies it like any
   other.** Recording an honest gap is right and beats inventing a kill, but the
   gap itself is a hypothesis about reachability, and it was wrong both times it
@@ -416,20 +419,20 @@ and reconciles the target doc with the Body.
   the checkout with older sources ran the other checkout's last mutant binary. A
   surviving mutant can make an unmutated tree look green this way. A second
   checkout, such as Soul's clone or a parallel Hands worktree, gets its own
-  target subdirectory. The mutation harness is immune because it bumps the time
-  on every file it writes. A plain test run is not.
+  target subdirectory. The stopgap's containers each build in their own
+  scratch clone, so they are immune.
 - **Heavy verification runs on Yggdrasil, not on the operator's workstation.**
-  Heavy verification means builds, test suites and mutation harnesses. The
-  owner is Idunn's verify transaction (a campaign in progress, ruled
-  2026-09-22). Until it lands, use the stopgap `tools/stopgap/ygg-verify.sh`.
-  It pushes an exact revision to a mirror on Yggdrasil and runs one command in
-  a container capped at 6 CPUs and 16 GiB, niced, with at most 2 jobs at a
-  time. Every Hands and Soul brief says so. Starfire runs only what has to run
-  on Windows, such as the QUIC win32 harness: one job at a time, never burners.
+  Heavy verification means builds, test suites and mutation tools. The owner
+  is Idunn's verify transaction (a campaign in progress, ruled 2026-09-22).
+  Until it lands, use the stopgap `tools/stopgap/ygg-verify.sh`. It pushes an
+  exact revision to a mirror on Yggdrasil and runs one command in a container
+  capped at 4 CPUs and 12 GiB, niced, with at most 2 jobs at a time. Every
+  Hands and Soul brief says so. Starfire runs only what has to run on Windows,
+  such as the QUIC win32 scenarios: one job at a time, never burners.
 - **The operator's workstation has a load budget, and Self owns it.** Running
   stress under load there, with CPU burners, is forbidden: use a dedicated
   host, or a container capped with `--cpus`. Run at most one heavy
-  verification job at a time, meaning a mutation harness, a repeated test
+  verification job at a time, meaning a mutation run, a repeated test
   loop, or a workspace build. Parallel agents are sized to that limit, not to
   the pipeline's appetite. On 2026-09-22 the operator had to force a
   shutdown. At the time, 16 `node` burners at twice the CPU count were running

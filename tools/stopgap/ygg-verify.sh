@@ -16,67 +16,73 @@
 # What it does:
 #   1. Pushes <rev> from a local repo to a bare mirror at
 #      ~/eureka-verify/repos/<name>.git on Yggdrasil. Unpushed commits work too.
-#   2. Clones it into a scratch work directory on Yggdrasil and checks the
-#      commit out detached. It uses a real clone, not a worktree, because a
+#   2. Clones the mirror into a scratch work directory on Yggdrasil and checks
+#      the commit out detached. It is a real clone, not a worktree, because a
 #      worktree's .git file points at a host path the container cannot see.
-#   3. Runs <command> in <image> with a CPU and memory cap, niced, with one
-#      shared registry cache per toolchain. The build output directory stays
-#      inside the work directory, never shared between checkouts.
+#   3. Runs <command> in <image> under a CPU and memory cap, niced. Each
+#      toolchain gets one shared registry cache. The build output directory
+#      stays inside the work directory and is never shared between checkouts.
 #   4. Removes the work directory unless KEEP=1, and exits with the job's status.
 #
 # At most $SLOTS jobs run at once on Yggdrasil, because it serves live
-# traffic. The default cap for each job is 4 of its 16 CPUs and 12 GiB, the policy the operator ruled for Idunn verify (Q-V6).
+# traffic. The default cap for each job is 4 of its 16 CPUs and 12 GiB, the
+# policy the operator ruled for Idunn verify (Q-V6).
 #
-# EDITING: bash reads a running script from disk as it goes, so an in-place
-# edit breaks every job still running it. One died with "unexpected EOF" on
-# 2026-09-22. Write the new version to a temp file and rename it over this one.
+# There is no hand-written mutation harness: the operator retired it on
+# 2026-09-22. Mutation testing uses the ecosystem's tools on a cut's diff.
+#
+# EDITING: bash reads a running script from disk as it goes, so editing this
+# file in place breaks every job still running it (one died with "unexpected
+# EOF", 2026-09-22). Write the new version to a temp file and rename it over
+# this one.
 #
 # Usage (Git Bash on Starfire):
 #   ygg-verify.sh <local-repo> <rev> <image> '<command>'
 # Images:
-#   rust    eureka-verify-rust   (rust 1.95 plus pwsh; built from rust.Dockerfile)
-#   dotnet  mcr.microsoft.com/dotnet/sdk:10.0   (ships pwsh)
-#   any other value is used as the image name as-is.
-# The Eureka harness is copied to /harness/eureka-mutations.ps1 in the container.
+#   rust    eureka-verify-rust:<Dockerfile hash>   (rust 1.95 plus cargo-mutants)
+#   dotnet  mcr.microsoft.com/dotnet/sdk:10.0   (install Stryker in the command:
+#           dotnet tool install -g dotnet-stryker)
+#   any other value is used as an image name as-is.
 # Example:
 #   ygg-verify.sh /f/Projects/Huginn HEAD rust \
-#     'cargo test --workspace && pwsh /harness/eureka-mutations.ps1 -Repo /src -Entries tools/eureka-cut10-mutations.psd1'
+#     'cargo test --workspace && git diff BASE HEAD > /tmp/d && cargo mutants --in-diff /tmp/d'
 set -euo pipefail
 
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
 host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-12g}; slots=${SLOTS:-2}
 here=$(cd "$(dirname "$0")" && pwd)
-harness="$here/../eureka-mutations.ps1"
 sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 
 sha=$(git -C "$repo" rev-parse --verify "$rev^{commit}")
 name=$(basename "$(git -C "$repo" rev-parse --show-toplevel)")
 case "$image" in
-  rust)   image=eureka-verify-rust ;;
+  rust)   image=eureka-verify-rust:$(sha256sum "$here/rust.Dockerfile" | cut -c1-12) ;;
   dotnet) image=mcr.microsoft.com/dotnet/sdk:10.0 ;;
 esac
 
-ssh "${sshopts[@]}" "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/harness && \
+ssh "${sshopts[@]}" "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/images && \
   { test -d ~/eureka-verify/repos/$name.git || git init -q --bare ~/eureka-verify/repos/$name.git; }"
 git -C "$repo" push -q "$host:eureka-verify/repos/$name.git" "$sha:refs/verify/$sha" --force
-scp -q "$harness" "$host:eureka-verify/harness/eureka-mutations.ps1"
-if [ "$image" = eureka-verify-rust ]; then
-  scp -q "$here/rust.Dockerfile" "$host:eureka-verify/harness/rust.Dockerfile"
-fi
+case "$image" in
+  eureka-verify-rust:*) scp -q "$here/rust.Dockerfile" "$host:eureka-verify/images/rust.Dockerfile" ;;
+esac
 
-# ssh joins its arguments into one string that the remote shell re-splits, so
-# every argument is quoted here. Without it, `a && b` in the command runs b
-# on the host.
+# ssh joins its arguments into one string that the remote shell splits again,
+# so every argument is quoted here. Without that, `a && b` in the command runs
+# b on the host.
 remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd")
 ssh "${sshopts[@]}" "$host" "bash -s -- $remote_args" <<'REMOTE'
 set -euo pipefail
 name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8
 root=~/eureka-verify
-if [ "$image" = eureka-verify-rust ] && ! sudo docker image inspect eureka-verify-rust >/dev/null 2>&1; then
-  sudo nice -n 10 docker build -q -t eureka-verify-rust -f $root/harness/rust.Dockerfile $root/harness >/dev/null
-fi
-# Take whichever slot frees first. Waiting on one fixed slot while another
-# freed stranded a job for over an hour on 2026-09-22.
+case "$image" in
+  eureka-verify-rust:*)
+    if ! sudo docker image inspect "$image" >/dev/null 2>&1; then
+      sudo nice -n 10 docker build -q -t "$image" -f "$root/images/rust.Dockerfile" "$root/images" >/dev/null
+    fi ;;
+esac
+# Take whichever slot frees first. On 2026-09-22 a job waited on one fixed slot
+# while another freed, and stayed stranded for over an hour.
 slot=""; waited=0
 while [ -z "$slot" ]; do
   for i in $(seq 1 "$slots"); do
@@ -96,7 +102,7 @@ git -C "$work" checkout -q --detach "$sha"
 echo "ygg-verify: $name@${sha:0:10} slot $slot, image $image, cpus $cpus, mem $mem, work $work" >&2
 set +e
 sudo nice -n 10 docker run --rm --cpus="$cpus" --memory="$mem" \
-  -v "$work:/src" -v "$root/harness:/harness:ro" -v /etc/machine-id:/etc/machine-id:ro \
+  -v "$work:/src" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
   -e CARGO_TARGET_DIR=/src/target \
   -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
