@@ -2,6 +2,16 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: hand mutations target the rule's layer
+
+Evidence: in Ghostlight's play agent 8a-fix2 (`74b628d`), Hands reported every
+mutation killed, yet Soul found eight rules unguarded. Hands had deleted the
+in-memory `record_call` instead of the on-disk persist-before-submit, which
+a later persist then hid. It tested `find_handle_collision` directly rather
+than its call in `round_tools`, and every test used fresh keys, so
+`turn_id = hash(key)` survived. The Hands brief now says to mutate the
+production call site and to observe the result where it lands.
+
 ## 2026-09-22: mutation testing moves to the ecosystem's tools
 
 Evidence: Aetheria's fire-control campaign carried 23 hand-written harnesses

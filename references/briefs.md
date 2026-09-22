@@ -106,6 +106,10 @@ test, killed by fixing a degenerate fixture, or equivalent with a one-line
 reason. A survivor that weakens a rule and cannot be killed is reported, not
 hidden. Code no tool reaches falls back to `tools/eureka-mutations.ps1`; say
 why the tool cannot reach it.
+A hand mutation hits the rule at the layer it protects: the production call
+site, observed where the consequence lands (disk, the kernel, the request
+sent). Mutating a helper or an in-memory mirror proves the helper, not the
+rule; a later write can hide the deleted one.
 When a claim is "behaviour unchanged", a value captured from the new code is not
 evidence. Pin it with a value computed at the base commit.
 Detached scripts: confirm the log starts within 60 s; a script that dies on a
