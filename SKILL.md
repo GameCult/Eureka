@@ -429,6 +429,11 @@ and reconciles the target doc with the Body.
   capped at 4 CPUs and 12 GiB, niced, with at most 2 jobs at a time. Every
   Hands and Soul brief says so. Starfire runs only what has to run on Windows,
   such as the QUIC win32 scenarios: one job at a time, never burners.
+  **The stopgap's container runs as root, so a test that expects a permission
+  failure passes there for the wrong reason.** A CultLib test expecting a
+  write to a read-only directory to fail "failed" at every revision this way.
+  Treat a permission-dependent result from the stopgap as unproven. Idunn's
+  verify runner refuses uid 0, so it will not inherit this.
 - **The operator's workstation has a load budget, and Self owns it.** Running
   stress under load there, with CPU burners, is forbidden: use a dedicated
   host, or a container capped with `--cpus`. Run at most one heavy
