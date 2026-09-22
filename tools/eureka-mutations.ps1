@@ -77,7 +77,12 @@
 #   file that cannot be written keeps its sidecar and the run stops, naming
 #   the file. A sidecar of a sidecar is not something a run leaves behind and
 #   cannot be ordered against its sibling, so the run stops before any
-#   repair, naming both.
+#   repair, naming both. A sidecar `Assert-TargetUnedited` kept on purpose,
+#   because an edit outside the harness was caught and could not be silently
+#   discarded, carries its own marker, `<target>.eureka-h1-stopped`; startup
+#   repair refuses to run at all while any such marker exists, prints what to
+#   reconcile, and touches nothing, rather than mistaking a deliberate stop
+#   for a crash and reverting a hand-cleaned file out from under an operator.
 # - M0 is built in and cannot be omitted: before any entry, every target's
 #   bytes are decoded and re-encoded through the harness I/O path and compared
 #   to the original bytes before anything is written. If a byte differs, the
@@ -122,6 +127,11 @@ function Get-BytesHash([byte[]] $bytes) {
 }
 function Get-SidecarPath([string] $path) { "$path.eureka-mutation-original" }
 $sidecarSuffix = '.eureka-mutation-original'
+# H1's kept sidecar is marked so startup repair can tell it apart from a
+# crash's: this file exists only when `Assert-TargetUnedited` chose to keep
+# the sidecar on purpose (F1). Its own suffix, never matched by
+# `Find-Sidecars`, so it is never itself mistaken for a sidecar.
+function Get-H1MarkerPath([string] $path) { "$path.eureka-h1-stopped" }
 # `.eureka-mutation-overwritten` holds a human's or a prior run's bytes and
 # must never be clobbered (F2): every write picks the first name in this
 # family that does not already exist, so an existing copy always survives
@@ -178,6 +188,14 @@ function Measure-Sites([string] $text, [string] $anchor) {
 # the run stops: continuing would either bury the edit under a restore or, for
 # the next entry's write, bury it under a different mutant, either way losing
 # it exactly as before.
+#
+# When this fires from inside `Restore-Targets`, this entry's own sidecar is
+# already on disk (written before the mutant, below) and is kept rather than
+# removed, on purpose, so the M0 original survives beside the edit that was
+# lost. That kept sidecar is not a crash: it is deliberate, and startup
+# repair must never treat it as one (F1), so an H1 marker goes down beside it
+# naming the file and the moment. Startup repair refuses to run while that
+# marker exists; an operator clears it by hand once the file is reconciled.
 function Assert-TargetUnedited([string] $file, [string] $mutantHash) {
     $path = $targets[$file]
     if (-not (Test-Path -LiteralPath $path)) { return }
@@ -187,6 +205,12 @@ function Assert-TargetUnedited([string] $file, [string] $mutantHash) {
     $overwritten = Get-UniqueOverwrittenPath $path
     [System.IO.File]::WriteAllBytes($overwritten, [System.IO.File]::ReadAllBytes($path))
     $message = "EDIT LOST: $path (SHA-256 $current) is neither the M0 original ($($hashes[$file])) nor this entry's own mutant. Something edited it outside the harness while a run was in flight or between entries. Its bytes are kept in $overwritten. Stopping the run rather than silently discarding them."
+    $sidecar = Get-SidecarPath $path
+    if (Test-Path -LiteralPath $sidecar) {
+        $marker = Get-H1MarkerPath $path
+        [System.IO.File]::WriteAllText($marker, "H1 stopped a run over $path at $(Get-Date -Format o). $message`nThe sidecar $sidecar holds the M0 original on purpose; startup repair will refuse to run while this marker exists. Reconcile $path by hand against $overwritten and $sidecar, then delete $marker (and the sidecar, once you are done with it) to let the harness run again.")
+        $message = "$message A marker is kept at $marker; startup repair on this repo will refuse to run until it is removed by hand."
+    }
     Write-Host $message
     throw $message
 }
@@ -325,6 +349,20 @@ foreach ($sidecar in $sidecars) {
     if ($path.EndsWith($sidecarSuffix)) {
         throw "$sidecar is a sidecar of a sidecar ($path), which no run leaves behind; which file holds the original bytes cannot be decided here. Nothing was written and no sidecar was repaired; resolve both by hand."
     }
+}
+# F1: a sidecar H1 kept on purpose is marked, and startup repair must never
+# treat it as a crash. Check every sidecar for its marker before touching
+# any of them, so one H1-stopped file stops the whole repair pass rather
+# than being silently repaired alongside unrelated crash sidecars.
+$h1Stopped = @(foreach ($sidecar in $sidecars) {
+    $path = $sidecar.Substring(0, $sidecar.Length - $sidecarSuffix.Length)
+    $marker = Get-H1MarkerPath $path
+    if (Test-Path -LiteralPath $marker) { [pscustomobject]@{ Path = $path; Marker = $marker } }
+})
+if ($h1Stopped.Count) {
+    $message = "Startup repair refuses to run: $($h1Stopped.Count) file(s) were stopped by H1 in a previous run, not crashed, and their sidecars are kept on purpose. Nothing was restored. Reconcile each file by hand, then delete its marker to resume: $(($h1Stopped | ForEach-Object { "$($_.Path) (marker $($_.Marker))" }) -join '; ')."
+    Write-Host $message
+    throw $message
 }
 foreach ($sidecar in $sidecars) {
     $path = $sidecar.Substring(0, $sidecar.Length - $sidecarSuffix.Length)
