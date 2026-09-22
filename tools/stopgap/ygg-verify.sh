@@ -25,7 +25,7 @@
 #   4. Removes the work directory unless KEEP=1, and exits with the job's status.
 #
 # At most $SLOTS jobs run at once on Yggdrasil, because it serves live
-# traffic. The default cap for each job is 6 of its 16 CPUs and 16 GiB.
+# traffic. The default cap for each job is 4 of its 16 CPUs and 12 GiB, the policy the operator ruled for Idunn verify (Q-V6).
 #
 # EDITING: bash reads a running script from disk as it goes, so an in-place
 # edit breaks every job still running it. One died with "unexpected EOF" on
@@ -44,7 +44,7 @@
 set -euo pipefail
 
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
-host=${YGG_HOST:-ygg}; cpus=${CPUS:-6}; mem=${MEM:-16g}; slots=${SLOTS:-2}
+host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-12g}; slots=${SLOTS:-2}
 here=$(cd "$(dirname "$0")" && pwd)
 harness="$here/../eureka-mutations.ps1"
 sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
