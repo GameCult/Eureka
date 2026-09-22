@@ -771,3 +771,37 @@ than for the previous error to be gone.
 - **Scope the doubt honestly when this happens.** Earlier Windows numbers in
   that campaign were all measured on the same machine, where the copy never
   existed, so they are recorded as unconfirmed rather than quietly kept.
+
+## 2026-09-22: a probe that will be committed must be handed over while it exists
+
+Evidence: Soul's fifth Idunn pass settled `resolve()`'s fsck on a real
+smart-HTTPS rig and Self ruled the rig should be committed, naming Soul's
+files. By the time Hands looked, none survived — no session, no Yggdrasil work
+directory, no scratch trace. Hands rebuilt the rig from the map's prose, which
+worked **only because the map described it in detail**.
+
+Probes are throwaway by doctrine and that stays true. But the moment Self
+rules that a probe becomes a committed test, it stops being scratch:
+
+- **Self records the rig's mechanism in the map in enough detail to rebuild
+  it**, not merely that it passed. That description is what saved this one.
+- **Better, rule on committing it while the Soul pass is still live**, and
+  have Soul hand the files over in its report rather than leaving a path.
+
+## 2026-09-22: Soul was wrong about a redundancy, and a Hands hand-trace caught it
+
+Evidence: Soul's S5-8 reported four containment checks where one sufficed,
+each surviving deletion **alone**, and Self ruled three of them deleted. Hands
+deleted two, hand-traced the third, and found that with all three gone a
+symlink whose entire target is `".."` at the root resolves to the parent of
+the root and returns `Ok` — a containment escape — because no later `Normal`
+step runs to trip the surviving arm's own check. Hands kept the check, pinned
+it with a new test, and recorded the deviation in code.
+
+- **"Each survives deletion alone" does not mean "any two survive together."**
+  A redundancy finding must be probed at the combination Self intends to
+  delete, not one member at a time. Soul's method was sound and its conclusion
+  did not follow from it.
+- **A Hands brief must invite this.** The rule that a deletion judged unsafe
+  is reported with evidence rather than quietly kept is what produced the
+  catch; it stays in the template, and it applies to deletions Self ordered.
