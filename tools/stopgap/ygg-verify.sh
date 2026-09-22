@@ -24,9 +24,10 @@
 #      stays inside the work directory and is never shared between checkouts.
 #   4. Removes the work directory unless KEEP=1, and exits with the job's status.
 #
-# At most $SLOTS jobs run at once on Yggdrasil, because it serves live
-# traffic. The default cap for each job is 4 of its 16 CPUs and 12 GiB, the
-# policy the operator ruled for Idunn verify (Q-V6).
+# At most $SLOTS jobs run at once on Yggdrasil (operator raised this to 3 on
+# 2026-09-22: "the other cores are mostly sitting idle"). Each job is capped at
+# 4 of the 16 CPUs and 12 GiB, so verification takes 12 CPUs at most and the
+# live services keep four.
 #
 # There is no hand-written mutation harness: the operator retired it on
 # 2026-09-22. Mutation testing uses the ecosystem's tools on a cut's diff.
@@ -49,7 +50,7 @@
 set -euo pipefail
 
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
-host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-12g}; slots=${SLOTS:-2}
+host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-12g}; slots=${SLOTS:-3}
 here=$(cd "$(dirname "$0")" && pwd)
 sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 
