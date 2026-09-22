@@ -49,7 +49,7 @@ case "$image" in
   dotnet) image=mcr.microsoft.com/dotnet/sdk:10.0 ;;
 esac
 
-ssh -o BatchMode=yes "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/harness && \
+ssh -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4 "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/harness && \
   { test -d ~/eureka-verify/repos/$name.git || git init -q --bare ~/eureka-verify/repos/$name.git; }"
 git -C "$repo" push -q "$host:eureka-verify/repos/$name.git" "$sha:refs/verify/$sha" --force
 scp -q "$harness" "$host:eureka-verify/harness/eureka-mutations.ps1"
@@ -61,20 +61,27 @@ fi
 # every argument is quoted here. Without it, `a && b` in the command runs b
 # on the host.
 remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd")
-ssh -o BatchMode=yes "$host" "bash -s -- $remote_args" <<'REMOTE'
+ssh -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4 "$host" "bash -s -- $remote_args" <<'REMOTE'
 set -euo pipefail
 name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8
 root=~/eureka-verify
 if [ "$image" = eureka-verify-rust ] && ! sudo docker image inspect eureka-verify-rust >/dev/null 2>&1; then
   sudo nice -n 10 docker build -q -t eureka-verify-rust -f $root/harness/rust.Dockerfile $root/harness >/dev/null
 fi
-slot=""
-for i in $(seq 1 "$slots"); do
-  exec {fd}>"$root/slot-$i.lock"
-  if flock -n "$fd"; then slot=$i; break; fi
-  exec {fd}>&-
+# Take whichever slot frees first. Waiting on one fixed slot while another frees
+# stranded a job for over an hour on 2026-09-22.
+slot=""; waited=0
+while [ -z "$slot" ]; do
+  for i in $(seq 1 "$slots"); do
+    exec {fd}>"$root/slot-$i.lock"
+    if flock -n "$fd"; then slot=$i; break; fi
+    exec {fd}>&-
+  done
+  if [ -z "$slot" ]; then
+    [ "$waited" -eq 0 ] && echo "ygg-verify: all $slots slots busy; waiting" >&2
+    waited=1; sleep 5
+  fi
 done
-if [ -z "$slot" ]; then echo "ygg-verify: all $slots slots busy; waiting for slot 1" >&2; exec {fd}>"$root/slot-1.lock"; flock "$fd"; slot=1; fi
 work=$(mktemp -d "$root/work/$name-${sha:0:10}-XXXX")
 git -C "$root/repos/$name.git" worktree add -q --detach "$work" "$sha"
 trap 'if [ "$keep" != 1 ]; then sudo rm -rf "$work"; git -C "$root/repos/$name.git" worktree prune; fi' EXIT
