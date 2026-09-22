@@ -57,9 +57,10 @@ mutation anchors? Tests should cover how the code behaves, not how it is
 shaped."
 
 A Stryker.NET spike over one file killed every mutant the harnesses defended
-and found 67 survivors they did not, among them the sign error that put splash
-damage on the wrong side of a ship, which the operator had spent hours hunting
-and no test defended. Three rounds of tests and fixture fixes took it to 43, all named.
+and found 67 survivors they did not, among them a flipped sign in the splash
+handedness that no test defended: the same class as a wrong-side-damage bug the
+operator had once spent hours hunting in legacy code, though the rewrite had not
+shipped it. Three rounds of tests and fixture fixes took it to 43, all named.
 
 - The principle of 2026-09-15 stays: every rule has a test that fails when it
   breaks.
