@@ -426,7 +426,10 @@ and reconciles the target doc with the Body.
   is Idunn's verify transaction (a campaign in progress, ruled 2026-09-22).
   Until it lands, use the stopgap `tools/stopgap/ygg-verify.sh`. It pushes an
   exact revision to a mirror on Yggdrasil and runs one command in a container
-  capped at 4 CPUs and 12 GiB, niced, with at most 2 jobs at a time. Every
+  capped at 4 CPUs and 12 GiB, niced, with at most 3 jobs at a time (raised
+  from 2 by the operator on 2026-09-22: "the other cores are mostly sitting
+  idle"). **The script owns these numbers; where this text and `ygg-verify.sh`
+  disagree, the script is right** — this line was already stale once. Every
   Hands and Soul brief says so. Starfire runs only what has to run on Windows,
   such as the QUIC win32 scenarios: one job at a time, never burners.
   **The stopgap's container runs as root, so a test that expects a permission

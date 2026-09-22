@@ -105,6 +105,15 @@ compiler jobs." The fleet inventory already said the same.
   runs the command in a container capped at 6 CPUs and 16 GiB, niced, with at
   most two jobs at once. The target directory stays inside the scratch work
   tree. Its header names its deletion line.
+- **Correction, same day, found by a Mind Steward pass:** the caps above are
+  not what shipped. `ygg-verify.sh` defaults to **4 CPUs, 12 GiB and 3 slots**
+  — the slot raise was the operator's ("the other cores are mostly sitting
+  idle") and is recorded in the script's header; the 6/16 figure is not, and I
+  cannot say from here whether it was ever live or was written from a plan I
+  then retuned without a line. SKILL.md carried the stale "2 jobs" until this
+  pass caught it. **The script is the owner of these numbers.** Prose that
+  restates a running tool's configuration goes stale silently, which is how
+  three surfaces came to disagree inside one day.
 - The smoke test found two bugs in the stopgap before any real job ran:
   - `bash -lc` reset the image's `PATH`.
   - `ssh` re-split the command, so `a && b` ran `b` on the host.
