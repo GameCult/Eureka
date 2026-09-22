@@ -16,7 +16,9 @@
 # What it does:
 #   1. Pushes <rev> from a local repo to a bare mirror at
 #      ~/eureka-verify/repos/<name>.git on Yggdrasil. Unpushed commits work too.
-#   2. Checks it out detached into a scratch work directory on Yggdrasil.
+#   2. Clones it into a scratch work directory on Yggdrasil and checks the
+#      commit out detached. It uses a real clone, not a worktree, because a
+#      worktree's .git file points at a host path the container cannot see.
 #   3. Runs <command> in <image> with a CPU and memory cap, niced, with one
 #      shared registry cache per toolchain. The build output directory stays
 #      inside the work directory, never shared between checkouts.
@@ -24,6 +26,10 @@
 #
 # At most $SLOTS jobs run at once on Yggdrasil, because it serves live
 # traffic. The default cap for each job is 6 of its 16 CPUs and 16 GiB.
+#
+# EDITING: bash reads a running script from disk as it goes, so an in-place
+# edit breaks every job still running it. One died with "unexpected EOF" on
+# 2026-09-22. Write the new version to a temp file and rename it over this one.
 #
 # Usage (Git Bash on Starfire):
 #   ygg-verify.sh <local-repo> <rev> <image> '<command>'
@@ -41,6 +47,7 @@ repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
 host=${YGG_HOST:-ygg}; cpus=${CPUS:-6}; mem=${MEM:-16g}; slots=${SLOTS:-2}
 here=$(cd "$(dirname "$0")" && pwd)
 harness="$here/../eureka-mutations.ps1"
+sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 
 sha=$(git -C "$repo" rev-parse --verify "$rev^{commit}")
 name=$(basename "$(git -C "$repo" rev-parse --show-toplevel)")
@@ -49,7 +56,7 @@ case "$image" in
   dotnet) image=mcr.microsoft.com/dotnet/sdk:10.0 ;;
 esac
 
-ssh -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4 "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/harness && \
+ssh "${sshopts[@]}" "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/harness && \
   { test -d ~/eureka-verify/repos/$name.git || git init -q --bare ~/eureka-verify/repos/$name.git; }"
 git -C "$repo" push -q "$host:eureka-verify/repos/$name.git" "$sha:refs/verify/$sha" --force
 scp -q "$harness" "$host:eureka-verify/harness/eureka-mutations.ps1"
@@ -61,15 +68,15 @@ fi
 # every argument is quoted here. Without it, `a && b` in the command runs b
 # on the host.
 remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd")
-ssh -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4 "$host" "bash -s -- $remote_args" <<'REMOTE'
+ssh "${sshopts[@]}" "$host" "bash -s -- $remote_args" <<'REMOTE'
 set -euo pipefail
 name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8
 root=~/eureka-verify
 if [ "$image" = eureka-verify-rust ] && ! sudo docker image inspect eureka-verify-rust >/dev/null 2>&1; then
   sudo nice -n 10 docker build -q -t eureka-verify-rust -f $root/harness/rust.Dockerfile $root/harness >/dev/null
 fi
-# Take whichever slot frees first. Waiting on one fixed slot while another frees
-# stranded a job for over an hour on 2026-09-22.
+# Take whichever slot frees first. Waiting on one fixed slot while another
+# freed stranded a job for over an hour on 2026-09-22.
 slot=""; waited=0
 while [ -z "$slot" ]; do
   for i in $(seq 1 "$slots"); do
@@ -83,14 +90,17 @@ while [ -z "$slot" ]; do
   fi
 done
 work=$(mktemp -d "$root/work/$name-${sha:0:10}-XXXX")
-git -C "$root/repos/$name.git" worktree add -q --detach "$work" "$sha"
-trap 'if [ "$keep" != 1 ]; then sudo rm -rf "$work"; git -C "$root/repos/$name.git" worktree prune; fi' EXIT
+trap 'if [ "$keep" != 1 ]; then sudo rm -rf -- "$work"; fi' EXIT
+git clone -q --no-checkout "$root/repos/$name.git" "$work"
+git -C "$work" checkout -q --detach "$sha"
 echo "ygg-verify: $name@${sha:0:10} slot $slot, image $image, cpus $cpus, mem $mem, work $work" >&2
 set +e
 sudo nice -n 10 docker run --rm --cpus="$cpus" --memory="$mem" \
   -v "$work:/src" -v "$root/harness:/harness:ro" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
-  -e CARGO_TARGET_DIR=/src/target -w /src "$image" bash -c "$cmd"
+  -e CARGO_TARGET_DIR=/src/target \
+  -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
+  -w /src "$image" bash -c "$cmd"
 status=$?
 set -e
 echo "ygg-verify: exit $status" >&2
