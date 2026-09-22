@@ -70,10 +70,14 @@
 #   before the restore is written, and the run prints that path and its
 #   SHA-256 once the restore has landed; a restore that fails without opening
 #   the file removes that copy again, so it exists only when something was
-#   overwritten. A file that cannot be written keeps its sidecar and the run
-#   stops, naming the file. A sidecar of a sidecar is not something a run
-#   leaves behind and cannot be ordered against its sibling, so the run stops
-#   before any repair, naming both.
+#   overwritten. An existing `.eureka-mutation-overwritten` is never itself
+#   clobbered: every copy is written to the first unused name in that family
+#   (`.eureka-mutation-overwritten`, then `.eureka-mutation-overwritten.1`,
+#   `.2`, ...), so a human's own copy and every repair's copy all survive. A
+#   file that cannot be written keeps its sidecar and the run stops, naming
+#   the file. A sidecar of a sidecar is not something a run leaves behind and
+#   cannot be ordered against its sibling, so the run stops before any
+#   repair, naming both.
 # - M0 is built in and cannot be omitted: before any entry, every target's
 #   bytes are decoded and re-encoded through the harness I/O path and compared
 #   to the original bytes before anything is written. If a byte differs, the
@@ -118,6 +122,17 @@ function Get-BytesHash([byte[]] $bytes) {
 }
 function Get-SidecarPath([string] $path) { "$path.eureka-mutation-original" }
 $sidecarSuffix = '.eureka-mutation-original'
+# `.eureka-mutation-overwritten` holds a human's or a prior run's bytes and
+# must never be clobbered (F2): every write picks the first name in this
+# family that does not already exist, so an existing copy always survives
+# beside the new one.
+function Get-UniqueOverwrittenPath([string] $path) {
+    $base = "$path.eureka-mutation-overwritten"
+    if (-not (Test-Path -LiteralPath $base)) { return $base }
+    $counter = 1
+    while (Test-Path -LiteralPath "$base.$counter") { $counter++ }
+    "$base.$counter"
+}
 # Every sidecar under `$root`, pruning the directories no target lives in.
 function Find-Sidecars([string] $root) {
     $pending = [System.Collections.Generic.Stack[string]]::new()
@@ -169,7 +184,7 @@ function Assert-TargetUnedited([string] $file, [string] $mutantHash) {
     $current = Get-Hash $path
     if ($current -eq $hashes[$file]) { return }
     if ($mutantHash -and $current -eq $mutantHash) { return }
-    $overwritten = "$path.eureka-mutation-overwritten"
+    $overwritten = Get-UniqueOverwrittenPath $path
     [System.IO.File]::WriteAllBytes($overwritten, [System.IO.File]::ReadAllBytes($path))
     $message = "EDIT LOST: $path (SHA-256 $current) is neither the M0 original ($($hashes[$file])) nor this entry's own mutant. Something edited it outside the harness while a run was in flight or between entries. Its bytes are kept in $overwritten. Stopping the run rather than silently discarding them."
     Write-Host $message
@@ -313,7 +328,6 @@ foreach ($sidecar in $sidecars) {
 }
 foreach ($sidecar in $sidecars) {
     $path = $sidecar.Substring(0, $sidecar.Length - $sidecarSuffix.Length)
-    $overwritten = "$path.eureka-mutation-overwritten"
     try {
         $original = [System.IO.File]::ReadAllBytes($sidecar)
         $hash = Get-BytesHash $original
@@ -338,7 +352,11 @@ foreach ($sidecar in $sidecars) {
         # crash. They are copied beside the file before the restore is written,
         # because once the restore lands the copy is their only home; if the
         # restore then fails without touching the file, the copy is removed
-        # below so it never claims an overwrite that did not happen.
+        # below so it never claims an overwrite that did not happen. F2: an
+        # existing `.eureka-mutation-overwritten` -- a human's own copy, or one
+        # a prior repair left -- is never clobbered; this repair always writes
+        # to a fresh name beside it.
+        $overwritten = Get-UniqueOverwrittenPath $path
         [System.IO.File]::WriteAllBytes($overwritten, $current)
         try {
             [System.IO.File]::WriteAllBytes($path, $original)
