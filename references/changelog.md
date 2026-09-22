@@ -2,6 +2,27 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: a ruling recorded in one section, contradicted in another
+
+Evidence: the selection map recorded Q-J (decimal strings) as ruled in §16.
+§2, the vocabulary Hands actually builds from, still said `number: float64?`.
+D8 said `NumberOf -> double?`. Nothing specified the canonical form or the
+comparison that the ruling had asked for. Commit 1 shipped float64 to the
+branch. The Rust Hands found the conflict before writing a line, and stopped.
+
+- SKILL.md already says to sweep the map for the old version of a design on
+  the same day a ruling changes it. Self did not do the sweep. The rule was
+  fine. Self's compliance with it failed.
+- A ruling that says "the cut must specify X" is not landed until X is
+  specified in the section Hands reads. Recording the ruling is not
+  specifying it.
+
+Same evening: two Sonnet Hands stopped early with no fork, one of them after
+fourteen tool calls. Both cited budget. Both had been told to read a
+1,500-line map rather than given their cut inline, which breaks the template's
+"carry the cut inline". The template's hand-back clause is now qualified: it
+applies when context is actually filling, not when scope looks large.
+
 ## 2026-09-22: a shared cargo target can run another checkout's mutant
 
 Evidence: Soul, working on the Huginn Cut 10 second fix batch, had two worktrees

@@ -141,6 +141,13 @@ one worker's head, and the brief says how:
   the work it was briefed for commits what is verified, reports the remainder
   honestly, and stops. A partial with clean evidence is worth more than a
   complete report written from a full head.
+  "Far past" means the worker's context really is filling. It does not mean the
+  remaining scope looks large. Two Sonnet passes on the selection cut stopped at
+  about 150k tokens with no fork, one of them after fourteen tool calls. Each
+  said the remaining work "did not fit the budget". Both had been pointed at a
+  1,500-line map instead of given their cut inline. So state the scope as one
+  deliverable, and say the budget is sufficient for it. The hand-back clause is
+  for a head that is actually full, not for a job that looks big.
 
 Long jobs: wait for them and finish. Never end the turn with a to-do list in
 place of a report. "Wait" means a foreground poll you run yourself: a shell
