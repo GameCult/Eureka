@@ -83,6 +83,13 @@
 #   repair refuses to run at all while any such marker exists, prints what to
 #   reconcile, and touches nothing, rather than mistaking a deliberate stop
 #   for a crash and reverting a hand-cleaned file out from under an operator.
+# - Every hash comparison in this script (sidecar, mutant and restore
+#   verification) is a case-sensitive ordinal compare (`-ceq`/`-cne`), and so
+#   is the no-op guard that rejects a mutation whose old and new text come
+#   out identical: PowerShell's plain `-eq`/`-ne` are case-insensitive, which
+#   let a mutant differing only in case (`"query"` to `"Query"`) be rejected
+#   as a no-op. Anchor matching (`Measure-Sites`, and the splice site lookup
+#   that follows it) already used ordinal `IndexOf` and needed no change.
 # - M0 is built in and cannot be omitted: before any entry, every target's
 #   bytes are decoded and re-encoded through the harness I/O path and compared
 #   to the original bytes before anything is written. If a byte differs, the
@@ -200,8 +207,8 @@ function Assert-TargetUnedited([string] $file, [string] $mutantHash) {
     $path = $targets[$file]
     if (-not (Test-Path -LiteralPath $path)) { return }
     $current = Get-Hash $path
-    if ($current -eq $hashes[$file]) { return }
-    if ($mutantHash -and $current -eq $mutantHash) { return }
+    if ($current -ceq $hashes[$file]) { return }
+    if ($mutantHash -and $current -ceq $mutantHash) { return }
     $overwritten = Get-UniqueOverwrittenPath $path
     [System.IO.File]::WriteAllBytes($overwritten, [System.IO.File]::ReadAllBytes($path))
     $message = "EDIT LOST: $path (SHA-256 $current) is neither the M0 original ($($hashes[$file])) nor this entry's own mutant. Something edited it outside the harness while a run was in flight or between entries. Its bytes are kept in $overwritten. Stopping the run rather than silently discarding them."
@@ -231,10 +238,10 @@ function Restore-Targets([string[]] $files, [hashtable] $mutantHashes = @{}) {
         $path = $targets[$file]
         try {
             Assert-TargetUnedited $file $mutantHashes[$file]
-            if ((Get-Hash $path) -ne $hashes[$file]) {
+            if ((Get-Hash $path) -cne $hashes[$file]) {
                 [System.IO.File]::WriteAllBytes($path, $bytes[$file])
             }
-            if ((Get-Hash $path) -ne $hashes[$file]) {
+            if ((Get-Hash $path) -cne $hashes[$file]) {
                 throw "writing the original bytes back did not restore $file; it does not hash to the original."
             }
             Remove-Item -LiteralPath (Get-SidecarPath $path) -Force -ErrorAction SilentlyContinue
@@ -373,7 +380,7 @@ foreach ($sidecar in $sidecars) {
         # its bytes, so there is nothing to compare and nothing to keep.
         if (-not (Test-Path -LiteralPath $path)) {
             [System.IO.File]::WriteAllBytes($path, $original)
-            if ((Get-Hash $path) -ne $hash) {
+            if ((Get-Hash $path) -cne $hash) {
                 throw "recreating it from $sidecar did not land the original bytes (SHA-256 $hash)."
             }
             Remove-Item -LiteralPath $sidecar -Force
@@ -406,7 +413,7 @@ foreach ($sidecar in $sidecars) {
             }
             throw "the restore changed the file before failing; its pre-repair bytes (SHA-256 $(Get-BytesHash $current)) are kept in $overwritten. $_"
         }
-        if ((Get-Hash $path) -ne $hash) {
+        if ((Get-Hash $path) -cne $hash) {
             throw "restoring it from $sidecar did not land the original bytes (SHA-256 $hash); its pre-repair bytes (SHA-256 $(Get-BytesHash $current)) are kept in $overwritten."
         }
         Write-Host "The bytes $path held before the repair (SHA-256 $(Get-BytesHash $current)) are kept in $overwritten."
@@ -446,7 +453,7 @@ foreach ($file in $Target) {
     [System.IO.File]::WriteAllBytes((Get-SidecarPath $path), $original)
     try {
         Write-Text $path $text
-        if ((Get-Hash $path) -ne $hash) {
+        if ((Get-Hash $path) -cne $hash) {
             throw "harness broken: writing $file through the harness I/O path did not land the re-encoded bytes; the original bytes were written back. No entry ran."
         }
     }
@@ -482,7 +489,7 @@ foreach ($mutation in $suite) {
         if ($sites -ne 1) {
             throw "$($mutation.Id): anchor matches $sites times in $($edit.File), expected exactly 1."
         }
-        if ($old -eq $new) { throw "$($mutation.Id): replacement changes nothing in $($edit.File)." }
+        if ($old -ceq $new) { throw "$($mutation.Id): replacement changes nothing in $($edit.File)." }
         # Spliced by position at the one site, so the replacement need not be
         # unique (`Ok(())` is not) or non-empty.
         $at = $texts[$edit.File].IndexOf($old, [System.StringComparison]::Ordinal)
