@@ -2,6 +2,51 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: H1's kept sidecar looked like a crash, overwrites clobbered each other, case-blind no-op guard
+
+Evidence: Soul's H14 pass over the Huginn memory-organ campaign
+(`soul-h14-notes.md`, findings C and D) found two defects in the sidecar
+machinery the 2026-09-22 H1 fix (below) had just added, plus a third,
+unrelated defect in the no-op guard.
+
+**F1: startup repair mistook H1's deliberate stop for a crash.** H1 keeps a
+target's sidecar on purpose when it catches an edit the harness did not make
+(`Assert-TargetUnedited`), so the M0 original survives beside the lost edit.
+Startup repair could not tell that kept sidecar apart from a crash's: on the
+next run it restored the M0 original over whatever an operator had since
+hand-cleaned into the target, moved the operator's clean file to
+`.eureka-mutation-overwritten` (clobbering H1's own copy there, see F2),
+printed "a previous run died mid-mutation", and finished green. The hand
+edit was gone one run later with no non-zero exit to notice it by.
+`Assert-TargetUnedited` now writes a marker, `<target>.eureka-h1-stopped`,
+beside a sidecar it keeps; startup repair refuses the whole pass while any
+such marker exists, restores nothing, and names what to reconcile. An
+operator clears the marker by hand once the file is reconciled. Demonstrated
+in a scratch repo: before the fix, a hand-cleaned target was silently
+reverted and the rerun exited 0; after, the rerun refused with a named
+non-zero exit and the target was untouched.
+
+**F2: `.eureka-mutation-overwritten` was overwritten without a check.** Both
+the sites that preserve bytes about to be lost (`Assert-TargetUnedited` and
+the startup repair loop) wrote to a fixed name, so a second loss against the
+same target, or a file already sitting at that name, was silently destroyed.
+`Get-UniqueOverwrittenPath` now picks the first unused name in the family
+(`.eureka-mutation-overwritten`, then `.1`, `.2`, ...). Demonstrated: a
+planted file at that path survived an H1 firing, with the new loss landing
+at `.eureka-mutation-overwritten.1` beside it.
+
+**Case-blind no-op guard.** The check that rejects a mutation whose old and
+new text come out identical used PowerShell's `-eq`, which is
+case-insensitive, so a mutant differing from the source only in case (such
+as `"query"` to `"Query"`) was wrongly refused as a no-op. Every hash
+comparison in the script had the same latent gap. Both were switched to
+`-ceq`/`-cne` (eight sites total); anchor matching already used ordinal
+`IndexOf` and needed no change. Demonstrated: a case-only mutation was
+refused before the fix and ran (and was killed by its test) after.
+
+All three fixed and demonstrated in `tools/eureka-mutations.ps1`; commits
+`6ec92de` (F2), `5ac4fea` (F1), `42adfb0` (case).
+
 ## 2026-09-22: the harness silently discarded an edit made while a run was in flight (H1)
 
 Evidence: Soul's pass on the Huginn memory-organ Cut 10 fourth fix batch
