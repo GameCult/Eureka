@@ -321,6 +321,14 @@ When the same kind of finding recurs, the brief was missing context. Fix the
 brief template, not only the instance. That is how "operator rulings each need
 their own failing mutation" entered the Hands brief.
 
+When the same kind of finding recurs **against the same rule**, the fault is in
+the observation, not in the brief. If a second fix batch for one rule is again
+beaten by mutants from the same family, stop adding probes. Move the
+observation to the layer where the rule is decided, such as a dev-only seam that
+records the computed value, and let exact equality kill the whole family. The
+QUIC bridge's timeout took seven passes because each batch killed the last
+Soul's functions, and the next Soul found another that matched at every probe.
+
 **A release or tag is a cut and gets its Soul pass before the tag is pushed.**
 The CultCache release cut skipped Soul. Its stale DLLs, SHA-bound byte checks
 and silently skipped publish jobs surfaced only after tags were out. CultLib

@@ -2,6 +2,36 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: seven passes on one line, because the observation was outside
+
+Evidence: the QUIC bridge's rule "the wait is the timeout the host asked for".
+It took seven Soul passes and six fix batches.
+
+- Every batch killed the mutants the previous Soul had named: a constant, then
+  any constant, then a clamp, an offset and a scale. Then a round clamp, a
+  floor and a small offset. Then a quantum round-down, a small-timeout zero and
+  a later-poll doubling.
+- Each time, the next Soul found another function of the argument that equals
+  the identity at every probe point.
+- Tolerances tightened until Windows needed a priority raise just to keep the
+  unmutated bridge green. Even then, two of the stated boundaries flipped
+  between repetitions.
+
+Wall-clock observation from outside cannot converge on an arithmetic rule.
+There is always another function that matches at the probes, and the
+tolerance can only shrink until the scheduler decides the answer. The fix was
+to observe at the rule itself: a dev-only seam records the timeout actually
+handed to the condition wait, and exact equality kills the whole family at
+once, deterministically.
+
+The skill already said "put the observation where the rule is decided". What
+was missing was knowing when to stop probing. Added to Self's triage:
+
+- **When a second fix batch for the same rule is killed by mutants of the same
+  family, change the observation, not the probes.** Name the layer where the
+  rule is decided and observe there. Keep wall-clock checks only as proof the
+  decision is actually carried out, with generous margins.
+
 ## 2026-09-22: a ruling recorded in one section, contradicted in another
 
 Evidence: the selection map recorded Q-J (decimal strings) as ruled in §16.
