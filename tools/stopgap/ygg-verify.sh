@@ -81,7 +81,7 @@ trap 'if [ "$keep" != 1 ]; then sudo rm -rf "$work"; git -C "$root/repos/$name.g
 echo "ygg-verify: $name@${sha:0:10} slot $slot, image $image, cpus $cpus, mem $mem, work $work" >&2
 set +e
 sudo nice -n 10 docker run --rm --cpus="$cpus" --memory="$mem" \
-  -v "$work:/src" -v "$root/harness:/harness:ro" \
+  -v "$work:/src" -v "$root/harness:/harness:ro" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
   -e CARGO_TARGET_DIR=/src/target -w /src "$image" bash -c "$cmd"
 status=$?
