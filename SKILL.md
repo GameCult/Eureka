@@ -382,6 +382,14 @@ and reconciles the target doc with the Body.
   model does not soften its brief: it still attacks, invariants first. When
   Fable ran out mid-migration, Opus carried every faculty and Soul still
   found the defects.
+- **Commit maps to `main`, not to whatever branch Self is standing on.** A map
+  is only current if it is current on the branch the reader has. On 2026-09-22
+  a Hands agent on the selection cut reported that the map had no fix-batch-4
+  section: the live copy was on Self's own working branch, `main` was a day
+  behind, and the work branch carried a copy from five days earlier. It worked
+  from its brief and said so, which is the only reason this surfaced instead of
+  producing a cut built on stale design. **Also name the map's branch in every
+  brief**, so a faculty reading a different one notices.
 - **A subtraction budget is pressure, not a metric.** Say so when you set it, so
   Hands knows escalating a miss with an argument is allowed. Treat a suspiciously
   clean hit as a sign that unrelated code was deleted to meet the number.
