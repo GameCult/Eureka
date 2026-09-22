@@ -2,6 +2,14 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: a cleanup by image name killed the whole machine's Node
+
+Evidence: during the QUIC seventh fix batch's Windows stress round, Hands
+cleared its busy-loop burners with `taskkill //IM node.exe //T`. That kills
+every `node.exe` on the host, and the workstation is shared by several agents
+and the operator. The kill can't be undone, and nothing records what it took
+down. Rule added to SKILL.md's tooling list: kill by the PID you started.
+
 ## 2026-09-22: seven passes on one line, because the observation was outside
 
 Evidence: the QUIC bridge's rule "the wait is the timeout the host asked for".

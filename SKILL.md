@@ -410,6 +410,11 @@ and reconciles the target doc with the Body.
   checkout, such as Soul's clone or a parallel Hands worktree, gets its own
   target subdirectory. The mutation harness is immune because it bumps the time
   on every file it writes. A plain test run is not.
+- **Kill processes by the PID you started, never by image name.** A Hands pass
+  cleared its CPU burners with `taskkill /IM node.exe /T`. That killed every
+  Node process on the shared workstation, including other agents' and the
+  operator's. Record the PID of every process you launch, and stop only those
+  PIDs.
 - **Write commit messages with the Write tool to a uniquely named scratch file,
   then `git commit -F`.** PowerShell 5 here-strings break `-m` quoting, and its
   `Out-File`/`Set-Content` write a BOM into message files.
