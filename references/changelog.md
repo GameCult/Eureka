@@ -805,3 +805,52 @@ it with a new test, and recorded the deviation in code.
 - **A Hands brief must invite this.** The rule that a deletion judged unsafe
   is reported with evidence rather than quietly kept is what produced the
   catch; it stays in the template, and it applies to deletions Self ordered.
+
+## 2026-09-22: a wall-clock pin that was really a constant, and the ratio that hid it
+
+Evidence: a Hands test pinned a cost regression with
+`large < small.max(0.01) * 20.0` and reported a 33x separation. Soul measured
+`small` at 2.7-9.4 ms across eight runs -- **always under the 10 ms clamp** --
+so the clamp always fired and the assertion was simply `large < 200 ms`. Clean
+code had already measured 198.9 ms under three concurrent suites, the normal
+load on the shared build host. The true separation was **1.63x**; the reported
+33x came from one pair straddling the clamp boundary.
+
+- **Pin a cost with a count, not a clock.** Where a regression is about work
+  done, count the calls through a test-only counter. A count is deterministic
+  under any load; a wall-clock assertion on a host running several jobs fails
+  in both directions, and where a pipeline turns red into a verdict, a false
+  red is a false verdict on unattended work.
+- **A reported ratio is a claim like any other.** Self accepted 33x because it
+  sounded decisive. Ask what the denominator actually was.
+
+## 2026-09-22: two fixtures that would have lied, caught by mutating not reading
+
+Evidence, one batch:
+- A setuid fixture set the bit and then ran `chown`. The container's `chown`
+  silently clears setuid even when the owner does not change, so the fixture
+  tested nothing and looked like a pass.
+- An `observe_frozen` test tampered with the recipe file, which a *different*
+  check inside `observe_frozen` also catches. It stayed green with the digest
+  check deleted -- the check it existed to pin.
+
+Both were found by running the mutation against the final spelling of the
+code, not by reading the test. This is why that step is in the Hands brief,
+and why "the test passes" is not evidence that it pins anything.
+
+Same batch, the honest outcome: an artifact-digest term could not be pinned at
+all, because the collision it prevents needs a NUL inside a symlink target and
+`symlink(2)` cannot produce one. Hands built the fixture, confirmed it did not
+go red, and **deleted it rather than keep a test that lies about what it
+proves**. Record the gap; do not keep the ceremony.
+
+## 2026-09-22: check the tool before ruling that it be configured
+
+Evidence: Self ruled a bind mount should carry `nosuid`. Docker exposes no
+per-bind-mount `nosuid` through either `--mount` or `-v`; both are rejected.
+The container already ran with `--security-opt no-new-privileges`, which is
+process-wide and stronger. Hands verified against the real CLI and withdrew
+the ruling with evidence.
+
+A ruling that names a flag, option or API is a factual claim about a tool.
+Check it, or say it is unverified and let Hands confirm before building on it.
