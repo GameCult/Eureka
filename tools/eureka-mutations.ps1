@@ -153,18 +153,45 @@ function Measure-Sites([string] $text, [string] $anchor) {
     $count
 }
 
+# H1: a target's bytes are never restored, and never overwritten with the
+# next mutant, without first being proven to still be one of two things: the
+# M0 original, or (when supplied) the exact mutant this entry itself wrote.
+# Anything else means a build step, a stray edit, or another tool changed the
+# target while a run was in flight or between entries -- the case Soul found
+# the harness silently discarding (H1: `eureka-mutations.ps1:163-175, 393,
+# 415`). Such an edit is saved beside the target, a loud warning names it, and
+# the run stops: continuing would either bury the edit under a restore or, for
+# the next entry's write, bury it under a different mutant, either way losing
+# it exactly as before.
+function Assert-TargetUnedited([string] $file, [string] $mutantHash) {
+    $path = $targets[$file]
+    if (-not (Test-Path -LiteralPath $path)) { return }
+    $current = Get-Hash $path
+    if ($current -eq $hashes[$file]) { return }
+    if ($mutantHash -and $current -eq $mutantHash) { return }
+    $overwritten = "$path.eureka-mutation-overwritten"
+    [System.IO.File]::WriteAllBytes($overwritten, [System.IO.File]::ReadAllBytes($path))
+    $message = "EDIT LOST: $path (SHA-256 $current) is neither the M0 original ($($hashes[$file])) nor this entry's own mutant. Something edited it outside the harness while a run was in flight or between entries. Its bytes are kept in $overwritten. Stopping the run rather than silently discarding them."
+    Write-Host $message
+    throw $message
+}
+
 # Writes the original bytes back to each named target and proves it by hash,
 # then removes the target's sidecar. A target already hashing to its original
 # is not rewritten, so a write that never opened the file (a locked target)
 # is not reported as a failed restore. Every target is attempted even when an
 # earlier one fails; a target that cannot be restored is printed with RESTORE
 # FAILED and its original SHA-256, its sidecar is kept, and the first failure
-# is rethrown once the rest have been attempted.
-function Restore-Targets([string[]] $files) {
+# is rethrown once the rest have been attempted. `$mutantHashes[$file]`, when
+# supplied, is the SHA-256 of the mutant this call's caller itself wrote to
+# `$file`, the one departure from the M0 original `Assert-TargetUnedited` lets
+# through before restoring over it.
+function Restore-Targets([string[]] $files, [hashtable] $mutantHashes = @{}) {
     $failure = $null
     foreach ($file in $files) {
         $path = $targets[$file]
         try {
+            Assert-TargetUnedited $file $mutantHashes[$file]
             if ((Get-Hash $path) -ne $hashes[$file]) {
                 [System.IO.File]::WriteAllBytes($path, $bytes[$file])
             }
@@ -407,6 +434,11 @@ foreach ($mutation in $suite) {
     }
     $files = @($texts.Keys)
     $run = $null
+    # H1: before this entry writes its mutant, every target it touches must
+    # still be the M0 original -- never a prior entry's leftover mutant, and
+    # never an edit that landed between entries. Anything else stops the run
+    # rather than burying an unexplained edit under the next mutant.
+    foreach ($file in $files) { Assert-TargetUnedited $file $null }
     # Every sidecar goes down before any target is written, and the writes sit
     # inside the `try`, so a write that throws on the second target still
     # restores the first.
@@ -417,8 +449,13 @@ foreach ($mutation in $suite) {
     }
     finally {
         # Restore is the original bytes, whatever the entry or the build left
-        # behind, verified by hash.
-        Restore-Targets $files
+        # behind, verified by hash -- but only once each target is proven to
+        # still be either the M0 original or exactly the mutant just written,
+        # so an edit made by the test command itself (H1) is caught here
+        # rather than silently overwritten by the restore.
+        $mutantHashes = @{}
+        foreach ($file in $files) { $mutantHashes[$file] = Get-BytesHash (Encode-Text $texts[$file]) }
+        Restore-Targets $files $mutantHashes
     }
     $named = $mutation.Test.Split(':')[-1]
     $verdict = if ($run.TimedOut) {

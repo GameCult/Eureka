@@ -2,6 +2,30 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: the harness silently discarded an edit made while a run was in flight (H1)
+
+Evidence: Soul's pass on the Huginn memory-organ Cut 10 fourth fix batch
+(2026-09-22) found that `eureka-mutations.ps1` never checked what a target's
+bytes actually were before restoring over them or before the next entry wrote
+its mutant. That same campaign's fourth fix batch had lost edits Hands made to
+a target this way; the harness gave no warning and no non-zero exit at the
+time, so the loss surfaced only later.
+
+`Restore-Targets` (`:163-182`) now hashes the target's current bytes first: a
+match against the M0 original or, when supplied, the exact mutant the caller
+just wrote, is restored as before; anything else is saved beside the target as
+`<target>.eureka-mutation-overwritten`, printed as a loud `EDIT LOST` warning,
+and the run stops (non-zero exit, no further entries) via the new
+`Assert-TargetUnedited`. The same check runs again before each entry writes
+its own mutant, so an edit landing between two entries is caught before it is
+silently buried under the next one.
+
+Demonstrated in the scratchpad with a throwaway repo whose test command
+appends a line to the target mid-run: against the pre-fix script the run
+reported green and the target came back pristine, the appended line gone;
+against the fixed script the run failed loudly with `EDIT LOST`, exit code 1,
+and the target still carried the appended line afterward.
+
 ## 2026-09-22: a cleanup by image name killed the whole machine's Node
 
 Evidence: during the QUIC seventh fix batch's Windows stress round, Hands
