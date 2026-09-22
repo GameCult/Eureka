@@ -389,6 +389,14 @@ and reconciles the target doc with the Body.
   inserted carriage returns against the worktree, which poisons every byte
   count built on it. Read raw blobs and verify against the worktree's hash
   before comparing anything.
+- **A shared build output directory belongs to one checkout of a repository.**
+  Two worktrees of the same crate get the same artifact hash. Cargo decides
+  whether to rebuild by comparing modification times, so a plain `cargo test` in
+  the checkout with older sources ran the other checkout's last mutant binary. A
+  surviving mutant can make an unmutated tree look green this way. A second
+  checkout, such as Soul's clone or a parallel Hands worktree, gets its own
+  target subdirectory. The mutation harness is immune because it bumps the time
+  on every file it writes. A plain test run is not.
 - **Write commit messages with the Write tool to a uniquely named scratch file,
   then `git commit -F`.** PowerShell 5 here-strings break `-m` quoting, and its
   `Out-File`/`Set-Content` write a BOM into message files.

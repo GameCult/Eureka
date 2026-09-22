@@ -2,6 +2,43 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: a shared cargo target can run another checkout's mutant
+
+Evidence: Soul, working on the Huginn Cut 10 second fix batch, had two worktrees
+of the same repository. Both built into `C:\Users\Meta\.cargo-target-codex`, and
+both produced the same artifact name, `huginn_daemon-e1f33b5708db9f04.exe`.
+A plain `cargo test` in the second worktree did not rebuild, because its sources
+were older than that binary. It ran the first worktree's last harness mutant
+instead: 40 runs out of 40 failed at the mutant's assert line, not at the
+source's.
+
+- The case that does damage is the reverse. A surviving mutant's binary makes an
+  unmutated tree look green.
+- The harness is immune, because every write it makes, M0's included, bumps the
+  file's modification time. A plain test run in a second checkout gets no such
+  protection.
+- Rule, in SKILL.md's git and tooling list: a shared build output directory
+  belongs to one checkout per repository. Any second checkout gets its own
+  target subdirectory.
+
+The same evening, Self briefed four agents freehand, and none of the briefs
+carried the template's wait paragraph. That breaks the 2026-09-17 rule below.
+Self sent the paragraph to the three agents that could still act on it. The
+rule stands. What failed was Self's own compliance with it.
+
+## 2026-09-17: Self's own briefs dropped the template's wait rule
+
+Evidence: in the Aetheria item-provenance session, two Hands passes (the Cut C census
+follow-up and the neutral wanderers and IFF patch) ended their turns while a mutation run
+was still in the background. Each had to be resumed to finish, push and clean up.
+
+- The Hands template in `briefs.md` already says a wait is a foreground poll, and that a
+  detached job cannot wake an agent whose turn has ended.
+- Self wrote those briefs freehand and left that paragraph out. The defect was in Self's
+  briefing, not in the template.
+- Rule: when Self briefs Hands or Soul without pasting the template, it still carries the
+  template's wait paragraph verbatim.
+
 ## 2026-09-17: three passes to pin one line, because each proved a cousin
 
 Evidence: the QUIC bridge's "the wait is the timeout the host asked for", over
@@ -397,3 +434,17 @@ evidence is `postmortem-cultcache.md` and the Aetheria repo's
 - **Git and tooling scars:** explicit staging, message files, the 3-tag limit,
   commit-independent byte checks, detached builds, and the process-probe role
   check.
+
+- 2026-09-18: the wait rule now names the failure shape, not only the
+  mechanism. Hands ended two turns announcing it would wait for a mutation
+  suite (Aetheria shield Cut 3), the second after an explicit correction. The
+  brief already said how to wait; it did not say that saying "I'll wait" and
+  yielding is the violation. Both copies in `briefs.md` now do.
+
+- 2026-09-18: context is a budget. The operator noticed Sonnet Hands runs
+  passing 400k tokens on Aetheria's stats and shield cuts and said they "start
+  to get loopy with that much context" — matching where the sloppy claims in
+  those runs appeared. `briefs.md` now tells Self to size cuts to one worker's
+  head: verify once at the end, quote the cut inline instead of pointing at the
+  whole map, keep expensive scaffolding alive across cuts, and hand back a
+  clean partial rather than push through.
