@@ -328,6 +328,10 @@ observation to the layer where the rule is decided, such as a dev-only seam that
 records the computed value, and let exact equality kill the whole family. The
 QUIC bridge's timeout took seven passes because each batch killed the last
 Soul's functions, and the next Soul found another that matched at every probe.
+A dev-only seam has two costs of its own. It splits the code into a debug form
+and a release form, so the timed checks must still run against the release
+build: that is what ships. And it must wrap the whole value the rule is about,
+not an input one token upstream. Soul's eighth pass found both gaps.
 
 **A release or tag is a cut and gets its Soul pass before the tag is pushed.**
 The CultCache release cut skipped Soul. Its stale DLLs, SHA-bound byte checks
