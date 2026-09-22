@@ -746,3 +746,28 @@ a worktree is a defect in the brief.
 
 Second-checkout build output stays separate, per the existing scar: a shared
 target directory has let an unmutated tree look green.
+
+## 2026-09-22: a green Windows suite that had never loaded the pinned library
+
+Evidence: the QUIC bridge imports `msquic.dll` by name. Nothing copied the
+pinned library beside the test binary in the build tree. On Linux that failed
+loudly with `cannot open shared object file`. **On Windows it did not fail at
+all** — DLL search fell through to `PATH` and loaded an unrelated `msquic.dll`
+from the Windows Performance Toolkit, 529 kB against the pinned build's
+4.1 MB. Every scenario passed against it with nothing indicating a problem.
+
+The green result was the thing hiding the defect, and it was found only
+because a brief asked for the documented path to be executed literally rather
+than for the previous error to be gone.
+
+- **A dynamic dependency resolved by name is unproven until its identity is
+  checked.** Where a test loads a pinned native library, the verification step
+  reports the loaded file's size or hash, not merely that the run passed.
+  Windows' search order makes silent substitution the default failure mode,
+  where POSIX tends to fail loudly.
+- **When a defect is found on one platform, check the other for the same class
+  before closing it.** Both Linux fixes lived inside `if(NOT WIN32)`, so the
+  Windows path was never examined until it was run.
+- **Scope the doubt honestly when this happens.** Earlier Windows numbers in
+  that campaign were all measured on the same machine, where the copy never
+  existed, so they are recorded as unconfirmed rather than quietly kept.
