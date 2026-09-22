@@ -2,6 +2,37 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: the hand-written mutation harness is retired, with no fallback
+
+The operator said: "The manual mutation testing turned out to be a terrible
+idea, lots of guarding the shape of the code instead of the behavior. Better
+to have nothing than a harness that punishes refactoring." Asked whether a
+fallback should remain for code no ecosystem tool reaches, the operator chose
+to retire it entirely: "absolutely".
+
+Evidence from the same day, beyond Aetheria's:
+- The Huginn, Epiphany-leaf, Idunn and QUIC campaigns spent pass after pass
+  re-anchoring suites after refactors and rewriting entries that could no
+  longer fail.
+- The harness itself was repaired four times: H1, F1/F2, the case-blind
+  guard, and Linux quoting.
+- The QUIC timeout rule took seven Soul passes of anchor mutants. It closed
+  only when a behavioural seam made the rule observable by exact equality,
+  which is the defence that survives a refactor.
+
+What changed:
+- `tools/eureka-mutations.ps1` is deleted (Eureka `37c80e4`).
+- SKILL.md and briefs.md no longer name a fallback. Where no tool reaches, the
+  defence is behavioural: observe the rule where it is decided.
+- Soul's hand mutants are one-off probes on scratch copies, never committed.
+  The entry below, "hand mutations target the rule's layer", now governs
+  exactly those probes.
+- The stopgap copies no harness into the container. Its Rust image carries
+  cargo-mutants instead of pwsh, and the image is tagged by the Dockerfile's
+  hash so an edit rebuilds it.
+- The committed suites in Huginn, the Epiphany leaf, Idunn and CultLib are
+  deleted in their own repos. The tests those suites pointed at stay.
+
 ## 2026-09-22: hand mutations target the rule's layer
 
 Evidence: in Ghostlight's play agent 8a-fix2 (`74b628d`), Hands reported every
