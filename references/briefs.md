@@ -98,16 +98,14 @@ Standing rulings: <short list>.
 - Gaps are filled in their owner, never with local helpers.
 - Delete before adding. No shims.
 
-Every rule the spec or the operator names gets a test that fails under its own
-mutation, and under two mutations, not one: a revert (delete the check) and a
-loosening that keeps the check in place and weakens it (`>=` for `==`, the
-first item only, the image without the batch, case-insensitive, off by one).
-The revert proves the test sees the rule; only the loosening proves it sees
-the rule's edge, and the loosening is what Soul would otherwise write on its
-second pass. Run both against the final spelling of the code and restore
-afterwards. In the report, define each mutation exactly (what line changed and
-how) so Soul can rerun it; a mutation named only "C3" cannot be checked. A
-loosening that survives is reported, not hidden and not deleted.
+Every rule the spec or the operator names gets a behavioural test. Measure the
+suite with <the ecosystem's mutation tool>, scoped to this cut's diff
+(`--since:<base>` or the tool's equivalent), against the final spelling of the
+code. Triage every survivor in the report by name and line: killed by a new
+test, killed by fixing a degenerate fixture, or equivalent with a one-line
+reason. A survivor that weakens a rule and cannot be killed is reported, not
+hidden. Code no tool reaches falls back to `tools/eureka-mutations.ps1`; say
+why the tool cannot reach it.
 When a claim is "behaviour unchanged", a value captured from the new code is not
 evidence. Pin it with a value computed at the base commit.
 Detached scripts: confirm the log starts within 60 s; a script that dies on a
@@ -115,10 +113,6 @@ parse error is silent otherwise.
 Shared build caches: record a full path list before building, not only counts,
 and delete exactly the new paths afterwards. Counts cannot attribute hardlinked
 or rewritten outputs.
-A mutation that never applied is not a passing mutation. Make the script fail
-loudly when its anchor does not match, and check line endings: a multi-line
-anchor silently matched nothing on a CRLF tree for a whole cut, so the verdict
-it reported was fiction.
 When a cut deletes, list every rule that had a test before and has none after.
 A rule that still exists in code with its only test deleted is the failure mode
 of subtraction; either the rule goes too, or it gets a test in the same cut.
@@ -160,18 +154,9 @@ it: "I'll wait for the suite and then report" ends the turn exactly as a
 to-do list does. Aetheria's shield Cut 3 burned two round trips this way, the
 second one after being told. If a run is going, block on it in this turn or
 read its finished output; do not yield to say what you are about to do.
-Mutations: restore with a reverse edit or run against committed code; `git
-checkout` also reverts uncommitted fix code and silently invalidates the run.
-The suite is a committed script under `tools/`, and its first entry is a
-no-op control: rewrite the target through the same I/O path with no change
-and run the suite; every test must stay green, or the harness is broken and
-nothing it reports counts. Read and write bytes symmetrically (in PowerShell,
-`[IO.File]::ReadAllText`/`WriteAllText` with an explicit UTF-8 encoding, never
-a bare `Get-Content`/`Set-Content`; in Python, `encoding="utf-8", newline=""`
-both ways). A `-Raw`-less read or a line join rewrites every line ending, and
-`core.autocrlf` hides that from `git diff`. Sources carry non-ASCII literals
-on purpose, so a lossy round-trip fails tests on its own and fakes a kill on
-every mutation.
+Mutation tools run on schemata or copies and never edit the tree; a fallback
+entry through `eureka-mutations.ps1` restores by hash, and `git checkout` is
+never the restore, because it also reverts uncommitted fix code.
 Warnings: measure from a forced rebuild and compare distinct messages; cargo
 replays warnings only when it actually rebuilds.
 Semantic properties ("exactly one call site", "this step actually runs"):
@@ -264,18 +249,17 @@ Falsify specifically:
 - <leftover greps>
 - rerun the builds, tests and captures yourself
 
-Your own mutations obey the same harness rules as Hands': write them as a
-script in <scratchpad>, run a no-op control through it first, use byte-exact
-symmetric I/O, and name the script in the report so the run can be checked.
-An inline harness typed for one run is not evidence, and it is where the one
-known fake kill came from.
+Rerun the mutation tool on the range yourself; do not trust Hands' survivor
+triage. Challenge each "equivalent" call that is not a float boundary flip:
+measure it, as a mutant that changes how a thing is built can leave what it
+does untouched, and one that looks cosmetic can move damage to the wrong side
+of a ship.
 
 Report each finding as CONFIRMED or PLAUSIBLE, with file:line, a failure
 scenario and severity. Then the promises that held, one line of evidence
 each. Then the numbers: test counts, entries killed, path delta, script
 paths. Nothing else: no narrative of the pass, no reasoning about mutants
-that died. Rerun Hands' loosening mutations; design your own only where a
-rule has none or the loosening was weak.
+that died. Name the survivors you retriaged.
 
 <For a second or later pass on the same cut:> scope is the fix batch's diff
 plus one rerun of the suite. Do not re-derive the whole cut unless an

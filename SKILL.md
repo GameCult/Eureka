@@ -199,24 +199,28 @@ briefly, and the verification. The brief says:
 - **Delete before adding.** No shims, no compatibility layers the map did not
   name.
 - Small commits, each pushed, with explicit paths. See the git rules below.
-- **Every operator ruling and every new rule gets a test that fails under its own
-  mutation.** Hands runs the mutations against the final spelling of the code and
-  restores afterwards.
-- **The harness lives here, in `tools/eureka-mutations.ps1`,** not in whichever
-  repo happened to need it first. It takes `-Repo`, `-Entries`, `-Target`,
-  `-Test` and `-TimeoutSeconds`, so one copy serves every campaign and a fix to
-  it fixes all of them; it was moved out of Epiphany once a second repo started
-  reaching across for it. A repo whose suites cannot run under PowerShell keeps
-  its own runner and owes the same contract by name: a no-op control, byte-exact
-  restore verified by hash, a sidecar written before any write, anchors matching
-  exactly once, an honest exit status, and the child's output on a red control.
-- **Every mutation suite is a committed script with a no-op control.** The
-  control rewrites the target through the same I/O path with no change and must
-  leave every test green; if it kills anything, the harness is broken and every
-  verdict from it is fiction. File I/O is byte-exact (symmetric UTF-8, line
-  endings preserved), anchors match exactly once, and restore is a reverse
-  write. This applies to Soul's harness as much as Hands': the one that faked a
-  kill was Soul's own inline script, and it is not on disk to be checked.
+- **Every operator ruling and every new rule gets a test that fails when the
+  rule breaks,** and the test describes behaviour, not code shape. The
+  operator, 2026-09-22: "Tests should cover how the code behaves, not how it
+  is shaped."
+- **Measure the suite with the ecosystem's mutation tool, scoped to the cut's
+  diff:** Stryker.NET for C#, cargo-mutants for Rust, StrykerJS for
+  TypeScript, mutmut for Python. The tool generates the mutants and nobody
+  writes an anchor. Every survivor is a finding about the tests, triaged by
+  name: a behavioural test is missing, a fixture is degenerate (see below),
+  or the mutant is equivalent and gets a one-line reason. Boundary flips on
+  float thresholds are equivalent by default and are not chased. The score is
+  not a gate; the triaged survivor list is the record, and Self commits it in
+  the map. Soul reruns the tool on the range rather than trusting Hands'
+  triage.
+- **Hand-written mutation entries are the fallback, for code no tool
+  reaches:** editor probes, shaders, a runtime without a tool.
+  `tools/eureka-mutations.ps1` serves those, under its contract: a no-op
+  control, byte-exact restore verified by hash, anchors matching exactly
+  once, an honest exit status. Anchors couple the suite to the code's
+  spelling, strand on every refactor, and can keep matching while silently
+  re-targeting onto code the tests no longer run, so a campaign that falls
+  back says why the tool cannot reach and treats each entry as debt.
 - **"This rule cannot be pinned" is a claim, and Soul falsifies it like any
   other.** Recording an honest gap is right and beats inventing a kill, but the
   gap itself is a hypothesis about reachability, and it was wrong both times it

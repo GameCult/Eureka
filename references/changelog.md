@@ -2,6 +2,34 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-22: mutation testing moves to the ecosystem's tools
+
+Evidence: Aetheria's fire-control campaign carried 23 hand-written harnesses
+(5,816 lines) of literal-text anchors and substitutions. They stranded on
+every refactor (`72c0109c`, Cuts 9 and 10), and at Cut 10 an anchor kept
+matching exactly once while silently re-targeting from `HitProbability` onto
+`Inspect`, mutating code the tests no longer ran, and it surfaced only as
+unexplained survivors. Soul's audit of the
+harnesses also found the tree-clean verdict restoring before it measured, and
+a compile failure counted as a kill. The operator: "What is the point of those
+mutation anchors? Tests should cover how the code behaves, not how it is
+shaped."
+
+A Stryker.NET spike over one file killed every mutant the harnesses defended
+and found 67 survivors they did not, among them the sign error that put splash
+damage on the wrong side of a ship, which the operator had spent hours hunting
+and no test defended. Three rounds of tests and fixture fixes took it to 43, all named.
+
+- The principle of 2026-09-15 stays: every rule has a test that fails when it
+  breaks.
+- The committed-anchor-script mandate is replaced: Hands and Soul run the
+  ecosystem's tool on the cut's diff and triage survivors by name.
+  `eureka-mutations.ps1` is demoted to the fallback for code no tool reaches.
+- Float boundary flips are equivalent by default (operator: "> to >= on float
+  thresholds is indeed petty"); the score is not a gate.
+- The harness-hardening entries below (H1, F2, the case-blind guard, the
+  CRLF anchor) remain the record of why the fallback's contract is what it is.
+
 ## 2026-09-22: verification moves off the operator's workstation
 
 Evidence: Starfire went from fine to unresponsive in seconds, and the operator
