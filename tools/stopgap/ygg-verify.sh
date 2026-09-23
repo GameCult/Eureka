@@ -48,6 +48,11 @@
 # Usage (Git Bash on Starfire):
 #   ygg-verify.sh <local-repo> <rev> <image> '<command>'
 #   TIMEOUT=<seconds> caps the job (default 3600); a killed job exits non-zero.
+#   DOCKER_ARGS='<extra docker run flags>' passes through to the container's
+#   own `docker run`, appended after the fixed flags and before the image name
+#   (e.g. DOCKER_ARGS='--sysctl net.ipv6.conf.all.disable_ipv6=0' or
+#   DOCKER_ARGS='--network host'). Word-split by the remote shell, so quote a
+#   flag's own value inside the string if it needs one.
 # Images:
 #   rust    eureka-verify-rust:<Dockerfile hash>   (rust 1.95 plus cargo-mutants)
 #   dotnet  mcr.microsoft.com/dotnet/sdk:10.0   (install Stryker in the command:
@@ -61,6 +66,7 @@ set -euo pipefail
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
 host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-12g}; slots=${SLOTS:-3}
 timeout_s=${TIMEOUT:-3600}
+docker_args=${DOCKER_ARGS:-}
 here=$(cd "$(dirname "$0")" && pwd)
 sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 
@@ -81,7 +87,7 @@ esac
 # ssh joins its arguments into one string that the remote shell splits again,
 # so every argument is quoted here. Without that, `a && b` in the command runs
 # b on the host.
-remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd" "$timeout_s")
+remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd" "$timeout_s" "$docker_args")
 # The heredoc below travels with whatever line endings this file has on disk.
 # On Windows that is CRLF, and the remote bash then fails on `set -euo pipefail`
 # BEFORE `set -e` is in force, so the script limps on and can exit 0 — a job that
@@ -91,7 +97,7 @@ remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KE
 # refuses to report a status it did not receive.
 (ssh "${sshopts[@]}" "$host" "tr -d '' | bash -s -- $remote_args" <<'REMOTE'
 set -euo pipefail
-name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8 timeout_s=$9
+name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8 timeout_s=$9 docker_args=${10}
 root=~/eureka-verify
 case "$image" in
   eureka-verify-rust:*)
@@ -131,6 +137,7 @@ sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
   -e CARGO_TARGET_DIR=/src/target \
   -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
+  $docker_args \
   -w /src "$image" bash -c "$cmd"
 status=$?
 set -e
