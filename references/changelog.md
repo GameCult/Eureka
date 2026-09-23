@@ -33,6 +33,24 @@ What changed:
 - The committed suites in Huginn, the Epiphany leaf, Idunn and CultLib are
   deleted in their own repos. The tests those suites pointed at stay.
 
+## 2026-09-23: brief Soul's closing pass for a walk-through
+
+Evidence: Ghostlight's play agent pass ran sixteen Soul passes on invariants and
+promises. The seventeenth was briefed differently — not only "did the cut hold"
+but "what happens when a person sits down and plays this" — and it returned the
+two most useful defects of the pipeline, neither of which any invariant covered:
+a card that goes blank for the length of a turn, and a restart that leaves the
+player at a dead end whose only exit is submitting an empty message. A closing
+pass gets that brief, and it names what the operator should do first.
+
+## 2026-09-23: a stale subtraction ledger is not pressure
+
+Evidence: the same pass met its subtraction budget once, at the cut that deleted
+the old drivers, and never revisited it. Sixteen cuts later every fix batch had
+been net additive and nobody had looked; the miss surfaced in the postmortem
+rather than in a cut. Self reconciles the ledger at each cut's landing, or it
+stops being a budget and becomes a sentence in an old document.
+
 ## 2026-09-23: name the inference, not the line
 
 Evidence: Ghostlight's play agent pass carried one defect shape through five
