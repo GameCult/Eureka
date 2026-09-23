@@ -854,3 +854,43 @@ the ruling with evidence.
 
 A ruling that names a flag, option or API is a factual claim about a tool.
 Check it, or say it is unverified and let Hands confirm before building on it.
+
+## 2026-09-23: a test's fixture must be the shape production uses
+
+Evidence, from three consecutive Soul passes over one Idunn file and one
+selection batch:
+
+- Every `digest_artifact` test wrapped its file in a directory so the tree
+  path ran. Production hands that function a **bare file**, immediately before
+  launch. The fast path was blind to setuid, mode and file capabilities, and
+  no test reached it. One test's doc comment claimed to pin exactly the
+  scenario it never touched.
+- A row-tiebreak test passed with the tiebreak **reverted and swapped**,
+  purely because of which real schema hash happened to sort first. It was
+  degenerate for its whole life and looked green.
+- An xattr test pinned presence against absence. The thing that carries
+  privilege is the **value**, and nothing hashed it.
+
+So: **write the fixture at the shape production uses**, and where that is
+genuinely impossible, say so in one line in the test. A fixture chosen for
+convenience produces a green suite over an untested path, which is worse than
+a gap because it is counted as coverage.
+
+Corollary, from the same passes: **a test whose inputs come from real
+identifiers (hashes, generated ids) can pass by accident of their ordering.**
+Derive the fixture's keys from the ids discovered at runtime, then confirm the
+test fails when the rule is broken.
+
+## 2026-09-23: a convention is not an invariant; move it into the compiler
+
+Evidence: a call-counter pin was an honour system, so it was replaced by a
+narrow port that charges inside the syscall method. Soul then restored the
+original bug in two spellings **around** the port, with the whole suite green,
+and the leak was already in the file — another function still called
+`fs::read_link` directly.
+
+Each round made the convention more elaborate without making it binding.
+Where a rule says "all access goes through X", the enforcement belongs in the
+build: a `disallowed-methods` lint, a module boundary, a private type — not a
+comment, and not a habit. **If the fix is another thing to remember, it is the
+same defect one level up.**
