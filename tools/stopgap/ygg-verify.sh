@@ -47,6 +47,7 @@
 #
 # Usage (Git Bash on Starfire):
 #   ygg-verify.sh <local-repo> <rev> <image> '<command>'
+#   TIMEOUT=<seconds> caps the job (default 3600); a killed job exits non-zero.
 # Images:
 #   rust    eureka-verify-rust:<Dockerfile hash>   (rust 1.95 plus cargo-mutants)
 #   dotnet  mcr.microsoft.com/dotnet/sdk:10.0   (install Stryker in the command:
@@ -59,6 +60,7 @@ set -euo pipefail
 
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
 host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-12g}; slots=${SLOTS:-3}
+timeout_s=${TIMEOUT:-3600}
 here=$(cd "$(dirname "$0")" && pwd)
 sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 
@@ -79,7 +81,7 @@ esac
 # ssh joins its arguments into one string that the remote shell splits again,
 # so every argument is quoted here. Without that, `a && b` in the command runs
 # b on the host.
-remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd")
+remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KEEP:-0}" "$cmd" "$timeout_s")
 # The heredoc below travels with whatever line endings this file has on disk.
 # On Windows that is CRLF, and the remote bash then fails on `set -euo pipefail`
 # BEFORE `set -e` is in force, so the script limps on and can exit 0 — a job that
@@ -89,7 +91,7 @@ remote_args=$(printf '%q ' "$name" "$sha" "$image" "$cpus" "$mem" "$slots" "${KE
 # refuses to report a status it did not receive.
 (ssh "${sshopts[@]}" "$host" "tr -d '' | bash -s -- $remote_args" <<'REMOTE'
 set -euo pipefail
-name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8
+name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8 timeout_s=$9
 root=~/eureka-verify
 case "$image" in
   eureka-verify-rust:*)
@@ -116,8 +118,15 @@ trap 'if [ "$keep" != 1 ]; then sudo rm -rf -- "$work"; fi' EXIT
 git clone -q --no-checkout "$root/repos/$name.git" "$work"
 git -C "$work" checkout -q --detach "$sha"
 echo "ygg-verify: $name@${sha:0:10} slot $slot, image $image, cpus $cpus, mem $mem, work $work" >&2
+# A job that hangs must come back red, not hold its slot and its caller forever
+# (2026-09-23: a test process idled at 0% CPU for 25 minutes and the agent
+# waiting on it never woke). The watchdog kills the named container; killing
+# the docker client alone would leave the container running.
+cname="eureka-verify-$slot-$$"
+( sleep "$timeout_s"; sudo docker kill "$cname" >/dev/null 2>&1 && echo "ygg-verify: TIMEOUT after ${timeout_s}s, container killed" >&2 ) &
+watchdog=$!
 set +e
-sudo nice -n 10 docker run --rm --cpus="$cpus" --memory="$mem" \
+sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -v "$work:/src" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
   -e CARGO_TARGET_DIR=/src/target \
@@ -125,6 +134,7 @@ sudo nice -n 10 docker run --rm --cpus="$cpus" --memory="$mem" \
   -w /src "$image" bash -c "$cmd"
 status=$?
 set -e
+kill "$watchdog" 2>/dev/null || true
 echo "ygg-verify: exit $status" >&2
 echo "__YGG_VERDICT__ $status"
 exit $status
