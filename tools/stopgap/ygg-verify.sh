@@ -32,6 +32,14 @@
 # There is no hand-written mutation harness: the operator retired it on
 # 2026-09-22. Mutation testing uses the ecosystem's tools on a cut's diff.
 #
+# TWO RAKES, both paid for on 2026-09-23:
+#  * The command runs under `bash -c`, so piping the WHOLE command into tail or
+#    grep discards its exit status and the verdict sentinel faithfully reports
+#    the pipeline's zero. Keep the job's own exit status last: run the command,
+#    then filter its saved output, or use `set -o pipefail` inside the command.
+#  * CultLib has no Cargo.toml at its root. A rust job must `cd packages/<crate>`
+#    first, or cargo fails in a way that looks like the image is wrong.
+#
 # EDITING: bash reads a running script from disk as it goes, so editing this
 # file in place breaks every job still running it (one died with "unexpected
 # EOF", 2026-09-22). Write the new version to a temp file and rename it over
