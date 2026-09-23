@@ -947,3 +947,44 @@ a reason other than the rule. **After writing a test, break the rule and watch
 it fail** — that step is what separates these from real coverage, and it is
 already in the Hands brief. Where a fixture's values come from generated
 identifiers, derive them at runtime instead of hoping their order cooperates.
+
+## 2026-09-23: name a tool's absolute path in every brief, every time
+
+Evidence: a Hands brief said "use `ygg-verify.sh`" without its path, where
+earlier briefs had given
+`C:\Users\Meta\.claude\skills\eureka\tools\stopgap\ygg-verify.sh`
+in full. The agent searched the obvious repositories, did not find it, and
+**did the whole batch's verification locally instead** — on the operator's
+workstation, which the load budget forbids for exactly this work.
+
+It reported the gap plainly rather than claiming the bar was met, and left its
+branch unpushed so the work would not look merge-ready. That is the right
+behaviour and it is the only reason the gap was visible.
+
+- **Give every tool an absolute path in the brief.** A name is a guess; a path
+  is an instruction. Self dropped the path when shortening a brief that had
+  grown long.
+- **State what to do when a named tool cannot be found**: stop and report, do
+  not substitute. A substitution that silently relocates work onto a forbidden
+  host is worse than a stalled batch.
+
+## 2026-09-23: a redundancy ruling must be probed at the shape that breaks it
+
+Evidence: Self ruled a `!member.IsReference` guard was duplicate authority and
+ordered it deleted, following a Soul finding. Hands verified, concluded the
+same, and wrote the premise into the source: "index aliases are unique per
+descriptor". **Source contradicts it** — the uniqueness check groups only
+members that *have* an alias, so a plain data member's bare name shares the
+role namespace unchecked. A legal document shape then took every hop path into
+an untyped exception, which the batch's own new backstop swallowed silently.
+
+This is the **second** redundancy ruling in this campaign to be wrong. The
+first, in Idunn, was caught by Hands hand-tracing before deleting. This one was
+not, because both Self and Hands reasoned from the same property and neither
+constructed the shape that would break it.
+
+- **Before deleting a guard as redundant, build the input that would need it**
+  and show the other authority handling it. An argument from a property is not
+  evidence; the property is what is in question.
+- **A guard that filters by kind is not duplicate authority** merely because a
+  downstream owner also filters. Ask what each one protects.
