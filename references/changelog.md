@@ -33,6 +33,21 @@ What changed:
 - The committed suites in Huginn, the Epiphany leaf, Idunn and CultLib are
   deleted in their own repos. The tests those suites pointed at stay.
 
+## 2026-09-23: name the inference, not the line
+
+Evidence: Ghostlight's play agent pass carried one defect shape through five
+instances, each fixed only where it was reported. A committed `dist/` file
+existed, therefore the client bridge worked (PA.f176). `git rev-parse` exited
+zero, therefore the directory was a checkout — git had walked up to the parent
+repo (PA.f193-C). A canonical-form check failed, therefore the row was
+unreadable, so a readable save was destroyed (PA.f193-B). A schema id was
+unrecognised, therefore the row could not be read, with no decode attempted
+(PA.f194-A). Cargo printed `ok`, therefore the fixture was live — the test was
+`#[ignore]`d and never ran (PA.f194-B). Each local fact was true and each
+inference was false. The last one lived in a runbook: making a silent skip
+visible inside cargo's summary moved the same silent green up into the
+operator's weekly command, where nothing in the suite could see it.
+
 ## 2026-09-22: a test's inputs come from production
 
 Evidence: Ghostlight's play agent 8a-fix3 (`754c7fe`) ruled that the DM agent

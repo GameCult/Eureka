@@ -106,6 +106,12 @@ test, killed by fixing a degenerate fixture, or equivalent with a one-line
 reason. A survivor that weakens a rule and cannot be killed is reported, not
 hidden. Code no tool reaches gets behavioural tests at the layer where the
 rule is decided, never a committed mutation suite (operator, 2026-09-22).
+A fix for a proxy-for-truth defect is not done until every other site that
+draws a conclusion from the same class of evidence has been enumerated and
+ruled on in writing, including sites outside the repo. Name the inference, not
+the line. And a change to how a test reports — an ignore, a filter, a skip, a
+guard — is followed by running every command in the owning runbook verbatim and
+reading what it prints: that surface is the one a test suite cannot check.
 A test's inputs come from the production path the rule is about. A helper
 that re-spells what production prints, parses or derives makes the test agree
 with a copy, and the rule then breaks in production with the suite green.
