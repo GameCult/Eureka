@@ -894,3 +894,41 @@ Where a rule says "all access goes through X", the enforcement belongs in the
 build: a `disallowed-methods` lint, a module boundary, a private type — not a
 comment, and not a habit. **If the fix is another thing to remember, it is the
 same defect one level up.**
+
+## 2026-09-23: concurrent mutation runs do not give reproducible verdicts here
+
+Evidence: the same commit, mutated three times at `-j4` on the stopgap's Rust
+image, produced **different missed and timeout sets each time** — one mutant
+flipped between missed and caught with no code change — while every `-j1` run
+reproduced an identical result. The likely cause is the shared
+`CARGO_TARGET_DIR` under concurrent mutant builds, which is the same class as
+this file's existing shared-target scar.
+
+- **Confirm a survivor list at `-j1` before ruling on it.** A killed mutant
+  that was genuinely killed stays killed, so a *score* is roughly usable; a
+  **survivor list from a concurrent run cannot be trusted as complete**, and
+  survivors are what drive rulings.
+- This applies to Stryker's `--concurrency` as well. Figures in the Aetheria
+  and CultNet campaigns taken at concurrency 4 are provisional; where they
+  drove a ruling, the ruling stands on the hand-confirmed mutation beside it,
+  not on the count.
+- Per-mutant build isolation costs wall-clock: roughly triple per mutant at
+  `-j1`. Budget for it, and scope the run rather than raising concurrency to
+  make a sweep fit.
+
+## 2026-09-23: fixtures that satisfy an assertion by coincidence
+
+Three instances inside two days, all green, all proving nothing:
+
+- A row-tiebreak test passed with its rule reverted **and** swapped, because
+  of which real schema hash happened to sort first.
+- A sign-bit mutation survived tests using 1.0 and 2.0, whose **bit 0
+  coincidentally matches their sign bit**. `-1.0` and `-2.0` killed it.
+- Artifact-digest tests wrapped a file in a directory, so they exercised a
+  path production never takes.
+
+The shared cause is a fixture whose values happen to satisfy the assertion for
+a reason other than the rule. **After writing a test, break the rule and watch
+it fail** — that step is what separates these from real coverage, and it is
+already in the Hands brief. Where a fixture's values come from generated
+identifiers, derive them at runtime instead of hoping their order cooperates.
