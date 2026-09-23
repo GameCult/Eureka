@@ -129,7 +129,9 @@ echo "ygg-verify: $name@${sha:0:10} slot $slot, image $image, cpus $cpus, mem $m
 # waiting on it never woke). The watchdog kills the named container; killing
 # the docker client alone would leave the container running.
 cname="eureka-verify-$slot-$$"
-( sleep "$timeout_s"; sudo docker kill "$cname" >/dev/null 2>&1 && echo "ygg-verify: TIMEOUT after ${timeout_s}s, container killed" >&2 ) &
+# The subshell must not inherit the slot lock: its sleep outlives a job that
+# finishes early, and an inherited fd held slot 2 for an hour (2026-09-23).
+( exec {fd}>&-; sleep "$timeout_s"; sudo docker kill "$cname" >/dev/null 2>&1 && echo "ygg-verify: TIMEOUT after ${timeout_s}s, container killed" >&2 ) &
 watchdog=$!
 set +e
 sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
@@ -141,6 +143,7 @@ sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -w /src "$image" bash -c "$cmd"
 status=$?
 set -e
+pkill -P "$watchdog" 2>/dev/null || true
 kill "$watchdog" 2>/dev/null || true
 echo "ygg-verify: exit $status" >&2
 echo "__YGG_VERDICT__ $status"
