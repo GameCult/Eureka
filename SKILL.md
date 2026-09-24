@@ -324,6 +324,15 @@ cut.** In the CultCache migration, Cuts 6 and 6b each needed four Soul passes, a
 the later passes still found real defects. Stop when a pass finds nothing that
 blocks, or only findings the operator chooses to record.
 
+**Quota is spent through scope, not through the number of passes.** On
+2026-09-23 the operator flagged that 60% of the weekly quota had gone in one
+day with little of it on the StreamPixels critical path. After that, Self ran
+one full Soul gate per cut. A fix batch went only to findings on the critical
+path, and the rest were recorded as follow-ups. Every later Soul pass covers
+only the fix batch's diff, as the second-pass clause in `briefs.md` says, and a
+small delta gets a narrow Sonnet pass. This does not cap the loop on a
+foundation cut. It keeps each pass the right size.
+
 When the same kind of finding recurs, the brief was missing context. Fix the
 brief template, not only the instance. That is how "operator rulings each need
 their own failing mutation" entered the Hands brief.

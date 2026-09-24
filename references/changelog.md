@@ -1006,3 +1006,36 @@ constructed the shape that would break it.
   evidence; the property is what is in question.
 - **A guard that filters by kind is not duplicate authority** merely because a
   downstream owner also filters. Ask what each one protects.
+
+## 2026-09-24: quota, oversized fix batches, and greens that ran nothing
+
+Evidence from the StreamPixels transport campaign (Cuts E and F, merged in
+StreamPixels `2d4215c`):
+
+- **Quota.** Partway through 2026-09-23, the operator flagged that 60% of the
+  weekly quota had gone in one day, with little of it on the StreamPixels path,
+  and redirected all work there ("We need that TO EAT"). SKILL.md section 5
+  now says that quota is spent through scope: one full Soul gate per cut, fix
+  batches only for findings on the critical path, and narrow Sonnet passes for
+  small deltas.
+- **Oversized fix batches.** One brief packed about ten items, a subtraction,
+  two hosts and a late addition. It ran to about 800k tokens over 2.6 hours.
+  Another batch passed 550k and produced sloppy code. After batches were split
+  per file, they stayed at about 200-400k. This is the 2026-09-18 context
+  budget rule again. `briefs.md` now says to use one fix batch per file.
+- **Greens that ran nothing.** A zero-match `node --test` glob exited 0.
+  vitest discovered zero tests under a script's `--dir .` (`cc71ce2`).
+  `pnpm --filter X test -- <files>` did not filter (`4624b53`). A job-wide
+  `DATABASE_URL` would have switched unrelated suites onto Postgres
+  (`e019de0`). `briefs.md` now requires a non-zero count for each named file.
+- **"Pre-existing" was used as a verdict.** Several agents waved a failing test
+  through as pre-existing. It had never passed on a clean checkout, because it
+  read a git-ignored, licensed asset pack (`27053f9`). A transient Windows file
+  lock was also called pre-existing, because the base commit was tested under
+  the same lock. `briefs.md` now asks for a one-line cause for every failure,
+  including ones that are not yours.
+- **An agent waited forever on a hung job.** The fix went into the owner:
+  `ygg-verify.sh` got a watchdog (`9359e9c`), and then the watchdog's `sleep`
+  was stopped from holding a slot lock through an inherited file descriptor
+  (`dbe594e`). The commits and the script header record the details.
+

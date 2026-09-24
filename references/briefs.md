@@ -115,6 +115,23 @@ reading what it prints: that surface is the one a test suite cannot check.
 A test's inputs come from the production path the rule is about. A helper
 that re-spells what production prints, parses or derives makes the test agree
 with a copy, and the rule then breaks in production with the suite green.
+A green run is not evidence until it shows a non-zero count for the tests you
+meant to run. Paste the count for each named file. On StreamPixels, all three
+of these produced a green that had run nothing, or the wrong thing:
+- A `node --test` glob that matches no files exits 0.
+- A package script's `--dir .` made vitest discover zero tests (`cc71ce2`).
+- `pnpm --filter X test -- <files>` ran the whole suite instead of the named
+  files (`4624b53`).
+Set environment variables only on the step that needs them. Exporting
+`DATABASE_URL` for the whole job silently moves `app.test.ts` onto the
+Postgres driver (`e019de0`).
+"Pre-existing" is not a diagnosis. A failure that is not yours still gets a
+one-line cause: what it depends on, and whether it has ever passed on a clean
+checkout. Several agents waved a StreamPixels test through as pre-existing. It
+read a git-ignored, licensed asset pack and had never passed on a clean
+checkout (`27053f9`). Reproducing a failure at the base commit proves nothing
+when both runs share the cause, for example a Windows file lock on the same
+machine.
 A hand mutation hits the rule at the layer it protects: the production call
 site, observed where the consequence lands (disk, the kernel, the request
 sent). Mutating a helper or an in-memory mirror proves the helper, not the
@@ -142,6 +159,13 @@ one worker's head, and the brief says how:
 - **Carry the cut inline.** Quote the cut's own section in the brief instead of
   pointing at a long map; a worker that reads 900 lines to find 60 has spent
   its budget before it starts.
+- **One fix batch per file.** A batch that packs many findings, a
+  subtraction, two hosts and a late addition does not fit in one head. On
+  StreamPixels on 2026-09-23, one batch of about ten items ran to about 800k
+  tokens over 2.6 hours, and another passed 550k and produced sloppy code.
+  After the findings were split per file, batches stayed at about 200-400k. A
+  late item gets its own brief. Do not add it to a batch that is already
+  planned.
 - **Keep expensive scaffolding alive across cuts** (a pinned dependency
   worktree, a warm build) rather than creating and removing it per pass.
 - **Hand back rather than push through.** A worker that finds itself far past
