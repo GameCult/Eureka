@@ -72,6 +72,11 @@ Spec standard, matching the existing cuts:
   state, forbidden writers, shared paths, deletion line)
 - verification: builds, tests with the rule each one pins, Unity or other
   runtimes, negative greps, and the operator checks
+- the deploy owner: for any cut that changes what a service needs (transport,
+  env, dependency, state), the recipe, binding and runbook that must admit it,
+  changed in the same pass (Ghostlight, 2026-09-23)
+- every seam with a foreign owner: the owner's code or published schema the
+  fixture is built from, not our own struct
 
 If a cut would not fit one Hands pass under <Self's context budget, SKILL.md
 step 3>, split it with an explicit order and a verification step for each part.
@@ -97,6 +102,9 @@ first. Pinned siblings: <repo@sha>. Do not change them.
 Standing rulings: <short list>.
 - Gaps are filled in their owner, never with local helpers.
 - Delete before adding. No shims.
+- One rule, one path. A simpler case of the rule (one lane, one cell, an
+  empty set) runs through the general path, not a fast path beside it. If a
+  second path looks necessary, stop and report it; do not build it.
 
 Every rule the spec or the operator names gets a behavioural test. Measure the
 suite with <the ecosystem's mutation tool>, scoped to this cut's diff
@@ -260,7 +268,11 @@ Hands promised:
 
 Falsify specifically:
 - <the load-bearing claim, and what would make it false>
-- <where split authority could hide>
+- <where split authority could hide. Two paths that decide the same rule are
+  a defect whether or not they agree today, so report the split itself as
+  CONFIRMED and do not spend the pass proving the paths equivalent. Look for
+  a survey or check that picks between an "ordinary" and a "special" case of
+  one rule, and name the single path that replaces both>
 - <which tests might pin spelling instead of behaviour; rerun N mutations,
   including ones that are not plain reverts>
 - <the layer where the invariant really fails: wire bytes, another runtime's
@@ -277,6 +289,9 @@ Falsify specifically:
   `if false` or `true ||`). A scanner is a tripwire with stated limits, not
   proof of a semantic property>
 - <leftover greps>
+- <for every seam with another owner: build the fixture from that owner's code
+  or schema and prove both directions; a fixture that restates our struct can
+  only agree with its author>
 - rerun the builds, tests and captures yourself
 
 Rerun the mutation tool on the range yourself; do not trust Hands' survivor

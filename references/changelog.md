@@ -1007,6 +1007,35 @@ constructed the shape that would break it.
 - **A guard that filters by kind is not duplicate authority** merely because a
   downstream owner also filters. Ask what each one protects.
 
+## 2026-09-23: a pipeline that never runs the whole path has not finished
+
+Evidence: Ghostlight's play-agent pass ended with Soul judging "the bar is
+met" across 17 cuts and ~196 findings. The first person to press a button
+then found about twenty more defects in one day, one per step of the real
+path: sign-in, Heimdall discovery, receipts, the Idunn v2 recipe, binding,
+runtime bundle, PID namespace, presence races, lease wait, Odin readiness,
+the browser return, the completion request, session expiry, the model
+watchdog. **Almost every one was a consumer restating its own picture of a
+neighbour** (a strict struct, a fixture, a hand-built request, an old
+contract) and tests that could only agree with their author. The deploy
+path itself had been written three weeks before the capability it
+deployed and no cut map ever named it.
+
+- **A capability cut names its deploy owner.** Any cut that adds or changes
+  what a service needs (transport, env, dependency, state) names the recipe,
+  binding and runbook that must admit it, and those change in the same pass.
+- **Prove each seam against the real counterpart, both directions.** A
+  fixture copied from our own struct proves nothing about the owner's
+  document; build fixtures from the owner's code or published schema, and
+  make the default fixture differ from our assumption where the owner's
+  does.
+- **Run the whole path before calling a pass done:** the deploy through the
+  real deployer, sign-in with a real identity, one real turn. A green suite
+  on the author's platform is not that; run the target platform's suite
+  before handing a build to the gate.
+- **Every refusal must be visible to the operator.** A silent denial cost
+  hours of reverse-engineering from byte counts.
+
 ## 2026-09-24: quota, oversized fix batches, and greens that ran nothing
 
 Evidence from the StreamPixels transport campaign (Cuts E and F, merged in
@@ -1085,3 +1114,20 @@ public landing page in `eureka-site` already calls it Life.
   Stewardship" section and the `mind-steward` agent definition still use the
   old name. SKILL.md defers to doctrine for the agent type instead of naming
   it, so it stays correct whichever name doctrine settles on.
+
+## 2026-09-25: split authority is a defect by itself
+
+In Aetheria fire control Cut 12.3, the operator ruled that multi-cell items absorb proportionally
+across lanes. Hands then built a survey that sent each shot down either the old sequential walk
+or a new pooled walk, depending on whether any item was shared. Self's Soul brief asked whether
+the two paths could disagree, which treated the split as acceptable as long as they agreed. The
+operator: "Do not expect items taking up multiple cells to be an exception, this should be one
+code path", and "such obviously unnecessary split authority should never pass a Soul pass."
+
+- The Hands brief template gains "one rule, one path": a simpler case runs through the general
+  path, and a second path is reported, never built.
+- The Soul template's split-authority line now says two paths deciding one rule are CONFIRMED
+  on sight, and that the pass names the single path instead of testing equivalence.
+- The root cause was Self's own map wording, "with no shared item it equals sequential
+  absorption exactly", which read as permission for a special path. Maps state the general
+  rule and let the degenerate case fall out of it.
