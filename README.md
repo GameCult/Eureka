@@ -54,7 +54,7 @@ motivated it. The skill is accumulated scar tissue, not a design.
 - **Hands** executes one cut, in small pushed commits, and never updates the map.
 - **Soul** runs against the executed commits and tries to falsify every promise,
   building its own probes rather than trusting the report.
-- **Mind Steward** keeps memory honest at phase boundaries.
+- **Life** keeps memory honest at phase boundaries.
 - **The operator** rules on real forks, and only on real forks.
 
 It is the Claude Code counterpart of

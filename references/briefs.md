@@ -8,7 +8,7 @@ short form rather than pointing at a long document the agent may skim.
 - Imagination: map or refresh a cut
 - Hands: execute a cut
 - Soul: falsify executed work
-- Mind Steward: phase boundary
+- Life: phase boundary
 - Eyes: gather evidence
 
 ---
@@ -296,7 +296,7 @@ plus one rerun of the suite. Do not re-derive the whole cut unless an
 invariant moved. Say in one sentence whether the cut closes.
 ```
 
-## Mind Steward: phase boundary
+## Life: phase boundary
 
 ```
 Phase boundary: <what landed, SHAs>. The authoritative record is <map, target>;

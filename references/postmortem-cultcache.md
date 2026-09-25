@@ -8,7 +8,8 @@ only the evidence behind the skill's rules, so that the reasons for the rules
 survive.
 
 **Scale:** 114 subagents ran: 50 Hands, 32 Soul, 3 Imagination, 23
-Eyes/Explore and 6 Mind Stewards. Aetheria went +5.6k / −36.9k lines.
+Eyes/Explore and 6 Life passes (then called Mind Stewards). Aetheria went
++5.6k / −36.9k lines.
 
 **Soul:** 29 of 32 passes found at least one real defect that Hands' tests
 passed, about 75 in all. These included:

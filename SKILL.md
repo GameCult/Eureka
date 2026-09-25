@@ -1,6 +1,6 @@
 ---
 name: eureka
-description: Eureka runs a foundation change as a faculty pipeline for Claude Code agents. It is the skill counterpart of Epiphany. The root agent acts as Self and routes the work. The target shape is written first, Imagination maps the cut, Hands executes one cut at a time, Soul verifies by trying to falsify what Hands promised, a Mind Steward keeps memory honest at phase boundaries, and the operator rules on real forks. Use it for any migration, rebuild, teardown, cross-repo or cross-runtime change, infrastructure swap, or multi-cut refactor, especially on shared GameCult substrate (CultLib, CultCache, CultNet, CultMesh, CultMath). Also use it when the operator says "Eureka", "map the cut", "Imagination pass", "Soul pass", "Hands", "mini Epiphany loop", or "make this migration look like the last one", or asks to plan and land a change too big for one diff, even without naming the pipeline.
+description: Eureka runs a foundation change as a faculty pipeline for Claude Code agents. It is the skill counterpart of Epiphany. The root agent acts as Self and routes the work. The target shape is written first, Imagination maps the cut, Hands executes one cut at a time, Soul verifies by trying to falsify what Hands promised, Life keeps memory honest at phase boundaries, and the operator rules on real forks. Use it for any migration, rebuild, teardown, cross-repo or cross-runtime change, infrastructure swap, or multi-cut refactor, especially on shared GameCult substrate (CultLib, CultCache, CultNet, CultMesh, CultMath). Also use it when the operator says "Eureka", "map the cut", "Imagination pass", "Soul pass", "Hands", "mini Epiphany loop", or "make this migration look like the last one", or asks to plan and land a change too big for one diff, even without naming the pipeline.
 ---
 
 # Eureka
@@ -44,7 +44,7 @@ work has lost the point.
 | **Imagination** | the Body (source, docs, probes), plus the target | the cut map: the target shape specified to `file:line` | commit code, choose a product fork silently |
 | **Hands** | one cut of the map | small pushed commits, a report with evidence | redesign the spec, work around a fork, update the map |
 | **Soul** | Hands' *executed* commits | findings, CONFIRMED or PLAUSIBLE, each with `file:line` and a failure scenario | edit, commit, or review a plan (a pass on a plan is Imagination) |
-| **Mind Steward** | memory surfaces | named mutations and proposals | touch Body code, restate what an owner doc already records |
+| **Life** | memory surfaces | named mutations and proposals | touch Body code, restate what an owner doc already records |
 | **Eyes** (optional) | history, transcripts, logs | a facts file with evidence pointers | conclude or recommend |
 | **Operator** | forks and product meaning | rulings | (not an agent) |
 
@@ -68,7 +68,8 @@ finished when Hands can go straight to the cut.
 - State the scope boundary out loud. The earlier Aetheria attempt failed because
   it bundled cache, mesh, eve and daemons into one change. One foundation per
   pipeline.
-- Dispatch the Mind Steward before the first consequential action.
+- Dispatch Life before the first consequential action. Global doctrine names
+  the agent type that carries it.
 
 ### 0b. Settle identity, lifecycle and authority before any cut is mapped
 
@@ -380,7 +381,7 @@ and silently skipped publish jobs surfaced only after tags were out. CultLib
 1.0.58 shipped a wire-parity defect that was found and corrected 74 minutes
 later.
 
-### 6. Land, record, steward
+### 6. Land, record, run Life
 
 After each cut:
 
@@ -391,7 +392,7 @@ After each cut:
   by roughly 1,200 lines, and nobody looked, because the ledger stopped being
   updated after Cut 4.
 - Self commits and pushes the map. Hands and Soul never touch it.
-- At phase boundaries, a Mind Steward pass moves durable rulings to their owners,
+- At phase boundaries, a Life pass moves durable rulings to their owners,
   retires superseded memory, and falsifies at least one persisted claim.
 
 At the end, Self writes the postmortem (see `references/postmortem-template.md`)
@@ -410,7 +411,7 @@ and reconciles the target doc with the Body.
 - **Choose models by how critical the pass is, and name the model on every
   dispatch.** Put the scarce strong model on Imagination and on Soul passes
   over cuts that put the foundation at risk. Hands, search, probes and
-  stewards take the cheaper tier, named explicitly: "default" inherits the
+  Life take the cheaper tier, named explicitly: "default" inherits the
   root session's model, so a root running on the strong model silently
   spends it on every Hands pass unless Self says otherwise. A cheaper Soul
   model does not soften its brief: it still attacks, invariants first. When

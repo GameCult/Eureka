@@ -1063,3 +1063,25 @@ before sending it. So did "one fix batch per file", which is also Self's call.
   step 3; "one fix batch per file" moved out of it into step 3. The Imagination
   template's split clause names the budget as a placeholder Self fills in.
 - SKILL.md section 5 no longer describes the 2026-09-23 spend as misplaced.
+
+## 2026-09-25: the Mind Steward faculty is renamed Life
+
+Operator ruling, 2026-09-25. In Epiphany and Aquarium the organ is called Life
+(role id `reorientation`; Aquarium
+`docs/epiphany-agent-sdf-visual-language.md`, section "Life"): continuity,
+pressure, reorientation, resume and regather posture, and memory survival. The
+operator: Life is "a much better fit as the actual load-bearing organ." The
+public landing page in `eureka-site` already calls it Life.
+
+- SKILL.md (frontmatter, faculty table, dispatch lines, step 6, model
+  allocation), README.md and `briefs.md` now say Life.
+- The role is unchanged: Life still does what the Mind Steward did, memory
+  hygiene at phase boundaries. Any wider scope is a separate ruling.
+- Dated records keep the old name where it is what happened: the entries in
+  this file, and the 2026-09-15 Epiphany comparison, which gains a note that
+  its faculty names are as of that date. The CultCache postmortem's agent
+  count reads "Life passes (then called Mind Stewards)".
+- The operator owns the dispatch mechanics: global doctrine's "Agent Mind
+  Stewardship" section and the `mind-steward` agent definition still use the
+  old name. SKILL.md defers to doctrine for the agent type instead of naming
+  it, so it stays correct whichever name doctrine settles on.

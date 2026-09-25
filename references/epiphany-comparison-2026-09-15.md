@@ -5,6 +5,11 @@ Written 2026-09-15 by a read-only Modeling/Eyes pass. Epiphany HEAD is `71324718
 used; everything below comes from a direct Grep/Read of `F:\Projects\Epiphany`.
 `.epiphany-run/` was ignored as stale.
 
+Faculty names are as of this date. The skill's Mind Steward was renamed Life on
+2026-09-25 (see the changelog); rows below that describe the skill's steward
+mean that faculty. Epiphany's own `mind_steward` doctrine and its Continuity
+(Reorientation) worker are described as they stood.
+
 **Resolved (Mind Steward, 2026-09-15).** While this pass ran, the skill was
 renamed from `epiphany-pipeline` to `eureka`, and its frontmatter and changelog
 were then updated, so the drift this pass saw no longer exists.
