@@ -73,8 +73,8 @@ Spec standard, matching the existing cuts:
 - verification: builds, tests with the rule each one pins, Unity or other
   runtimes, negative greps, and the operator checks
 
-If the cut is too large for one Hands pass, split it with an explicit order and
-a verification step for each part.
+If a cut would not fit one Hands pass under <Self's context budget, SKILL.md
+step 3>, split it with an explicit order and a verification step for each part.
 
 Where only the operator can decide, list an explicit question with a
 recommended option.
@@ -150,8 +150,8 @@ Context is a budget, and a worker that fills it gets careless before it gets
 stuck. Aetheria's stats and shield cuts ran Hands past 400k tokens and the late
 work in those runs is where the sloppy claims appeared: a mutation reported
 against code that had moved, a failure called environmental without a check, a
-table printing numbers the old code never produced. So Self sizes a cut to fit
-one worker's head, and the brief says how:
+table printing numbers the old code never produced. Self sized this cut to fit
+one head (SKILL.md, step 3); keep it fitting:
 
 - **Verify once, at the end.** Not after every edit. A full mutation sweep and
   a batchmode compile per edit is most of a long run's spend and proves nothing
@@ -159,13 +159,6 @@ one worker's head, and the brief says how:
 - **Carry the cut inline.** Quote the cut's own section in the brief instead of
   pointing at a long map; a worker that reads 900 lines to find 60 has spent
   its budget before it starts.
-- **One fix batch per file.** A batch that packs many findings, a
-  subtraction, two hosts and a late addition does not fit in one head. On
-  StreamPixels on 2026-09-23, one batch of about ten items ran to about 800k
-  tokens over 2.6 hours, and another passed 550k and produced sloppy code.
-  After the findings were split per file, batches stayed at about 200-400k. A
-  late item gets its own brief. Do not add it to a batch that is already
-  planned.
 - **Keep expensive scaffolding alive across cuts** (a pinned dependency
   worktree, a warm build) rather than creating and removing it per pass.
 - **Hand back rather than push through.** A worker that finds itself far past

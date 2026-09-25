@@ -188,6 +188,29 @@ question mattered, the operator said not at all.
 
 ### 3. Hands executes one cut
 
+**Size the cut against Hands' context budget before dispatch.** Self owns this,
+for map cuts and fix batches alike. Sonnet degrades at about 0.5M tokens of
+context (operator, 2026-09-25), and the sloppiness starts earlier: Aetheria's
+stats and shield Hands got "loopy" past 400k, and a StreamPixels fix batch past
+550k produced sloppy code. Treat 0.5M as the danger line, never the target.
+Before dispatch, Self estimates what the run will carry:
+
+- the brief, with the cut quoted inline;
+- the source Hands must read to edit safely: the files it touches and their
+  direct callers, not the repo;
+- one verification round at the end and one fix round, with their output;
+  test and mutation logs are usually the largest items;
+- the number of separate items. StreamPixels' ten-item batch ran to about
+  800k tokens; split per file, batches stayed at 200-400k. So a fix batch is
+  one file's findings by default.
+
+Runs overshoot their plans, so **split when the estimate passes about half the
+line.** Split by file or by deliverable, each part with its own verification.
+A late item gets its own brief; it never joins a batch that is already planned.
+Splitting a cut always beats a bloated brief. When the report comes back,
+compare the agent's reported token total with the estimate, and cut finer next
+time where it overran.
+
 Brief Hands with the cut's section of the map, the standing rulings restated
 briefly, and the verification. The brief says:
 
@@ -324,13 +347,15 @@ cut.** In the CultCache migration, Cuts 6 and 6b each needed four Soul passes, a
 the later passes still found real defects. Stop when a pass finds nothing that
 blocks, or only findings the operator chooses to record.
 
-**Quota is spent through scope, not through the number of passes.** On
-2026-09-23 the operator flagged that 60% of the weekly quota had gone in one
-day with little of it on the StreamPixels critical path. After that, Self ran
-one full Soul gate per cut. A fix batch went only to findings on the critical
-path, and the rest were recorded as follow-ups. Every later Soul pass covers
-only the fix batch's diff, as the second-pass clause in `briefs.md` says, and a
-small delta gets a narrow Sonnet pass. This does not cap the loop on a
+**Quota is spent through scope and cut size, not through the number of
+passes.** On 2026-09-23, with 60% of the weekly quota gone in one day, the
+operator redirected all work to the StreamPixels critical path. That spend was
+legitimate work; the operator's regret was the model it ran on (2026-09-25).
+Since then Self has run one full Soul gate per cut. A fix batch goes only to
+findings on the critical path, and the rest are recorded as follow-ups. Every
+later Soul pass covers only the fix batch's diff, as the second-pass clause in
+`briefs.md` says, and a small delta gets a narrow Sonnet pass. Hands' share is
+governed by the context budget in step 3. None of this caps the loop on a
 foundation cut. It keeps each pass the right size.
 
 When the same kind of finding recurs, the brief was missing context. Fix the

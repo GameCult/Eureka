@@ -1039,3 +1039,27 @@ StreamPixels `2d4215c`):
   was stopped from holding a slot lock through an inherited file descriptor
   (`dbe594e`). The commits and the script header record the details.
 
+## 2026-09-25: Self sizes each cut against Hands' context budget
+
+Operator direction, 2026-09-25: Self should spend real attention on inference
+spend, mainly by making cuts smaller so each Hands agent carries less context.
+Hands runs often grow past about 0.5M tokens, which is where Sonnet starts
+behaving badly. The operator's reading of the 2026-09-23 quota spend (about
+60% of a week in one day; the 2026-09-24 entry above) is that it was
+legitimate work; the regret was running it on a more expensive, more verbose
+model just as Opus 5.5 released. Model choice already has an owner in Self's discipline ("name the
+model on every dispatch"); this entry is about context.
+
+The context-budget rule of 2026-09-18 said "Self sizes a cut to fit one
+worker's head" but named no number, and it lived inside the Hands brief
+template, which is text Self sends to Hands rather than a decision Self makes
+before sending it. So did "one fix batch per file", which is also Self's call.
+
+- SKILL.md step 3 now owns cut sizing: Self estimates the brief, the source
+  Hands must read, one verification and one fix round, and the item count,
+  against a 0.5M danger line, and splits when the estimate passes about half
+  of it. It compares the reported token total with the estimate afterwards.
+- `briefs.md`: the Hands template keeps the Hands-facing clauses and points at
+  step 3; "one fix batch per file" moved out of it into step 3. The Imagination
+  template's split clause names the budget as a placeholder Self fills in.
+- SKILL.md section 5 no longer describes the 2026-09-23 spend as misplaced.
