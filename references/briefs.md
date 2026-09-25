@@ -98,6 +98,9 @@ discrepancy. If you hit a real operator fork, stop and report.
 
 Repo/branch: <repo> <branch> at HEAD <sha>. Check that git status is clean
 first. Pinned siblings: <repo@sha>. Do not change them.
+When the brief names a worktree, every tool call's path goes under it: Read,
+Edit and Write as well as the shell's working directory. An absolute path into
+the main checkout silently edits the wrong tree.
 
 Standing rulings: <short list>.
 - Gaps are filled in their owner, never with local helpers.
