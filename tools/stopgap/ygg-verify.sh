@@ -40,10 +40,12 @@
 # 2026-09-22. Mutation testing uses the ecosystem's tools on a cut's diff.
 #
 # TWO RAKES, both paid for on 2026-09-23:
-#  * The command runs under `bash -c`, so piping the WHOLE command into tail or
-#    grep discards its exit status and the verdict sentinel faithfully reports
-#    the pipeline's zero. Keep the job's own exit status last: run the command,
-#    then filter its saved output, or use `set -o pipefail` inside the command.
+#  * The command runs under `bash -o pipefail -c` (pipefail forced since
+#    2026-09-30, after an ack Cut 2 job piped a failing test run into `cut` and
+#    came back exit 0). pipefail does not rescue `a; b`: the job's status is the
+#    LAST statement's, so a command ending in `git checkout`, `echo` or a filter
+#    that succeeds still reports zero. Keep the verdict-bearing command last, and
+#    a grep that matches nothing now fails the job (that is a signal, not noise).
 #  * CultLib has no Cargo.toml at its root. A rust job must `cd packages/<crate>`
 #    first, or cargo fails in a way that looks like the image is wrong.
 #
@@ -168,7 +170,7 @@ sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -e CARGO_TARGET_DIR=/src/target \
   -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
   $docker_args \
-  -w /src "$image" bash -c "$cmd"
+  -w /src "$image" bash -o pipefail -c "$cmd"
 status=$?
 set -e
 pkill -P "$watchdog" 2>/dev/null || true
