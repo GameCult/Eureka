@@ -26,11 +26,13 @@
 #
 # At most $SLOTS jobs run at once on Yggdrasil. The operator raised this to 3 on
 # 2026-09-22 ("the other cores are mostly sitting idle") and asked on 2026-09-30
-# for Yggdrasil to be "absolutely pinned", so it is 5. Each job is capped at 4
-# CPUs and 8 GiB (MEM overrides per job). The CPU caps oversubscribe the 16
-# cores on purpose: jobs run at nice 10, so the live services still win the
-# scheduler. Memory is the real ceiling: 5 x 8 GiB leaves the services their
-# ~17 GiB of the 62.
+# for Yggdrasil to be "absolutely pinned", so it went to 5. Measured the same
+# night: 40% CPU idle and 53 of 62 GiB available with ~20 jobs queued, running
+# jobs using ~1 GiB each. So it is 8, each capped at 4 CPUs and 6 GiB (MEM
+# overrides per job; a big link can ask for more). The CPU caps oversubscribe
+# the 16 cores on purpose: jobs run at nice 10, so the live services still win
+# the scheduler. Memory is the real ceiling: 8 x 6 GiB worst case leaves the
+# services (~9 GiB resident) their share of the 62.
 #
 # A job whose container sits under $5% of one core for $IDLE seconds
 # (default 900) is killed and comes back red: on 2026-09-30 three hung test
@@ -74,7 +76,7 @@
 set -euo pipefail
 
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
-host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-8g}; slots=${SLOTS:-5}
+host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-6g}; slots=${SLOTS:-8}
 timeout_s=${TIMEOUT:-3600}; idle_s=${IDLE:-900}
 docker_args=${DOCKER_ARGS:-}
 here=$(cd "$(dirname "$0")" && pwd)
