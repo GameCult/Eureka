@@ -33,6 +33,10 @@
 # the 16 cores on purpose: jobs run at nice 10, so the live services still win
 # the scheduler. Memory is the real ceiling: 8 x 6 GiB worst case leaves the
 # services (~9 GiB resident) their share of the 62.
+# DISK is the ceiling that bit: at 8 slots (2026-09-30 01:50 CEST) /proc/pressure/io
+# read full avg60=41%, and live Odin's fsyncs stalled long enough for Idunn's route
+# challenges to time out. Back to 5 slots; CPU and memory headroom do not mean
+# IO headroom. Watch /proc/pressure/io before raising this again.
 #
 # A job whose container sits under $5% of one core for $IDLE seconds
 # (default 900) is killed and comes back red: on 2026-09-30 three hung test
@@ -78,7 +82,7 @@
 set -euo pipefail
 
 repo=${1:?local repo}; rev=${2:?revision}; image=${3:?image}; cmd=${4:?command}
-host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-6g}; slots=${SLOTS:-8}
+host=${YGG_HOST:-ygg}; cpus=${CPUS:-4}; mem=${MEM:-6g}; slots=${SLOTS:-5}
 timeout_s=${TIMEOUT:-3600}; idle_s=${IDLE:-900}
 docker_args=${DOCKER_ARGS:-}
 here=$(cd "$(dirname "$0")" && pwd)
