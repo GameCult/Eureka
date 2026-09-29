@@ -67,6 +67,8 @@
 #   flag's own value inside the string if it needs one.
 # Images:
 #   rust    eureka-verify-rust:<Dockerfile hash>   (rust 1.95 plus cargo-mutants)
+#   kotlin  eureka-verify-kotlin:<Dockerfile hash> (JDK 21, kotlinc 2.2.21, Node 24, pwsh;
+#           for packages/cultmesh-kotlin: `pwsh -File build.ps1`)
 #   dotnet  mcr.microsoft.com/dotnet/sdk:10.0   (install Stryker in the command:
 #           dotnet tool install -g dotnet-stryker)
 #   any other value is used as an image name as-is.
@@ -85,7 +87,7 @@ sshopts=(-o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=4)
 sha=$(git -C "$repo" rev-parse --verify "$rev^{commit}")
 name=$(basename "$(git -C "$repo" rev-parse --show-toplevel)")
 case "$image" in
-  rust)   image=eureka-verify-rust:$(sha256sum "$here/rust.Dockerfile" | cut -c1-12) ;;
+  rust|kotlin) image=eureka-verify-$image:$(sha256sum "$here/$image.Dockerfile" | cut -c1-12) ;;
   dotnet) image=mcr.microsoft.com/dotnet/sdk:10.0 ;;
 esac
 
@@ -96,7 +98,8 @@ ssh "${sshopts[@]}" "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work
 # never needs LFS objects pushed; a job that needs one smudges it itself.
 GIT_LFS_SKIP_PUSH=1 git -C "$repo" push -q "ssh://$host/~/eureka-verify/repos/$name.git" "$sha:refs/verify/$sha" --force
 case "$image" in
-  eureka-verify-rust:*) scp -q "$here/rust.Dockerfile" "$host:eureka-verify/images/rust.Dockerfile" ;;
+  eureka-verify-*:*) df=${image#eureka-verify-}; df=${df%%:*}
+    scp -q "$here/$df.Dockerfile" "$host:eureka-verify/images/$df.Dockerfile" ;;
 esac
 
 # ssh joins its arguments into one string that the remote shell splits again,
@@ -115,9 +118,10 @@ set -euo pipefail
 name=$1 sha=$2 image=$3 cpus=$4 mem=$5 slots=$6 keep=$7 cmd=$8 timeout_s=$9 docker_args=${10} idle_s=${11}
 root=~/eureka-verify
 case "$image" in
-  eureka-verify-rust:*)
+  eureka-verify-*:*)
+    df=${image#eureka-verify-}; df=${df%%:*}
     if ! sudo docker image inspect "$image" >/dev/null 2>&1; then
-      sudo nice -n 10 docker build -q -t "$image" -f "$root/images/rust.Dockerfile" "$root/images" >/dev/null
+      sudo nice -n 10 docker build -q -t "$image" -f "$root/images/$df.Dockerfile" "$root/images" >/dev/null
     fi ;;
 esac
 # Take whichever slot frees first. On 2026-09-22 a job waited on one fixed slot
