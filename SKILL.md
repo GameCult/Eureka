@@ -137,6 +137,14 @@ taste:
   note, not deleted. SoA was parked at `parked/cultcache-soa`.
 - A capability the operator has needed across projects is reshaped, not
   removed, even when its current consumers are only tests.
+- **A general-purpose library is judged by what a reasonable consumer would
+  expect, not by our own call counts.** For CultLib, the consumer audit bounds
+  internal duplication and dead internals. It never licenses cutting or
+  omitting public capability. A math type that doesn't serialize, or a runtime
+  missing a sibling runtime's feature, is a gap to fill, not a cut to take.
+  When consumers each carry their own copy of something, the owner-level fix is
+  usually to add it to the library. (Operator, 2026-09-30: "just because we're
+  not using a feature doesn't mean we can cut it".)
 - Where the operator's own original code exists, it is the style bar.
 
 **Keep subtraction cuts separate from behaviour cuts,** so Soul can falsify each

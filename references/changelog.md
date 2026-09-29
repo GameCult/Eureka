@@ -1131,3 +1131,15 @@ code path", and "such obviously unnecessary split authority should never pass a 
 - The root cause was Self's own map wording, "with no shared item it equals sequential
   absorption exactly", which read as permission for a special path. Maps state the general
   rule and let the degenerate case fall out of it.
+
+## 2026-09-30: consumer audit bounds internals, not a general library's public surface
+
+- Evidence: P4 (collapse Geometry's CultVec types into CultMath) found that CultMath's `float2`,
+  `float3` and `rect` had no MessagePack support. Aetheria, StreamPixels and three Aetheria forks each
+  carried their own formatter copies. The first option offered was to stop serializing the Geometry
+  types. The operator's words: "we want all the math stuff to serialize, there's no excuse not to" and
+  "just because we're not using a feature doesn't mean we can cut it".
+- SKILL.md's subtraction section now says that for a general-purpose library (CultLib) the question is
+  what a reasonable consumer would expect. The call-count audit bounds only internal duplication.
+- The root cause was the skill's own "count real use … a surface with no consumer is parked" rule. It
+  was written for app-internal subtraction and read as licence to trim library capability.
