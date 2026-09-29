@@ -297,6 +297,15 @@ Falsify specifically:
   only agree with its author>
 - rerun the builds, tests and captures yourself
 
+Before recommending a mechanism as the fix direction, check that it was not
+already built and deleted. Run `git log -S '<distinctive identifier>'` and
+`git log --grep` on the owner's files, and read the scars in SKILL.md. If it
+was tried, cite the commit that removed it and say why the new situation
+differs, or recommend something else. (2026-09-30: a Soul pass recommended
+writer-thread ordered delivery in CultCache. That scheduler was built in
+`bcae483` and deleted in `4562340`, 34 minutes later, for deadlocking, and
+Imagination re-proved the deadlock.)
+
 Rerun the mutation tool on the range yourself; do not trust Hands' survivor
 triage. Challenge each "equivalent" call that is not a float boundary flip:
 measure it, as a mutant that changes how a thing is built can leave what it

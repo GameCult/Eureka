@@ -1143,3 +1143,12 @@ code path", and "such obviously unnecessary split authority should never pass a 
   what a reasonable consumer would expect. The call-count audit bounds only internal duplication.
 - The root cause was the skill's own "count real use … a surface with no consumer is parked" rule. It
   was written for app-internal subtraction and read as licence to trim library capability.
+
+## 2026-09-30: Soul checks history before recommending a mechanism
+
+- Evidence: CultNet publish, Soul pass 3, recommended ordered delivery inside CultCache's publication, on the
+  writer's thread. Imagination found that exact scheduler in `bcae483`, deleted in `4562340` 34 minutes later
+  for deadlocking against `_lifecycleGate`. A prototype re-proved the deadlock. SKILL.md already recorded
+  "design order as data, not as scheduling", and the brief carried no instruction to check.
+- The Soul brief template now requires `git log -S` / `--grep` on a mechanism before recommending it. A
+  mechanism that was tried must be cited with the reason the new situation differs.
