@@ -87,7 +87,10 @@ esac
 
 ssh "${sshopts[@]}" "$host" "mkdir -p ~/eureka-verify/repos ~/eureka-verify/work ~/eureka-verify/images && \
   { test -d ~/eureka-verify/repos/$name.git || git init -q --bare ~/eureka-verify/repos/$name.git; }"
-git -C "$repo" push -q "$host:eureka-verify/repos/$name.git" "$sha:refs/verify/$sha" --force
+# ssh:// rather than scp-style host:path: Git LFS's pre-push hook rejects the
+# scp form as a remote name and stalls (Aetheria, 2026-09-30). The verify mirror
+# never needs LFS objects pushed; a job that needs one smudges it itself.
+GIT_LFS_SKIP_PUSH=1 git -C "$repo" push -q "ssh://$host/~/eureka-verify/repos/$name.git" "$sha:refs/verify/$sha" --force
 case "$image" in
   eureka-verify-rust:*) scp -q "$here/rust.Dockerfile" "$host:eureka-verify/images/rust.Dockerfile" ;;
 esac
