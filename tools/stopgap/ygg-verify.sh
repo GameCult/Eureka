@@ -52,6 +52,10 @@
 #    LAST statement's, so a command ending in `git checkout`, `echo` or a filter
 #    that succeeds still reports zero. Keep the verdict-bearing command last, and
 #    a grep that matches nothing now fails the job (that is a signal, not noise).
+#    Under pipefail `cmd | grep -q X` reads FALSE even on a match: grep exits at the
+#    first hit, cmd dies of SIGPIPE, and its status wins (a media FEC mutation run
+#    reported killed mutants as survivors this way, 2026-09-30). Capture to a file
+#    and grep the file, or use `grep -c`/`grep` without -q.
 #  * CultLib has no Cargo.toml at its root. A rust job must `cd packages/<crate>`
 #    first, or cargo fails in a way that looks like the image is wrong.
 #
