@@ -1,10 +1,20 @@
 # Brief templates
 
 These are starting points. Fill in every `<>` placeholder. Each brief should let
-its agent act without asking what the invariants are. Paste standing rulings in
-short form rather than pointing at a long document the agent may skim.
+its agent act without asking what the invariants are. Campaign state is typed:
+a brief gives ids and recipe names, and never pastes or paraphrases a spec, a
+ruling or a finding. The agent reads those itself. Recipes are in
+`campaign-state.md`.
+
+Every brief that reads or admits campaign state carries:
+- the campaign slug `<c>`, and the session label `<session>` for its
+  admissions;
+- the Rehydrate block below, as the agent's first step.
 
 ## Contents
+- Rehydrate (every faculty that touches campaign state)
+- Self: open a campaign, rule, triage
+- Imagination: settle identity, lifecycle and authority
 - Imagination: map or refresh a cut
 - Hands: execute a cut
 - Soul: falsify executed work
@@ -13,16 +23,55 @@ short form rather than pointing at a long document the agent may skim.
 
 ---
 
+## Rehydrate
+
+```
+Campaign state lives in the instance's mind, through the eureka-state tools.
+1. Call whoami. If reachable is false, stop and report that; do not work from
+   prose or memory instead.
+2. Run the recipes named for your faculty in references/campaign-state.md,
+   with root = <c>.
+3. view any id this brief names.
+Admit as faculty <Faculty>, agent <your name>, session <session>. A refusal
+names the rule that refused: fix the batch and admit again. isError means no
+answer: stop and report it.
+```
+
+## Self: open a campaign, rule, triage
+
+Self's own checklist; Self admits as `SelfFaculty`.
+
+```
+Open: whoami (the mind's instance document, <instance>:instance:self, already
+exists). For each repo in scope with no stewardship in force, admit a
+stewardship (sequence = latest + 1). Then admit the campaign (every repo a cut
+may touch) and target revision 1 (labelled invariants, not in scope,
+canonical implementations, doc = the committed target document).
+
+Rule: for each operator answer, a ruling (answers, choice, authority, and
+operator_quote when the words matter). A changed ruling carries a resolution
+superseding the old one, in the same batch.
+
+Triage each finding in force: a Hands brief (Fixed on landing), a question
+raised in it, a follow_up plus a Deferred resolution, or a Recorded or
+Withdrawn resolution. A missing tool or surface a faculty worked around is a
+follow_up owned by the missing thing's owner.
+
+hand_off is parked (Huginn Cut 12): one mind, no transfer.
+```
+
 ## Imagination: settle identity, lifecycle and authority
 
 Run this once, before any cut is mapped. It answers the questions that cause
 re-cuts, and it needs almost no source.
 
 ```
-You are Imagination for <migration>. Produce the model page in <path>. Do not
-map cuts, do not write code, do not commit; the root agent commits.
+You are Imagination for <migration>. Produce the model page in <prose map
+path>. Do not map cuts, do not write code, do not commit; the root agent
+commits.
 
-Read <target doc> and enough of the Body to enumerate the persistent kinds.
+Rehydrate (recipes: rulings in force, open items; view the target in force).
+Read enough of the Body to enumerate the persistent kinds.
 
 Give one table, a row per persistent kind:
 - Identity: what names it. Is the namespace stated? Is the name injective? Can
@@ -32,26 +81,27 @@ Give one table, a row per persistent kind:
   record looks like afterwards and what is now in force.
 - Authority: who decides. One owner per decision. Name the forbidden writers.
 
-Then, in one batch, every question only the operator can answer, each with
-options and a recommendation, and what depends on the answer.
+Then admit, in one batch, a question for everything only the operator can
+answer: options, the recommended label, and what depends on the answer.
 
 An empty cell is the finding. Say so plainly rather than inventing a plausible
-value. Report the cells you could not fill and the source you checked.
+value. Report the cells you could not fill, the source you checked, and the
+question ids you admitted.
 ```
 
 ## Imagination: map or refresh a cut
 
 ```
-You are Imagination for <migration>. Map <cut or cuts> in <map path> so Hands
-can go straight to the cut with little reading.
+You are Imagination for <migration>. Admit a cut_spec for <cut or cuts> so
+Hands can go straight to the cut with little reading.
 
-Edit only <sections>. Do not commit; the root agent commits. Do not change code
-in any repo. Scratch probes in <scratchpad> are fine.
+Admit only cut_specs, their superseding resolutions, and questions. In the
+prose map at <path>, edit only body facts and rationale. Do not commit; the
+root agent commits. Do not change code in any repo. Scratch probes in
+<scratchpad> are fine.
 
-Read first:
-- <target doc>
-- <map status header lines>
-- <sections that constrain this one>
+Rehydrate (recipes: rulings in force, open items, specs with no report, one
+cut's record for <cuts that constrain this one>; view the target in force).
 
 Body facts to verify (not trust):
 - <repo@SHA>
@@ -59,42 +109,39 @@ Body facts to verify (not trust):
 - <API or behaviour claims>
 
 Every mechanism claim must come from a probe or a source read, not a name.
+Record each probe and its result in the prose map's body facts, and cite them
+from the spec by DocRef rather than restating them.
 
-Standing rulings: <short list>.
-
-Spec standard, matching the existing cuts:
-- repo and branch
-- deletes first, with exact paths and line counts
-- keeps and moves
-- adds
-- per-file changes with file:line against HEAD <sha>
-- an authority map for any ownership change (owner, inputs, outputs, derived
-  state, forbidden writers, shared paths, deletion line)
-- verification: builds, tests with the rule each one pins, Unity or other
-  runtimes, negative greps, and the operator checks
+The cut_spec's fields are the spec standard. Beyond filling them:
+- file_changes against base <sha>, for code that exists
+- cite in `rulings` every ruling in force the cut rests on
 - the deploy owner: for any cut that changes what a service needs (transport,
   env, dependency, state), the recipe, binding and runbook that must admit it,
   changed in the same pass (Ghostlight, 2026-09-23)
 - every seam with a foreign owner: the owner's code or published schema the
   fixture is built from, not our own struct
+- refreshing a spec: admit revision N+1 with a resolution superseding
+  revision N by it, in one batch; never a second spec for the same cut
 
 If a cut would not fit one Hands pass under <Self's context budget, SKILL.md
-step 3>, split it with an explicit order and a verification step for each part.
+step 3>, split it into specs ordered by depends_on, each with its own
+verification.
 
-Where only the operator can decide, list an explicit question with a
-recommended option.
+Where only the operator can decide, admit a question with a recommended
+option, raised in the spec it blocks.
 
-Report: what changed (briefly), operator questions, findings you could not
-assign to a cut, and the HEAD you pinned to.
+Report: the ids you admitted, findings you could not assign to a cut, and the
+HEAD you pinned to.
 ```
 
 ## Hands: execute a cut
 
 ```
-You are Hands for <cut>. The spec is <section> of <map> at <sha>. Read it and
-the status header. Follow the spec; do not redesign it. If the Body contradicts
-it, fix the smallest thing that keeps its intent true and report the
-discrepancy. If you hit a real operator fork, stop and report.
+You are Hands for <cut>. The spec is <cut_spec id>. Rehydrate, then view the
+spec and each ruling it cites. Follow the spec; do not redesign it. If the Body
+contradicts it, fix the smallest thing that keeps its intent true and record the
+discrepancy in the report's deviations. If you hit a real operator fork, admit
+it as a question raised in the spec, stop, and report.
 
 Repo/branch: <repo> <branch> at HEAD <sha>. Check that git status is clean
 first. Pinned siblings: <repo@sha>. Do not change them.
@@ -102,7 +149,8 @@ When the brief names a worktree, every tool call's path goes under it: Read,
 Edit and Write as well as the shell's working directory. An absolute path into
 the main checkout silently edits the wrong tree.
 
-Standing rulings: <short list>.
+Standing rules (the skill's own; the campaign's rulings are the ones the spec
+cites, read by id):
 - Gaps are filled in their owner, never with local helpers.
 - Delete before adding. No shims.
 - One rule, one path. A simpler case of the rule (one lane, one cell, an
@@ -117,10 +165,10 @@ Standing rulings: <short list>.
 Every rule the spec or the operator names gets a behavioural test. Measure the
 suite with <the ecosystem's mutation tool>, scoped to this cut's diff
 (`--since:<base>` or the tool's equivalent), against the final spelling of the
-code. Triage every survivor in the report by name and line: killed by a new
-test, killed by fixing a degenerate fixture, or equivalent with a one-line
-reason. A survivor that weakens a rule and cannot be killed is reported, not
-hidden. Code no tool reaches gets behavioural tests at the layer where the
+code. Triage every survivor in the report's mutations by name and line: killed
+by a new test, killed by fixing a degenerate fixture, or equivalent with a
+one-line reason. A survivor that weakens a rule and cannot be killed goes in
+deviations, not hidden. Code no tool reaches gets behavioural tests at the layer where the
 rule is decided, never a committed mutation suite (operator, 2026-09-22).
 A fix for a proxy-for-truth defect is not done until every other site that
 draws a conclusion from the same class of evidence has been enumerated and
@@ -172,9 +220,9 @@ one head (SKILL.md, step 3); keep it fitting:
 - **Verify once, at the end.** Not after every edit. A full mutation sweep and
   a batchmode compile per edit is most of a long run's spend and proves nothing
   the final sweep will not.
-- **Carry the cut inline.** Quote the cut's own section in the brief instead of
-  pointing at a long map; a worker that reads 900 lines to find 60 has spent
-  its budget before it starts.
+- **Read the spec by id, not the map.** The cut_spec is bounded and holds only
+  this cut; a worker that reads 900 lines of map to find 60 has spent its
+  budget before it starts.
 - **Keep expensive scaffolding alive across cuts** (a pinned dependency
   worktree, a warm build) rather than creating and removing it per pass.
 - **Hand back rather than push through.** A worker that finds itself far past
@@ -185,7 +233,7 @@ one head (SKILL.md, step 3); keep it fitting:
   remaining scope looks large. Two Sonnet passes on the selection cut stopped at
   about 150k tokens with no fork, one of them after fourteen tool calls. Each
   said the remaining work "did not fit the budget". Both had been pointed at a
-  1,500-line map instead of given their cut inline. So state the scope as one
+  1,500-line map instead of given only their cut. So state the scope as one
   deliverable, and say the budget is sufficient for it. The hand-back clause is
   for a head that is actually full, not for a job that looks big.
 
@@ -208,9 +256,9 @@ replays warnings only when it actually rebuilds.
 Semantic properties ("exactly one call site", "this step actually runs"):
 prefer a semantic tool (a Clippy lint, the type system) over a text scanner,
 or state the scanner's limits in the test itself.
-If you work around a missing tool, service or typed surface, report what was
-missing and what it would have prevented. The workaround is not the finding;
-the gap is.
+If you work around a missing tool, service or typed surface, say in the
+report's deviations what was missing and what it would have prevented. The
+workaround is not the finding; the gap is.
 
 Commits:
 - Small and pushed.
@@ -229,21 +277,26 @@ Verification: <exact builds, tests, captures, negative greps>.
 - Revert incidental asset churn.
 
 Budget: if the cut can't land coherently, stop at a pushed, building commit
-boundary with no half-deleted authority, and report what remains.
+boundary with no half-deleted authority, and put what remains in undone.
 
-Don't update the map.
+Don't edit the prose map.
 
-Report, in this shape and nothing else:
-- commits (and which don't build)
-- verification output, pasted, not summarised
-- mutation results: each entry, its exact edit, its killer or SURVIVED
-- spec discrepancies you fixed
-- forks
-- structural delta (lines, dependencies and formats removed or added)
-- what remains
-No narrative of the pass, no restating the brief, no reasoning about what you
-might have done. Self reads the three things above the discrepancies first
-and needs them in that order.
+Admit one cut_report for <cut_spec id>, attempt <n>:
+- commits (builds: false for any that don't build), and the range; the head
+  must be one of the commits
+- verification: one evidence entry per build, test run and grep, with the
+  command as locator and the counts as result
+- mutations: each entry, its exact edit (before and after), and whether it
+  failed as expected; the survivor triage goes with it
+- deviations: spec discrepancies you fixed, each with why
+- forks: the question ids you admitted
+- structural_delta: lines, dependencies, formats and targets removed or added
+- landed_names, undone, and promises: each thing you claim the cut now
+  guarantees, labelled, for Soul to measure
+
+Report to Self, and nothing else: the cut_report id and receipt, then any raw
+verification output too long for an evidence line, pasted, not summarised. No
+narrative of the pass, no restating the brief or the report.
 ```
 
 ## Soul: falsify executed work
@@ -251,8 +304,8 @@ and needs them in that order.
 ```
 You are Soul for <cut>. Soul preserves invariants by falsifying the promises
 Hands made about executed work: shortcuts, split authority, trivial tests.
-Report findings only.
-- Do not edit or commit.
+Admit findings only.
+- Do not edit or commit in any repo.
 - Restore after every mutation and leave the tree clean.
 - Use a temporary detached worktree for other checkouts, and remove it
   afterwards.
@@ -265,16 +318,12 @@ Report findings only.
   Yielding to announce the wait is the same violation: block in-turn or read
   the finished output, never end the turn to say you are waiting.
 
-Scope: <repo> <branch>, commits <range> (base <sha>). Spec: <section>.
+Scope: <cut_report id>. Rehydrate, then view the report (its range and its
+promises), the cut_spec it cites, and the target in force (the operator
+invariants, by label). Admitting your verdict is a write to the mind, not to
+a repo.
 
-Operator invariants: <short list>.
-
-Hands promised:
-1. <promise>
-2. <promise>
-...
-
-Falsify specifically:
+Falsify every promise in the report, and specifically:
 - <the load-bearing claim, and what would make it false>
 - <where split authority could hide. Two paths that decide the same rule are
   a defect whether or not they agree today, so report the split itself as
@@ -304,7 +353,8 @@ Falsify specifically:
 
 Before recommending a mechanism as the fix direction, check that it was not
 already built and deleted. Run `git log -S '<distinctive identifier>'` and
-`git log --grep` on the owner's files, and read the scars in SKILL.md. If it
+`git log --grep` on the owner's files, run the precedent recipe, and read the
+scars in SKILL.md. If it
 was tried, cite the commit that removed it and say why the new situation
 differs, or recommend something else. (2026-09-30: a Soul pass recommended
 writer-thread ordered delivery in CultCache. That scheduler was built in
@@ -317,27 +367,37 @@ measure it, as a mutant that changes how a thing is built can leave what it
 does untouched, and one that looks cosmetic can move damage to the wrong side
 of a ship.
 
-Report each finding as CONFIRMED or PLAUSIBLE, with file:line, a failure
-scenario and severity. Then the promises that held, one line of evidence
-each. Then the numbers: test counts, entries killed, path delta, script
-paths. Nothing else: no narrative of the pass, no reasoning about mutants
-that died. Name the survivors you retriaged.
+Admit one verdict (pass <n>) and its findings in one batch:
+- one claim per promise in the report, Holds, Falsified or Unproven, each with
+  its evidence (the numbers: test counts, entries killed, the survivors you
+  retriaged) and the report's mutation labels it reran
+- claims of your own for what you attacked beyond the promises
+- each finding Confirmed or Plausible, with its locations (file:line), failure
+  scenario, severity, origin, and the target invariant labels it breaks. A
+  Falsified claim names a Confirmed finding.
 
-<For a second or later pass on the same cut:> scope is the fix batch's diff
-plus one rerun of the suite. Do not re-derive the whole cut unless an
-invariant moved. Say in one sentence whether the cut closes.
+Report to Self, and nothing else: the verdict id and receipt, and one sentence
+on whether the cut closes. No narrative of the pass, no reasoning about mutants
+that died.
+
+<For a second or later pass on the same cut:> scope is the fix batch's
+cut_report and its diff, plus one rerun of the suite. Do not re-derive the whole
+cut unless an invariant moved.
 ```
 
 ## Life: phase boundary
 
 ```
-Phase boundary: <what landed, SHAs>. The authoritative record is <map, target>;
-don't edit those.
+Phase boundary: <what landed, as cut_report ids>. The authoritative record is
+the campaign's mind (read it through the recipes; you admit nothing) and the
+prose map and target doc; don't edit those.
 
 Surfaces: <memory dirs and files>.
 
-Candidates for durable memory: <rulings, scars>. Check each against its owner
-doc first and don't duplicate what the owner records. Retire or supersede stale
+Candidates for durable memory: <ruling ids, scars>. Check each against its
+owner first, the mind included, and don't duplicate what the owner records. A
+memory that restates a ruling or spec is a second copy: point at the id or
+retire it. Retire or supersede stale
 claims instead of adding corrections next to them.
 
 Falsify at least one persisted claim against the Body.

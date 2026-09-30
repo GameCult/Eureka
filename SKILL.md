@@ -7,16 +7,15 @@ description: Eureka runs a foundation change as a faculty pipeline for Claude Co
 
 Eureka is the pipeline used by Claude Code agents. It sits next to **Epiphany**,
 the running organism in `F:\Projects\Epiphany`, and shares its faculty
-vocabulary. The difference is substrate:
-- **Epiphany** keeps its findings in typed, admitted state that can be queried
-  by exact filter. Epiphany removed her own vector stack in `856648de`;
-  semantic search is planned through the Huginn memory organ, which depends on
-  Qdrant directly.
-- **Eureka** currently keeps them in committed docs (the target and the cut
-  map), subagent reports and memory files.
+vocabulary and its document schemas.
 
-Giving Eureka agents typed state tools is the intended next step; see
-`references/changelog.md`.
+Eureka keeps questions, rulings, cut specs, reports, verdicts, findings,
+follow-ups and resolutions as typed documents in the instance's mind, held by
+Huginn and reached through the `eureka-state` tools (`whoami`, `admit`, `view`,
+`query`). Status is derived from those documents, never written. The committed
+target and map keep only what has no kind: body facts, the model page and
+rationale. `references/campaign-state.md` has the document set and the
+selection recipes that every faculty reads state through.
 
 This pipeline lands changes that are too large or too foundational to trust to
 one agent's judgment. It turns "migrate X" into a sequence of small, verified
@@ -35,18 +34,21 @@ editor. See `references/postmortem-cultcache.md` for the evidence.
 ## The faculties
 
 Faculties are postures, not personalities. The root agent is **Self**. It routes
-work, keeps the maps, commits the maps, and talks to the operator. Delegate every
-other faculty to a subagent with its own brief. A faculty that grades its own
-work has lost the point.
+work, admits the campaign's frame and the operator's rulings, commits the prose
+map, and talks to the operator. Delegate every other faculty to a subagent with
+its own brief. A faculty that grades its own work has lost the point.
 
-| Faculty | Runs against | Produces | Must not |
+| Faculty | Runs against | Admits | Must not |
 |---|---|---|---|
-| **Imagination** | the Body (source, docs, probes), plus the target | the cut map: the target shape specified to `file:line` | commit code, choose a product fork silently |
-| **Hands** | one cut of the map | small pushed commits, a report with evidence | redesign the spec, work around a fork, update the map |
-| **Soul** | Hands' *executed* commits | findings, CONFIRMED or PLAUSIBLE, each with `file:line` and a failure scenario | edit, commit, or review a plan (a pass on a plan is Imagination) |
-| **Life** | memory surfaces | named mutations and proposals | touch Body code, restate what an owner doc already records |
-| **Eyes** (optional) | history, transcripts, logs | a facts file with evidence pointers | conclude or recommend |
-| **Operator** | forks and product meaning | rulings | (not an agent) |
+| **Imagination** | the Body (source, docs, probes), plus the target | `question`s and `cut_spec`s specified to `file:line`; body facts and rationale go to the prose map | commit code, choose a product fork silently |
+| **Hands** | one `cut_spec` | small pushed commits, then one `cut_report` | redesign the spec, work around a fork |
+| **Soul** | Hands' *executed* commits | one `verdict` and its `finding`s | edit or commit a repo, or review a plan (a pass on a plan is Imagination) |
+| **Life** | memory surfaces | nothing: named mutations and proposals | touch Body code, restate what an owner records |
+| **Eyes** (optional) | history, transcripts, logs | nothing: a facts file with evidence pointers | conclude or recommend |
+| **Operator** | forks and product meaning | rulings, which Self admits | (not an agent) |
+
+Admitting is a write to the Mind, not to the Body. Soul stays read-only on
+repos and still admits its verdict.
 
 The operator's doctrine defines the faculties. Read the Soul and Imagination
 lines of the operational litany in `~/.claude/CLAUDE.md`. In short, a pass is
@@ -55,16 +57,20 @@ finished when Hands can go straight to the cut.
 
 ## The loop
 
-### 0. Map the substrate, scope, target
+### 0. Reach the mind, map the substrate, scope, target
 
+- **Call `whoami` first.** If `reachable` is false, stop and tell the operator.
+  Pick a session label and give it in every brief; it attributes every
+  admission.
 - **Map the real substrate before you propose anything.** Run parallel read-only
   exploration of the old system and the new one, of any prior attempts and why
   they failed (git history, rollbacks), and of every consumer across repos.
-- Write the **target document**: the ends, not the means. Name the invariants
-  that must survive (wire parity, one owner per decision, what the operator
-  refuses to lose), the canonical implementations, and what is explicitly **not**
-  a consumer. For example, AetheriaEve was "taxidermy", and saying so up front
-  saved every later pass from considering it.
+- Admit the stewardships, the `campaign` and the `target` (Self's checklist in
+  `references/briefs.md`). The target holds the ends, not the means: labelled
+  invariants that must survive (wire parity, one owner per decision, what the
+  operator refuses to lose), and what is explicitly **not** a consumer. For
+  example, AetheriaEve was "taxidermy", and saying so up front saved every later
+  pass from considering it.
 - State the scope boundary out loud. The earlier Aetheria attempt failed because
   it bundled cache, mesh, eve and daemons into one change. One foundation per
   pipeline.
@@ -90,29 +96,25 @@ questions, and none of them needed a line of source to answer:
 
 So produce one table before mapping any cut, with a row per persistent kind and
 three columns: what names it, what happens to it over time, and who decides.
-**No cut is mapped while a cell is empty.** This costs a page and an hour.
+**No cut is mapped while a cell is empty.** This costs a page and an hour. The
+table is the model page in the prose map; no kind carries it.
 
-Assemble the operator's forks in the same pass, as one batch. In that campaign
-they surfaced across five cuts instead, so rulings kept landing on code that was
-already written. Discovering that the operator wants something different is not
-waste; discovering it after the code lands is.
+Admit the operator's forks in the same pass, as `question`s in one batch. In
+that campaign they surfaced across five cuts instead, so rulings kept landing on
+code that was already written. Discovering that the operator wants something
+different is not waste; discovering it after the code lands is.
 
 ### 1. Imagination maps the cut
 
-Brief an Imagination agent to produce the **cut map**: an ordered list of cuts
-against the current Body. Each cut carries:
-
-- repo and branch;
-- **deletes first**, with exact paths and line counts;
-- keeps and moves;
-- adds;
-- per-file changes with `file:line` against a named HEAD, **for code that
-  exists**;
-- an **authority map** for anything that changes ownership: owner, inputs,
-  outputs, derived state, forbidden writers, shared paths, deletion line;
-- **verification**: exact builds, tests with the rule each one pins, negative
-  greps, and what only the operator can check;
-- a subtraction-ledger estimate.
+Brief an Imagination agent to admit the cuts: one `cut_spec` per cut against
+the current Body, ordered by `depends_on`. The fields are the spec standard:
+repo, branch and base; `deletes` first, with exact paths and line counts;
+`keeps_moves`; `adds`; `file_changes` at `file:line` **for code that exists**;
+an `authority_map` for anything that changes ownership; `verification` (builds,
+tests with the rule each pins, negative greps, operator checks); an `estimate`
+for the ledger; and the `rulings` and `questions` it rests on. A changed spec is
+a new revision, admitted with the resolution that supersedes the old one, never
+an edit.
 
 **Spend the detail where the map can be wrong, not where Hands will rewrite it
 anyway.** Anchors against existing code earn their length: they say what to
@@ -163,22 +165,24 @@ the data the consumer reads.
 
 Imagination must establish mechanism claims by running code: probes, scratch
 builds, decoding a real file. It must not reason from names. A map built on
-unprobed claims is where bad cuts come from. Real forks come back as **explicit
-operator questions with a recommended option**, never chosen silently.
+unprobed claims is where bad cuts come from. The probes and their results go in
+the prose map's body facts. Real forks come back as **`question`s with a
+recommended option**, never chosen silently.
 
-Iterate the map with further Imagination passes, not Soul passes, until Hands
-could go straight to the cut. Commit the map; it is the durable record of the
-means.
+Iterate with further Imagination passes, not Soul passes, until Hands could go
+straight to the cut. The admitted specs are the durable record of the means.
+Self commits the prose map when its body facts, model page or rationale change.
 
-Templates are in `references/briefs.md` and `references/cut-map.md`.
+Templates are in `references/briefs.md` and `references/campaign-state.md`.
 
 ### 2. Operator rulings
 
-Bundle the open questions. Give each one options and a recommendation, and say
-what depends on the answer. Record every ruling in the map, dated, with the
-operator's words when they carry meaning the paraphrase would lose. When a ruling
-supersedes an earlier one, mark the old text as history instead of leaving two
-live designs.
+Put the open questions to the operator together, from the open-items recipe,
+each with its options, recommendation, and what depends on the answer. Self
+admits every answer as a `ruling` that answers its question, keeping the
+operator's words in `operator_quote` when they carry meaning a paraphrase would
+lose. A ruling that changes an earlier one supersedes it by a `resolution`,
+never by an edit, so the rulings-in-force recipe shows one live design.
 
 **The operator channel is this session.** Eureka has no Persona: Self is the
 operator-facing surface, because a question costs one message and loses no
@@ -192,8 +196,9 @@ Distinguish a real fork from a default. "Should I use the conventional thing" is
 not a question. "3-5 are not decisions," as the operator put it, is the failure
 of asking about non-decisions. Weigh proportion too: a fork that guards only
 against the project's own code, such as how strictly to enforce an internal
-tripwire, gets a default and a recorded follow-up. Asked how much one such
-question mattered, the operator said not at all.
+tripwire, gets a default and a recorded follow-up: a ruling with
+`authority: Defaulted`, plus a `follow_up`. Asked how much one such question
+mattered, the operator said not at all.
 
 ### 3. Hands executes one cut
 
@@ -204,7 +209,7 @@ stats and shield Hands got "loopy" past 400k, and a StreamPixels fix batch past
 550k produced sloppy code. Treat 0.5M as the danger line, never the target.
 Before dispatch, Self estimates what the run will carry:
 
-- the brief, with the cut quoted inline;
+- the brief, and the `cut_spec` Hands views;
 - the source Hands must read to edit safely: the files it touches and their
   direct callers, not the repo;
 - one verification round at the end and one fix round, with their output;
@@ -220,12 +225,14 @@ Splitting a cut always beats a bloated brief. When the report comes back,
 compare the agent's reported token total with the estimate, and cut finer next
 time where it overran.
 
-Brief Hands with the cut's section of the map, the standing rulings restated
-briefly, and the verification. The brief says:
+Brief Hands with the `cut_spec` id, the campaign session label, and the
+rulings in force that the spec cites. Hands reads the spec with `view`, so
+nothing is pasted or paraphrased. The brief says:
 
 - **Follow the spec, do not redesign.** If the Body contradicts the spec, fix the
-  smallest thing that keeps the spec's intent true and report the discrepancy. If
-  it is a real fork, **stop and report**.
+  smallest thing that keeps the spec's intent true and record the discrepancy in
+  the report's `deviations`. If it is a real fork, admit it as a `question`
+  raised in the spec, **stop, and report**.
 - **Gaps are filled in their owner, never worked around locally.** If CultMath
   lacks a function, CultMath gets it; the consumer does not grow a helper.
 - **Delete before adding.** No shims, no compatibility layers the map did not
@@ -242,8 +249,9 @@ briefly, and the verification. The brief says:
   name: a behavioural test is missing, a fixture is degenerate (see below),
   or the mutant is equivalent and gets a one-line reason. Boundary flips on
   float thresholds are equivalent by default and are not chased. The score is
-  not a gate; the triaged survivor list is the record, and Self commits it in
-  the map. Soul reruns the tool on the range rather than trusting Hands'
+  not a gate; the triaged survivor list is the record. It goes in the report's
+  `mutations`, and a survivor that stays alive goes in `deviations` or becomes a
+  `follow_up`. Soul reruns the tool on the range rather than trusting Hands'
   triage.
 - **No committed hand-written mutation suites, and no fallback harness.**
   The operator ruled this on 2026-09-22: "Better to have nothing than a
@@ -302,18 +310,20 @@ briefly, and the verification. The brief says:
   instance names, or only their first bytes, survived both suites, because no
   fixture pair had ever shared a length. The rule had no defence and the suite
   said it had two.
-- Report: commits (and which don't build), verification output, mutation
-  results, spec discrepancies, forks, structural delta. Hands never updates the
-  map.
+- Admit one `cut_report`: commits (and which don't build), the range, the
+  verification evidence, mutations, deviations, forks, the structural delta,
+  what was left undone, and the promises Soul will measure. The report to Self
+  is its id plus raw output too long for an evidence line. Hands never edits the
+  prose map.
 
 Parallel Hands are fine when they touch different repos or worktrees. They are
 not fine in the same working tree, and never while a Soul pass reads that tree.
 
 ### 4. Soul falsifies
 
-Brief Soul on the exact commit range, with the operator invariants and Hands'
-promises listed as claims to falsify. Point it at the specific places a shortcut
-would hide. Soul:
+Brief Soul with the `cut_report` id and the session label. The report carries
+the exact range and Hands' promises; the target in force carries the operator
+invariants. Point Soul at the specific places a shortcut would hide. Soul:
 
 - reruns builds, tests and captures itself instead of trusting the report;
 - reruns a selection of Hands' mutations, and designs its own that are not plain
@@ -323,11 +333,13 @@ would hide. Soul:
   real compiler, run the other runtime's decoder;
 - checks the invariant at the layer where it would actually fail (wire bytes,
   another runtime, the editor, the GPU), not only in the unit test;
-- reports each finding as CONFIRMED or PLAUSIBLE, with `file:line`, a failure
-  scenario and severity, then lists the promises that held.
+- admits one `verdict`, measuring every promise in the report, together with
+  its `finding`s: each `Confirmed` or `Plausible`, with locations, a failure
+  scenario, a severity and the target invariants it breaks.
 
-Soul works read-only. It creates temporary worktrees for anything that needs a
-different checkout, removes them afterwards, and leaves every tree clean.
+Soul works read-only on repos. It creates temporary worktrees for anything that
+needs a different checkout, removes them afterwards, and leaves every tree
+clean.
 
 **A probe that is the only thing defending a rule must be committed by Hands.**
 Soul cannot commit, so its harnesses die with the session. In the QUIC cut the
@@ -344,12 +356,14 @@ exists.
 
 ### 5. Triage and repeat
 
-For each Soul finding, decide:
+For each finding in force, decide:
 
-- **fix now:** brief Hands with the finding and the target shape;
-- **operator fork:** ask, with a recommendation;
-- **record as a follow-up:** the map gets the item, the file and the reason it can
-  wait.
+- **fix now:** brief Hands with the finding's id; the landing closes it
+  `Fixed`;
+- **operator fork:** a `question` raised in the finding, with a recommendation;
+- **defer:** a `follow_up` with the reason it can wait, and the finding
+  resolved `Deferred` to it;
+- **record** or **withdraw:** a `Recorded` or `Withdrawn` resolution.
 
 Run Soul again on the fix batch. **Do not cap the Soul loop early on a foundation
 cut.** In the CultCache migration, Cuts 6 and 6b each needed four Soul passes, and
@@ -393,13 +407,15 @@ later.
 
 After each cut:
 
-- Self updates the map's status header: what landed at which SHAs, what was
-  verified, what Soul found, what was recorded.
-- Self reconciles the subtraction ledger against what actually landed. A miss is
-  allowed, but it must be explained. The CultCache core missed its size target
-  by roughly 1,200 lines, and nobody looked, because the ledger stopped being
-  updated after Cut 4.
-- Self commits and pushes the map. Hands and Soul never touch it.
+- Progress is a query, not a section to update: the recipes for specs with no
+  report, reports with no verdict, and open items.
+- Self reconciles the subtraction ledger with the ledger recipe (each spec's
+  `estimate` against its reports' `structural_delta`). A miss is allowed, but
+  it must be explained. The CultCache core missed its size
+  target by roughly 1,200 lines, and nobody looked, because the ledger stopped
+  being updated after Cut 4.
+- Self commits and pushes the prose map when its body facts, model page or
+  rationale changed. Hands and Soul never touch it.
 - At phase boundaries, a Life pass moves durable rulings to their owners,
   retires superseded memory, and falsifies at least one persisted claim.
 
@@ -408,9 +424,19 @@ and reconciles the target doc with the Body.
 
 ## Self's discipline
 
-- **Keep the maps committed and current.** Hands will read stale text as live
-  design. After a ruling changes a design, sweep the map and the target doc for the
-  old version the same day.
+- **Never restate typed state in prose.** Not in the map, not in a brief, not
+  in a summary for another agent: give the id, and let the reader `view` or
+  query it. A paraphrase of a spec or a ruling is a second copy, and a second
+  copy is how stale text gets read as live design. Tell the operator what
+  matters in words. Tell agents the id.
+- **When the organ is unreachable, stop.** Say so to the operator and wait, or
+  work on something that does not touch campaign state. Never keep the record in
+  prose or memory "until it is back": that is a second copy, and it breaks the
+  invariant that the mind is the only store.
+- **Keep the prose map current.** After a ruling changes a design, sweep the
+  map's body facts and rationale, and the target doc, for the old version the
+  same day. The specs and rulings need no sweep, because their resolutions
+  already say what is in force.
 - **One owner per decision, in code too.** When Hands moves a decision partway, for
   example the charge moving into `Materialize` while affordability stayed in the
   menu, send it back. Split authority is the defect Soul most often finds.
@@ -433,14 +459,10 @@ and reconciles the target doc with the Body.
   stopped and reported a concurrency hazard instead of forcing the checkout.
   **A brief that names a repo path without naming a worktree is a defect in
   the brief.**
-- **Commit maps to `main`, not to whatever branch Self is standing on.** A map
-  is only current if it is current on the branch the reader has. On 2026-09-22
-  a Hands agent on the selection cut reported that the map had no fix-batch-4
-  section: the live copy was on Self's own working branch, `main` was a day
-  behind, and the work branch carried a copy from five days earlier. It worked
-  from its brief and said so, which is the only reason this surfaced instead of
-  producing a cut built on stale design. **Also name the map's branch in every
-  brief**, so a faculty reading a different one notices.
+- **Commit the prose map to `main`, and name its branch in every brief.** On
+  2026-09-22 a Hands agent found no fix-batch-4 section: the live copy was on
+  Self's working branch, and `main` was a day behind. Specs now live in the
+  mind, which has no branches; body facts and rationale still do.
 - **A subtraction budget is pressure, not a metric.** Say so when you set it, so
   Hands knows escalating a miss with an argument is allowed. Treat a suspiciously
   clean hit as a sign that unrelated code was deleted to meet the number.
@@ -455,7 +477,9 @@ and reconciles the target doc with the Body.
   six times is the strongest requirements evidence anyone will ever get for
   building the thing, and it is worth nothing once the run closes and the pain
   is remembered only as "the docs got messy". This is not a reason to wait on
-  the missing thing or route work to it: work around it and leave evidence.
+  the missing thing or route work to it: work around it and leave evidence. The
+  evidence is a `follow_up` whose source is the document where the run felt the
+  gap, and whose owner is the missing thing's owner.
 - **Never claim an agent's result before its notification arrives.**
 
 ## Git and tooling rules (scars)

@@ -1161,3 +1161,23 @@ code path", and "such obviously unnecessary split authority should never pass a 
   `KEY = "value"` lines. Same class, found twice in one day.
 - The Hands brief template now requires that errors, logs and refusals name the field and the error code, never
   the value, and that this is pinned by a canary test.
+
+## 2026-09-30: campaign state is typed (Huginn Cut 15, under Q-H6 A)
+
+- Evidence: the Huginn wiring map (Epiphany `notes/huginn-organ-cut.md` at `74804d83`, Cut 15). Huginn is live
+  on Yggdrasil with instance `eureka`, and `eureka-state` exposes four tools (`whoami`, `admit`, `view`,
+  `query`). The operator's ruling on Q-H6: "every bit of prose we're passing around should be viewed as a
+  potential liability, *especially* if it's too big to just shove the whole thing into context. We should be
+  looking for ways to turn what remains into typed state as well."
+- Questions, rulings, cut specs, reports, verdicts, findings, follow-ups and resolutions are admitted documents.
+  The committed map keeps body facts, the model page and rationale, and has no status header, no per-cut
+  sections and no rulings. A superseded ruling or spec is closed by a resolution, never edited.
+- `references/cut-map.md` is replaced by `references/campaign-state.md`: the tools, the document set, the
+  resolution matrix, the selection vocabulary, and recipes that replace the deleted `open_items`,
+  `rulings_in_force` and `history` presets. Specs with no report is one query, because the substrate's `cited`
+  hop takes `exists: false`.
+- Briefs give ids and recipe names instead of pasted specs or rulings. Every brief starts with Rehydrate:
+  `whoami`, then the recipes. Hands reads its spec with `view` and admits a `cut_report`. Soul admits a
+  `verdict` and its findings; admitting is a Mind write, so Soul stays read-only on repos.
+- Self stops when the organ is unreachable and keeps no second copy meanwhile. "Record the substrate you
+  needed and did not have" stays, and the record is now a `follow_up`.

@@ -48,10 +48,12 @@ motivated it. The skill is accumulated scar tissue, not a design.
 
 ## The pipeline
 
-- **Self** routes the work, keeps the maps, and talks to the operator.
-- **Imagination** maps the cut: deletes first, an authority map for anything
-  that changes ownership, and verification naming the rule each test pins.
-- **Hands** executes one cut, in small pushed commits, and never updates the map.
+- **Self** routes the work, admits the campaign and the operator's rulings, and
+  talks to the operator.
+- **Imagination** specifies each cut: deletes first, an authority map for
+  anything that changes ownership, and verification naming the rule each test
+  pins.
+- **Hands** executes one cut, in small pushed commits, and admits a report.
 - **Soul** runs against the executed commits and tries to falsify every promise,
   building its own probes rather than trusting the report.
 - **Life** keeps memory honest at phase boundaries.
@@ -77,7 +79,8 @@ Claude Code discovers the skill from the `name` and `description` in `SKILL.md`.
   on Yggdrasil in a capped container. It is a stopgap until Idunn's verify
   transaction lands.
 - `references/briefs.md`: brief templates for each faculty.
-- `references/cut-map.md`: the shape of the target document and the cut map.
+- `references/campaign-state.md`: the typed document set, the selection
+  recipes every faculty reads state through, and the prose map's shape.
 - `references/postmortem-template.md` and `references/postmortem-cultcache.md`:
   the template and the worked example.
 - `references/epiphany-comparison-2026-09-15.md`: a dated, source-grounded
@@ -86,15 +89,16 @@ Claude Code discovers the skill from the `name` and `description` in `SKILL.md`.
 
 ## Status
 
-Eureka keeps its pipeline state in committed documents and memory. A campaign in
-Epiphany (`notes/eureka-pipeline-state-target.md`) is giving it typed state
-instead: Epiphany owns the schemas and admission, and a memory organ owns each
-instance's state.
+Campaign state is typed. Questions, rulings, cut specs, reports, verdicts,
+findings, follow-ups and resolutions are documents in the instance's mind,
+held by the Huginn memory organ and reached through the `eureka-state` MCP
+tools. Epiphany owns the schemas (`epiphany-pipeline`) and Huginn owns
+admission. The committed prose keeps only body facts, the model page and
+rationale.
 
-**That work is partly landed and partly unbuilt.** The organ answers typed
-queries over the network today. The `eureka-state` client that would let Eureka
-agents admit and query through it is not written, and this skill is not wired to
-it.
+The skill needs `eureka-state` registered with Claude Code (user scope, with
+`EUREKA_INSTANCE` and `HUGINN_ENDPOINT`) and a reachable daemon. Without one,
+the pipeline stops rather than keeping state anywhere else.
 
 Maps and postmortems are public artifacts from the first cut, with the scars
 left in. That is deliberate: a pipeline whose record has been tidied up is a
