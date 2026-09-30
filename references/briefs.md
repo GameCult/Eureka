@@ -392,7 +392,15 @@ specifically:
 - <for every seam with another owner: build the fixture from that owner's code
   or schema and prove both directions; a fixture that restates our struct can
   only agree with its author>
-- rerun the builds, tests and captures yourself
+- rerun the builds, tests and captures yourself, but pay for each one once.
+  Every verify job queues for a shared slot, so the number of jobs, not the
+  compile, is what makes a pass slow. While probing, run only the test
+  binaries or files the cut touches and the ones that name its rules. Run the
+  full suite exactly once, at the end. Put that run in the same job as your
+  mutation run where you can, since that job pays for the build anyway. Batch
+  probes into one job script rather than one job each. Run the mutation tool
+  in parallel (`--jobs 3`), and skip by name any test that a follow-up records
+  as flaky, so that its flakes cannot count a surviving mutant as killed
 
 Before recommending a mechanism as the fix direction, check that it was not
 already built and deleted. Run `git log -S '<distinctive identifier>'` and

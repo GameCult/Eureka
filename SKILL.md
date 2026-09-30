@@ -345,7 +345,9 @@ measures the target invariants the cut touches.
 Hands' self-report is one input to attack, never the list of what gets checked.
 Point Soul at the specific places a shortcut would hide. Soul:
 
-- reruns builds, tests and captures itself instead of trusting the report;
+- reruns builds, tests and captures itself instead of trusting the report.
+  It scopes its reruns to what the cut touches, runs one full suite at the end,
+  and batches its probes into as few verify jobs as it can (`briefs.md`, Soul);
 - reruns a selection of Hands' mutations, and designs its own that are not plain
   reverts;
 - builds scratch probes to reach behaviour the tests cannot see: round-trip every

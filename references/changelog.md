@@ -2,6 +2,19 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-30: Soul pays for each rerun once
+
+The sccache measurement below showed that verify-slot queueing dominates a
+pass, not compilation. In idunn-watchdog, Soul passes took 32 to 85 min, most
+of it spent re-queueing one job per rerun.
+
+What changed:
+- **Soul's brief:** Soul reruns only the tests the cut touches while it
+  probes, and runs the full suite once at the end, in the same job as its
+  mutation run where it can. It batches its probes into one job script, and it
+  runs the mutation tool in parallel, skipping tests recorded as flaky.
+- **SKILL.md step 4:** says the same.
+
 ## 2026-09-30: the rust verify image caches compiled crates with sccache
 
 The idunn-watchdog campaign's passes were slow. Some examples: a 263-line
