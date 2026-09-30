@@ -294,7 +294,7 @@ something new.
 | Gap | What the skill does meanwhile | Owner |
 |---|---|---|
 | `faculty` is attribution only. Admission does not check that verdicts and findings come from Soul, or that rulings come from Self. | Recipes filter `faculty`, and readers check provenance. | Huginn admission, with the Epiphany schema owner |
-| `MutationRecord` has no field for why a survivor is equivalent, and a report holds at most 64 mutations. | Every mutation goes in `mutations`. Each surviving mutation gets one `deviations` entry (`what`: its label; `why`: the triage). Deviations hold at most 32, so more survivors than that means the cut was too big. | `epiphany-pipeline` |
+| `MutationRecord` has no field for why a survivor is equivalent, and a report holds at most 64 mutations. | `mutations` holds the survivors and the kills Soul should rerun; the totals (generated, caught, unviable, missed) go in `verification` evidence. Each surviving mutation gets one `deviations` entry (`what`: its label; `why`: the triage). Deviations hold at most 32, so more survivors than that means the cut was too big. | `epiphany-pipeline` |
 | A `cut_report` needs a commit (`range.head`), so a pass that stops at a fork before its first commit leaves no report. | Hands admits only the question and reports its id. The blocked-spec check reads it. | `epiphany-pipeline` |
 | The faculty enum says `MindSteward`; the faculty is Life. | Life admits nothing, so nothing is mislabelled today. | `huginn-mind` |
 | A verdict claim cannot reference a ruling: `VerdictClaim` has `promise: Option<Label>` and no ruling reference. | Soul starts each ruling claim's text with the ruling id. | `epiphany-pipeline` |
