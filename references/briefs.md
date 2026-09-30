@@ -54,12 +54,16 @@ Self's own checklist; Self admits as `SelfFaculty`.
 Open: check the eureka-state tools are present, then whoami (the mind's
 instance document, <instance>:instance:self, already exists). Write the target
 document and commit it on the working branch. For each repo in scope with no
-stewardship in force, admit a stewardship (sequence = latest + 1). Then admit
-the campaign (slug, title, every repo a cut may touch, working_branch,
-target_doc = a DocRef to that commit) and target revision 1 (labelled
-invariants, not in scope, canonical implementations, doc = the same DocRef).
-In the first campaign, admit a follow_up for each substrate gap listed in
-campaign-state.md.
+stewardship in force, admit a stewardship (sequence = latest + 1).
+Stewardship is universal today: one mind, one steward. The operator said on
+2026-09-30 that leasing it between agents is a deferred cut. The per-repo
+record exists only because admission requires it
+(idunn-watchdog:follow_up:gap-stewardship-ceremony). Then admit the campaign
+(slug, title, every repo a cut may touch, working_branch, target_doc = a
+DocRef to that commit) and target revision 1 (labelled invariants, not in
+scope, canonical implementations, doc = the same DocRef). Run the
+substrate-gaps query in campaign-state.md, so the campaign starts knowing
+which workarounds are in force.
 
 Rule: for each operator answer, a ruling (answers, choice, authority, and
 operator_quote when the words matter). A direction that answers no question is
@@ -115,8 +119,10 @@ You are Imagination for <migration>. Admit a cut_spec for <cut or cuts> so
 Hands can go straight to the cut with little reading.
 
 Admit only cut_specs, their superseding resolutions, and questions. In the
-prose map at <path>, edit only body facts and rationale. Do not commit; the
-root agent commits. Do not change code in any repo. Scratch probes in
+prose map at <path>, edit body facts and rationale. Also edit the model page
+whenever a probe changes a row's identity, lifecycle or authority. Imagination
+wrote that page in 0b, and a model a cut contradicts is stale steering text.
+Do not commit; the root agent commits. Do not change code in any repo. Scratch probes in
 <scratchpad> are fine.
 
 Rehydrate (recipes: target in force, rulings in force, open questions and

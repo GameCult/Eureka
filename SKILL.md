@@ -40,7 +40,7 @@ its own brief. A faculty that grades its own work has lost the point.
 
 | Faculty | Runs against | Admits | Must not |
 |---|---|---|---|
-| **Imagination** | the Body (source, docs, probes), plus the target | `question`s and `cut_spec`s specified to `file:line`, and `follow_up`s for work no cut owns; body facts and rationale go to the prose map | commit code, choose a product fork silently |
+| **Imagination** | the Body (source, docs, probes), plus the target | `question`s and `cut_spec`s specified to `file:line`, and `follow_up`s for work no cut owns; body facts, the model page and rationale go to the prose map | commit code, choose a product fork silently |
 | **Hands** | one `cut_spec` | small pushed commits, then one `cut_report` | redesign the spec, work around a fork |
 | **Soul** | Hands' *executed* commits | one `verdict` and its `finding`s | edit or commit a repo, or review a plan (a pass on a plan is Imagination) |
 | **Life** | memory surfaces | nothing: named mutations and proposals | touch Body code, restate what an owner records |
@@ -265,8 +265,8 @@ nothing is pasted or paraphrased. The brief says:
   `mutations` (at most 64) holds every survivor and the kills Soul should
   rerun; the totals (generated, caught, unviable, missed) go in its
   `verification` evidence. Each survivor also gets a `deviations` entry with
-  its triage, because the mutation record has no field for it (a substrate gap
-  in `references/campaign-state.md`). Soul reruns the tool on the range rather
+  its triage, because the mutation record has no field for it (substrate gap
+  `idunn-watchdog:follow_up:gap-mutation-triage-field`). Soul reruns the tool on the range rather
   than trusting Hands' triage.
 - **No committed hand-written mutation suites, and no fallback harness.**
   The operator ruled this on 2026-09-22: "Better to have nothing than a
@@ -460,7 +460,7 @@ and reconciles the target doc with the Body.
   store. Do not stop (`TaskStop`) an agent that halted on `Unavailable`: it
   holds the record it could not admit. Resume it when the organ answers.
 - **Keep the prose map current.** After a ruling changes a design, sweep the
-  map's body facts and rationale, and the target doc, for the old version the
+  map's body facts, model page and rationale, and the target doc, for the old version the
   same day. The specs and rulings need no sweep, because their resolutions
   already say what is in force.
 - **One owner per decision, in code too.** When Hands moves a decision partway, for
@@ -506,7 +506,8 @@ and reconciles the target doc with the Body.
   the missing thing or route work to it: work around it and leave evidence. The
   evidence is a `follow_up` whose source is the document where the run felt the
   gap, and whose owner is the missing thing's owner. The gaps already known are
-  listed in `references/campaign-state.md`.
+  follow-ups in the mind; "Substrate gaps" in `references/campaign-state.md`
+  gives the query and where a new one is admitted.
 - **Never claim an agent's result before its notification arrives.**
 
 ## Git and tooling rules (scars)

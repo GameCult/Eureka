@@ -2,6 +2,38 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-30: substrate gaps are read from the mind, and Imagination owns the model page
+
+The first typed campaign, `idunn-watchdog`, admitted the eight gaps from
+`campaign-state.md` as follow-ups, as the Self checklist said. That left the
+same eight facts in two places: the typed follow-ups and the page's table. The
+table would go stale the day an owner fixed a gap, and the skill forbids
+exactly that second copy. It also showed that a follow-up is keyed to its
+campaign, so the next campaign's recipe could not see the gaps at all
+(`gap-substrate-followups-campaign-rooted`).
+
+In the same run, Imagination's cut pass found that incidents must live in their
+own file rather than in Idunn's `control.cc`. That merged two rows of the model
+page. The cut-mapping brief allowed Imagination to edit only body facts and
+rationale, so it handed the stale page to Self. That was the page it had
+written itself in 0b.
+
+The operator also stated that stewardship is universal: "there is only one
+Mind, one steward. Leasing stewardship between agents is a deferred cut".
+
+What changed:
+- **`campaign-state.md`:** "Substrate gaps" no longer carries a table. It gives
+  the query for the `gap-*` follow-ups under `idunn-watchdog`, and says where a
+  new gap is admitted and how a recurring one is recorded.
+- **`SKILL.md`:** the two references to that table now point at the mind.
+- **Self's checklist:** the first campaign no longer admits the gap list. Every
+  campaign instead runs the substrate-gaps query. The checklist also records
+  that stewardship is universal and that the per-repo record only satisfies
+  admission.
+- **The cut-mapping brief:** Imagination edits the model page whenever a probe
+  changes a row. The faculty table and the same-day sweep line now name the
+  model page.
+
 ## 2026-09-22: the hand-written mutation harness is retired, with no fallback
 
 The operator said: "The manual mutation testing turned out to be a terrible

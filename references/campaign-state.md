@@ -286,21 +286,33 @@ reading its verdicts and findings, check that `admission.provenance.faculty` is
 
 ## Substrate gaps
 
-The skill works around each of these, and Self admits each as a `follow_up`
-(source: the campaign, owner as named) in the first campaign, so the gap is
-counted rather than forgotten. Add to this list when a run works around
-something new.
+The known gaps in the mind's substrate are `follow_up`s in the mind, not a
+list on this page. Each one names the gap, its owner, and in
+`why_it_can_wait` the workaround the skill uses meanwhile. The workarounds
+that steer agents are also written into the step or brief that applies them.
+Examples are the mutation triage in `deviations`, the ruling id at the start
+of a claim, and the retry on `Unavailable`.
 
-| Gap | What the skill does meanwhile | Owner |
-|---|---|---|
-| `faculty` is attribution only. Admission does not check that verdicts and findings come from Soul, or that rulings come from Self. | Recipes filter `faculty`, and readers check provenance. | Huginn admission, with the Epiphany schema owner |
-| `MutationRecord` has no field for why a survivor is equivalent, and a report holds at most 64 mutations. | `mutations` holds the survivors and the kills Soul should rerun; the totals (generated, caught, unviable, missed) go in `verification` evidence. Each surviving mutation gets one `deviations` entry (`what`: its label; `why`: the triage). Deviations hold at most 32, so more survivors than that means the cut was too big. | `epiphany-pipeline` |
-| A `cut_report` needs a commit (`range.head`), so a pass that stops at a fork before its first commit leaves no report. | Hands admits only the question and reports its id. The blocked-spec check reads it. | `epiphany-pipeline` |
-| The faculty enum says `MindSteward`; the faculty is Life. | Life admits nothing, so nothing is mislabelled today. | `huginn-mind` |
-| A verdict claim cannot reference a ruling: `VerdictClaim` has `promise: Option<Label>` and no ruling reference. | Soul starts each ruling claim's text with the ruling id. | `epiphany-pipeline` |
-| A cold semantic embed after an idle spell exceeds the client's 15 s deadline. | Retry `Unavailable` once. | Huginn, with the embedder |
-| No tool supplies the session's id. | Self picks a session label and passes it in every brief. | `eureka-state` |
-| The reports-with-no-verdict hop cannot filter the citer's faculty. | Soul's queue is checked against the verdict's provenance. | CultNet selection |
+Every follow-up is rooted in a campaign, so no substrate-rooted home exists
+yet (`idunn-watchdog:follow_up:gap-substrate-followups-campaign-rooted`).
+Until one does, substrate gaps live under the first typed campaign,
+`idunn-watchdog`, with labels starting `gap-`:
+
+```json
+{ "selection": { "schemas": ["epiphany.pipeline.follow_up.v2"],
+  "fields": [{ "index": "root", "op": "any_of", "values": ["idunn-watchdog"] },
+             { "index": "in_force", "op": "any_of", "values": ["true"] }] } }
+```
+
+- **When a run works around a gap that is not there,** Self admits a new
+  `gap-<name>` follow-up under that root. Its source is the document where the
+  run felt the gap, and its owner is the missing thing's owner.
+- **When a run hits a gap that is already there,** it admits nothing new. The
+  run records the recurrence where it happened: a report's `deviations`, or the
+  prose map. The count lives in that evidence until the follow-up kind can
+  carry it.
+- **Do not copy the list back here.** A table on this page is a second copy, and
+  it goes stale the day an owner fixes a gap.
 
 ## The prose map
 
