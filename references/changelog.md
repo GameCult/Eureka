@@ -2,6 +2,25 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-10-01: the stopgap no longer forces CARGO_TARGET_DIR
+
+In idunn-watchdog's Idunn incident cut, Soul pass s3 ran cargo-mutants twice
+on the same two mutants with `--jobs 3`, and the two runs gave opposite
+verdicts. The cause: `ygg-verify.sh` passed `-e CARGO_TARGET_DIR=/src/target`
+to every container. cargo-mutants gives each worker its own copy of the tree,
+but the forced variable points them all at one target directory, so a worker
+can test another worker's binary. With the variable unset, `true` was reported
+missed and `false` caught, which is the right answer.
+
+Every `--jobs` greater than 1 mutation count reported through the stopgap
+before this change is unreliable. That covers both sessions' campaigns. A
+survivor may have been reported caught, or a kill reported missed. Treat those
+counts as unproven, and rerun a cut's mutation evidence when its rule matters.
+
+What changed: the variable is gone. Cargo's default, `<workspace>/target`, is
+already inside `/src`. The scar about not sharing build output between
+checkouts still stands, and cargo's default honours it.
+
 ## 2026-09-30: Soul pays for each rerun once
 
 The sccache measurement below showed that verify-slot queueing dominates a

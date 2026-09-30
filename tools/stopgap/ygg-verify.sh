@@ -22,6 +22,10 @@
 #   3. Runs <command> in <image> under a CPU and memory cap, niced. Each
 #      toolchain gets one shared registry cache. The build output directory
 #      stays inside the work directory and is never shared between checkouts.
+#      CARGO_TARGET_DIR is deliberately NOT set: cargo's default (<workspace>/
+#      target) is already inside /src, and forcing it made cargo-mutants' --jobs
+#      workers share one target dir and test each other's binaries, so parallel
+#      kill counts were noise (Soul, idunn-watchdog, 2026-10-01).
 #   4. Removes the work directory unless KEEP=1, and exits with the job's status.
 #
 # At most $SLOTS jobs run at once on Yggdrasil. The operator raised this to 3 on
@@ -190,7 +194,7 @@ sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -v "$work:/src" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
   -v eureka-sccache:/sccache \
-  -e CARGO_TARGET_DIR=/src/target -e BASH_ENV=/tmp/.ygg-bash-env \
+  -e BASH_ENV=/tmp/.ygg-bash-env \
   -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
   $docker_args \
   -w /src "$image" bash -o pipefail -c "printf 'set -o pipefail\n' >/tmp/.ygg-bash-env; $cmd"
