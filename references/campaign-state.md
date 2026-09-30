@@ -53,7 +53,10 @@ This is the one rule for every faculty.
 2. **`Unavailable`:** retry the same call once. A cold semantic embed after an
    idle spell took over 15 s live, which is the client's whole timeout.
    Retrying `admit` is safe, because an exact replay answers `AlreadyAdmitted`.
-3. **Still no answer, or any other `isError`:** stop. A subagent reports the
+3. **`InvalidInput` or `TooLarge`:** the call is wrong, not the organ. Fix it
+   (the arguments, or a narrower selection or smaller batch) and retry, as for
+   a refusal.
+4. **`Unavailable` after the retry, or any other `isError`:** stop. A subagent reports the
    error and the step it stopped at, and stays resumable: Self continues it
    with `SendMessage` once `whoami` answers. Never send the record to Self as
    prose, and never keep it anywhere else meanwhile. The mind is the only
@@ -74,7 +77,7 @@ mismatch. The root is the campaign slug, or the instance for `instance`,
 | `question` | `<label>` | Imagination; Hands or Soul for a fork | title, question, options (≥2), recommended, depends, raised in | `raised_in` |
 | `ruling` | `<label>` | Self | answers (none for an operator direction), choice, ruling, operator quote, date, authority | `answers` |
 | `cut_spec` | `cut-<cut>.r<rev>` | Imagination | repo, branch, base, depends on, first, deletes, keeps and moves, adds, file changes, authority map, verification, estimate | `rulings`, `questions` |
-| `cut_report` | `cut-<cut>.h<attempt>` | Hands | commits, range, verification evidence, mutations, deviations, forks, structural delta, landed names, undone, promises | `cut_spec`, `forks` |
+| `cut_report` | `cut-<cut>.h<attempt>` (a fix batch is the next attempt) | Hands | commits, range, verification evidence (mutation totals included), mutations (survivors and the ones Soul should rerun), deviations, forks, structural delta, landed names, undone, promises | `cut_spec`, `forks` |
 | `verdict` | `cut-<cut>.s<pass>` | Soul | range, claims (each with an outcome, evidence, findings, promise, mutations) | `cut_report`, `findings` |
 | `finding` | `cut-<cut>.s<pass>.<label>` | Soul, in the verdict's batch | confidence, severity, claim, invariants, locations, failure scenario, evidence, origin | `verdict` |
 | `follow_up` | `<label>` | Self; Imagination for work no cut owns | source, repo, locations, item, why it can wait, owner | `source` |
@@ -294,6 +297,8 @@ something new.
 | `MutationRecord` has no field for why a survivor is equivalent, and a report holds at most 64 mutations. | Every mutation goes in `mutations`. Each surviving mutation gets one `deviations` entry (`what`: its label; `why`: the triage). Deviations hold at most 32, so more survivors than that means the cut was too big. | `epiphany-pipeline` |
 | A `cut_report` needs a commit (`range.head`), so a pass that stops at a fork before its first commit leaves no report. | Hands admits only the question and reports its id. The blocked-spec check reads it. | `epiphany-pipeline` |
 | The faculty enum says `MindSteward`; the faculty is Life. | Life admits nothing, so nothing is mislabelled today. | `huginn-mind` |
+| A verdict claim cannot reference a ruling: `VerdictClaim` has `promise: Option<Label>` and no ruling reference. | Soul starts each ruling claim's text with the ruling id. | `epiphany-pipeline` |
+| A cold semantic embed after an idle spell exceeds the client's 15 s deadline. | Retry `Unavailable` once. | Huginn, with the embedder |
 | No tool supplies the session's id. | Self picks a session label and passes it in every brief. | `eureka-state` |
 | The reports-with-no-verdict hop cannot filter the citer's faculty. | Soul's queue is checked against the verdict's provenance. | CultNet selection |
 

@@ -261,11 +261,13 @@ nothing is pasted or paraphrased. The brief says:
   name: a behavioural test is missing, a fixture is degenerate (see below),
   or the mutant is equivalent and gets a one-line reason. Boundary flips on
   float thresholds are equivalent by default and are not chased. The score is
-  not a gate; the triaged survivor list is the record. Every mutation goes in
-  the report's `mutations`; each survivor also gets a `deviations` entry with
+  not a gate; the triaged survivor list is the record. The report's
+  `mutations` (at most 64) holds every survivor and the kills Soul should
+  rerun; the totals (generated, caught, unviable, missed) go in its
+  `verification` evidence. Each survivor also gets a `deviations` entry with
   its triage, because the mutation record has no field for it (a substrate gap
-  in `references/campaign-state.md`). Soul reruns the tool on the range rather than trusting Hands'
-  triage.
+  in `references/campaign-state.md`). Soul reruns the tool on the range rather
+  than trusting Hands' triage.
 - **No committed hand-written mutation suites, and no fallback harness.**
   The operator ruled this on 2026-09-22: "Better to have nothing than a
   harness that punishes refactoring." Anchors couple a suite to the code's
@@ -337,7 +339,9 @@ not fine in the same working tree, and never while a Soul pass reads that tree.
 Brief Soul with the `cut_report` id and the session label. The report carries
 the exact range and Hands' promises. **Soul's claims are not bounded by what
 Hands chose to promise.** Soul also views every ruling the `cut_spec` cites and
-makes one claim per ruling, and measures the target invariants the cut touches.
+makes one claim per ruling, runs the rulings-in-force recipe so that standing
+operator directions reach it (including ones admitted after the spec), and
+measures the target invariants the cut touches.
 Hands' self-report is one input to attack, never the list of what gets checked.
 Point Soul at the specific places a shortcut would hide. Soul:
 
@@ -374,8 +378,11 @@ exists.
 
 For each finding in force, decide:
 
-- **fix now:** brief Hands with the finding's id. Only Self closes the finding
-  `Fixed`, and only after a Soul pass on the fix's report holds;
+- **fix now:** brief Hands with the finding's id. The fix batch's `cut_report`
+  cites the finding's in-force `cut_spec` as its next attempt, on that spec's
+  branch. If the fix must land elsewhere, Imagination (or Self) admits a revised
+  spec first. Only Self closes the finding `Fixed`, and only after a Soul pass
+  on the fix's report holds;
 - **operator fork:** a `question` raised in the finding, with a recommendation;
 - **defer:** a `follow_up` with the reason it can wait, and the finding
   resolved `Deferred` to it;
@@ -450,7 +457,8 @@ and reconciles the target doc with the Body.
   `references/campaign-state.md`). Say so to the operator. Continue a stopped
   agent with `SendMessage` once `whoami` answers. Never keep the record in prose
   or memory "until it is back": that is a second copy, and the mind is the only
-  store.
+  store. Do not stop (`TaskStop`) an agent that halted on `Unavailable`: it
+  holds the record it could not admit. Resume it when the organ answers.
 - **Keep the prose map current.** After a ruling changes a design, sweep the
   map's body facts and rationale, and the target doc, for the old version the
   same day. The specs and rulings need no sweep, because their resolutions

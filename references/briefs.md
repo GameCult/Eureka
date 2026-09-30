@@ -39,9 +39,11 @@ Campaign state lives in the instance's mind, through the eureka-state tools
    them, stop and report which.
 3. Run <recipes>, with root = <c>, and view every id this brief names.
 Admit as faculty <Faculty>, agent <your name>, session <session>. A refusal
-names the rule that refused: fix the batch and admit again. Retrying an admit
-is safe (AlreadyAdmitted). Any other isError, or the mind going away mid-pass:
-stop where you are and report the step; never send your record as prose.
+names the rule that refused: fix the batch and admit again. InvalidInput and
+TooLarge are the same: fix the call (or narrow it) and retry. Retrying an admit
+is safe (AlreadyAdmitted). Unavailable after one retry, any other isError, or
+the mind going away mid-pass: stop where you are and report the step; never
+send your record as prose.
 ```
 
 ## Self: open a campaign, rule, triage
@@ -188,7 +190,9 @@ cites, read by id):
 Every rule the spec or the operator names gets a behavioural test. Measure the
 suite with <the ecosystem's mutation tool>, scoped to this cut's diff
 (`--since:<base>` or the tool's equivalent), against the final spelling of the
-code. Record every mutation in the report's mutations. Triage every survivor
+code. The report's mutations (at most 64) holds every survivor and the kills
+Soul should rerun; put the totals (generated, caught, unviable, missed) in
+verification evidence. Triage every survivor
 by name and line: killed by a new test, killed by fixing a degenerate fixture,
 or equivalent with a one-line reason. The mutation record has no field for that
 reason, so each survivor also gets one deviations entry (what: its label; why:
@@ -306,13 +310,17 @@ boundary with no half-deleted authority, and put what remains in undone.
 
 Don't edit the prose map.
 
-Admit one cut_report for <cut_spec id>, attempt <n>:
+Admit one cut_report for <cut_spec id>, attempt <n>. A fix batch is the next
+attempt on the finding's in-force spec, on that spec's branch; if the fix
+cannot land there, stop and report, because Self or Imagination must admit a
+revised spec first. Its fields:
 - commits (builds: false for any that don't build), and the range; the head
   must be one of the commits
 - verification: one evidence entry per build, test run and grep, with the
   command as locator and the counts as result
-- mutations: each entry, its exact edit (before and after), and whether it
-  failed as expected; the survivor triage goes with it
+- mutations: every survivor and the kills Soul should rerun (at most 64),
+  each with its exact edit (before and after) and whether it failed as
+  expected; totals go in verification, each survivor's triage in deviations
 - deviations: spec discrepancies you fixed, each with why
 - forks: the question ids you admitted
 - structural_delta: lines, dependencies, formats and targets removed or added
@@ -343,14 +351,15 @@ Admit one verdict and its findings, and nothing else.
   Yielding to announce the wait is the same violation: block in-turn or read
   the finished output, never end the turn to say you are waiting.
 
-Scope: <cut_report id>. Rehydrate (recipes: target in force, one cut's record
-for <cut>), then view the report (its range and its promises), the cut_spec it
+Scope: <cut_report id>. Rehydrate (recipes: target in force, rulings in force,
+one cut's record for <cut>), then view the report (its range and its promises), the cut_spec it
 cites, and every ruling the spec cites. Admitting your verdict is a write to
 the mind, not to a repo.
 
 Hands' promises are one input, not the boundary of the pass. Falsify every
-promise, every ruling the spec cites (operator directions included, in the
-operator's own words), and every target invariant the cut touches, and
+promise, every ruling the spec cites, every operator direction in force (even
+one admitted after the spec; in the operator's own words), and every target
+invariant the cut touches, and
 specifically:
 - <the load-bearing claim, and what would make it false>
 - <where split authority could hide. Two paths that decide the same rule are
@@ -399,8 +408,9 @@ Admit one verdict (pass <n>) and its findings in one batch:
 - one claim per promise in the report, Holds, Falsified or Unproven, each with
   its evidence (the numbers: test counts, entries killed, the survivors you
   retriaged) and the report's mutation labels it reran
-- one claim per ruling the spec cites, naming the ruling id, whether or not
-  Hands promised anything about it
+- one claim per ruling the spec cites and per operator direction in force,
+  its text starting with the ruling id (a claim has no ruling field), whether
+  or not Hands promised anything about it
 - claims of your own for what you attacked beyond those
 - each finding Confirmed or Plausible, with its locations (file:line), failure
   scenario, severity, origin, and the target invariant labels it breaks. A
