@@ -526,6 +526,9 @@ and reconciles the target doc with the Body.
 - **Before a mass-spawn or process-launching probe, read how the child chooses its
   role.** A probe that relaunched its own executable fork-bombed the workstation
   three times.
+- **Before a merge, verify every test project that consumes the changed package, not only the package's
+  own.** CultMath Phacelle merged on CultMath's green suite (2026-09-30); Caching checks every public
+  CultMath value type for a converter, formatter and dictionary key, and main went red.
 - **Pin sibling checkouts with a guard that checks revision and cleanliness.**
   Scope the guard to projects that actually reference the sibling.
 
