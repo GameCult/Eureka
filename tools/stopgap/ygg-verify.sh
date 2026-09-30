@@ -205,6 +205,7 @@ REMOTE
   # output and exit with it. If it never arrives the remote script died before its
   # own exit line, so refuse to report a status that was never produced.
   verdict=97
+  line=''
   while IFS= read -r line; do
     case "$line" in
       "__YGG_VERDICT__ "*) verdict=${line#__YGG_VERDICT__ }; continue ;;
