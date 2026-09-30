@@ -108,6 +108,11 @@ Standing rulings: <short list>.
 - One rule, one path. A simpler case of the rule (one lane, one cell, an
   empty set) runs through the general path, not a fast path beside it. If a
   second path looks necessary, stop and report it; do not build it.
+- An error, log line or refusal never echoes an input value, and that
+  includes a path, a URL or a line of the offending config. Name the field and
+  the error code. Test it with a canary value: no byte of the canary may appear.
+  Soul found this class twice on 2026-09-30: Heimdall's secret reader printed a
+  URL bound as a path, and TOML parse errors quote the whole `KEY = "value"` line.
 
 Every rule the spec or the operator names gets a behavioural test. Measure the
 suite with <the ecosystem's mutation tool>, scoped to this cut's diff

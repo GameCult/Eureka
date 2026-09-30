@@ -1152,3 +1152,12 @@ code path", and "such obviously unnecessary split authority should never pass a 
   "design order as data, not as scheduling", and the brief carried no instruction to check.
 - The Soul brief template now requires `git log -S` / `--grep` on a mechanism before recommending it. A
   mechanism that was tried must be cited with the reason the new situation differs.
+
+## 2026-09-30: errors never echo an input value
+
+- Evidence: the Heimdall secrets cut existed to keep secrets off terminals, yet its new reader's error printed
+  the `_FILE` path. Soul reproduced a full `postgres://user:pw@...` URL reaching journald when a URL was bound
+  into a `_FILE` slot. The Imagination map for the same cut had already found TOML parse errors quoting whole
+  `KEY = "value"` lines. Same class, found twice in one day.
+- The Hands brief template now requires that errors, logs and refusals name the field and the error code, never
+  the value, and that this is pinned by a canary test.
