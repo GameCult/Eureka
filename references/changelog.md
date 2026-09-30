@@ -1220,3 +1220,15 @@ code path", and "such obviously unnecessary split authority should never pass a 
   (missing tools, one retry on `Unavailable`, a resumable stop); a Hands exit for a fork before the first
   commit; operator directions as rulings with no `answers`; the target document committed before its
   `DocRef`s are admitted; and a substrate-gaps table in `campaign-state.md`.
+
+## 2026-09-30: pipefail reaches job scripts
+
+- Evidence: Soul (scenarios batch 2) proved that `bash -o pipefail -c "bash job.sh"` does not give the script
+  pipefail, because shell options are not inherited. A job script ending in `dotnet test ... | tail -3` came back
+  `exit 0` on a failing test. Every Hands and Soul job on 2026-09-30 ran as `bash <script>.sh`.
+- The stopgap now exports `SHELLOPTS=pipefail` into the container. Probe: a script `false | cat` exits 1, and
+  `true | cat` exits 0.
+- **Consequence for today's results:** any job-script verdict whose last command was a pipeline, reported before
+  this change, is unproven. Soul passes re-derived their verdicts from test output, not from the exit code alone, so
+  their CONFIRMED and held claims stand. Hands-reported "green" that rested only on the exit status should be read
+  as unverified until re-run.

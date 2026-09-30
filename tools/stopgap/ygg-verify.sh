@@ -46,7 +46,10 @@
 # 2026-09-22. Mutation testing uses the ecosystem's tools on a cut's diff.
 #
 # TWO RAKES, both paid for on 2026-09-23:
-#  * The command runs under `bash -o pipefail -c` (pipefail forced since
+#  * The command runs under `bash -o pipefail -c`, and SHELLOPTS=pipefail is exported
+#    into the container, so a job SCRIPT run as `bash job.sh` inherits pipefail too
+#    (the -o flag alone does not reach child shells; Soul proved a failing piped
+#    test in a job script came back exit 0, 2026-09-30). Pipefail forced since
 #    2026-09-30, after an ack Cut 2 job piped a failing test run into `cut` and
 #    came back exit 0). pipefail does not rescue `a; b`: the job's status is the
 #    LAST statement's, so a command ending in `git checkout`, `echo` or a filter
@@ -181,7 +184,7 @@ set +e
 sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -v "$work:/src" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
-  -e CARGO_TARGET_DIR=/src/target \
+  -e CARGO_TARGET_DIR=/src/target -e SHELLOPTS=pipefail \
   -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
   $docker_args \
   -w /src "$image" bash -o pipefail -c "$cmd"
