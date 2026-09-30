@@ -2,6 +2,30 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-09-30: the rust verify image caches compiled crates with sccache
+
+The idunn-watchdog campaign's passes were slow. Some examples: a 263-line
+Bifrost deletion took 38 min of Hands wall-clock time, and one Soul pass took
+85 min. Self suspected cold builds, because every stopgap job gets an empty
+`/src/target`. The operator ordered the sccache change.
+
+What changed:
+- The rust image installs sccache 0.18.0 and sets `RUSTC_WRAPPER`, a 60G
+  `SCCACHE_DIR=/sccache` and `CARGO_INCREMENTAL=0` as image ENV. Images without
+  sccache get no wrapper.
+- `ygg-verify.sh` mounts the shared `eureka-sccache` volume on every job.
+- sccache keys each entry on its inputs, not on mtime. So the scar that keeps
+  target directories unshared between checkouts does not apply to it.
+
+Measured on Yggdrasil, 2026-09-30, `cargo test --lib --no-run` on Idunn main:
+- Cold (18 of 83 crates already cached): 51 s.
+- Warm (83 of 83 hits): 29 s.
+- Slot wait before each run: about 2 and 5 minutes.
+
+So the cache saves roughly 20 s per build, which adds up over a mutation run.
+But cold builds were not the main cost. Slot contention and test and mutation
+runtime are. Look there before adding more build machinery.
+
 ## 2026-09-30: substrate gaps are read from the mind, and Imagination owns the model page
 
 The first typed campaign, `idunn-watchdog`, admitted the eight gaps from

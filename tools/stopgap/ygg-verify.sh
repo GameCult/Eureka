@@ -80,7 +80,9 @@
 #   DOCKER_ARGS='--network host'). Word-split by the remote shell, so quote a
 #   flag's own value inside the string if it needs one.
 # Images:
-#   rust    eureka-verify-rust:<Dockerfile hash>   (rust 1.95 plus cargo-mutants)
+#   rust    eureka-verify-rust:<Dockerfile hash>   (rust 1.95, cargo-mutants, sccache;
+#           every job shares the eureka-sccache volume at /sccache, keyed by
+#           input hash, so a cold /src/target still reuses compiled crates)
 #   kotlin  eureka-verify-kotlin:<Dockerfile hash> (JDK 21, kotlinc 2.2.21, Node 24, pwsh;
 #           for packages/cultmesh-kotlin: `pwsh -File build.ps1`)
 #   dotnet  mcr.microsoft.com/dotnet/sdk:10.0   (install Stryker in the command:
@@ -187,6 +189,7 @@ set +e
 sudo nice -n 10 docker run --rm --name "$cname" --cpus="$cpus" --memory="$mem" \
   -v "$work:/src" -v /etc/machine-id:/etc/machine-id:ro \
   -v eureka-cargo-registry:/usr/local/cargo/registry -v eureka-nuget:/root/.nuget/packages \
+  -v eureka-sccache:/sccache \
   -e CARGO_TARGET_DIR=/src/target -e BASH_ENV=/tmp/.ygg-bash-env \
   -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0='*' \
   $docker_args \
