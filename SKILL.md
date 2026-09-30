@@ -40,7 +40,7 @@ its own brief. A faculty that grades its own work has lost the point.
 
 | Faculty | Runs against | Admits | Must not |
 |---|---|---|---|
-| **Imagination** | the Body (source, docs, probes), plus the target | `question`s and `cut_spec`s specified to `file:line`; body facts and rationale go to the prose map | commit code, choose a product fork silently |
+| **Imagination** | the Body (source, docs, probes), plus the target | `question`s and `cut_spec`s specified to `file:line`, and `follow_up`s for work no cut owns; body facts and rationale go to the prose map | commit code, choose a product fork silently |
 | **Hands** | one `cut_spec` | small pushed commits, then one `cut_report` | redesign the spec, work around a fork |
 | **Soul** | Hands' *executed* commits | one `verdict` and its `finding`s | edit or commit a repo, or review a plan (a pass on a plan is Imagination) |
 | **Life** | memory surfaces | nothing: named mutations and proposals | touch Body code, restate what an owner records |
@@ -59,14 +59,21 @@ finished when Hands can go straight to the cut.
 
 ### 0. Reach the mind, map the substrate, scope, target
 
-- **Call `whoami` first.** If `reachable` is false, stop and tell the operator.
-  Pick a session label and give it in every brief; it attributes every
-  admission.
+- **Check that the `eureka-state` tools are in this session.** If they are
+  absent, stop and tell the operator: a server registered after the session
+  started needs a new session. Never fall back to prose.
+- **Call `whoami`.** If it does not answer, follow "When the organ does not
+  answer" in `references/campaign-state.md`: one retry, then stop. Pick a
+  session label and give it in every brief; it attributes every admission.
 - **Map the real substrate before you propose anything.** Run parallel read-only
   exploration of the old system and the new one, of any prior attempts and why
   they failed (git history, rollbacks), and of every consumer across repos.
-- Admit the stewardships, the `campaign` and the `target` (Self's checklist in
-  `references/briefs.md`). The target holds the ends, not the means: labelled
+- **Write and commit the target document first**, on the campaign's working
+  branch: its rationale, and the design truths the migration will produce. The
+  `campaign` and the `target` cite it by `DocRef`, and a `DocRef` names a
+  commit.
+- Then admit the stewardships, the `campaign` and the `target` (Self's
+  checklist in `references/briefs.md`). The target holds the ends, not the means: labelled
   invariants that must survive (wire parity, one owner per decision, what the
   operator refuses to lose), and what is explicitly **not** a consumer. For
   example, AetheriaEve was "taxidermy", and saying so up front saved every later
@@ -177,12 +184,15 @@ Templates are in `references/briefs.md` and `references/campaign-state.md`.
 
 ### 2. Operator rulings
 
-Put the open questions to the operator together, from the open-items recipe,
+Put the open questions to the operator together, from the open-questions recipe,
 each with its options, recommendation, and what depends on the answer. Self
 admits every answer as a `ruling` that answers its question, keeping the
 operator's words in `operator_quote` when they carry meaning a paraphrase would
-lose. A ruling that changes an earlier one supersedes it by a `resolution`,
-never by an edit, so the rulings-in-force recipe shows one live design.
+lose. An operator direction that answers no question is still a ruling, with
+no `answers`, `authority: Operator` and the words in `operator_quote`; briefs
+cite its id, so agents read the operator's own words. A ruling that changes an
+earlier one supersedes it by a `resolution`, never by an edit, so the
+rulings-in-force recipe shows one live design.
 
 **The operator channel is this session.** Eureka has no Persona: Self is the
 operator-facing surface, because a question costs one message and loses no
@@ -232,7 +242,9 @@ nothing is pasted or paraphrased. The brief says:
 - **Follow the spec, do not redesign.** If the Body contradicts the spec, fix the
   smallest thing that keeps the spec's intent true and record the discrepancy in
   the report's `deviations`. If it is a real fork, admit it as a `question`
-  raised in the spec, **stop, and report**.
+  raised in the spec, **stop, and report**. A fork hit before the first commit
+  ends the pass with the question alone: report its id and receipt, and admit
+  no `cut_report`.
 - **Gaps are filled in their owner, never worked around locally.** If CultMath
   lacks a function, CultMath gets it; the consumer does not grow a helper.
 - **Delete before adding.** No shims, no compatibility layers the map did not
@@ -249,9 +261,10 @@ nothing is pasted or paraphrased. The brief says:
   name: a behavioural test is missing, a fixture is degenerate (see below),
   or the mutant is equivalent and gets a one-line reason. Boundary flips on
   float thresholds are equivalent by default and are not chased. The score is
-  not a gate; the triaged survivor list is the record. It goes in the report's
-  `mutations`, and a survivor that stays alive goes in `deviations` or becomes a
-  `follow_up`. Soul reruns the tool on the range rather than trusting Hands'
+  not a gate; the triaged survivor list is the record. Every mutation goes in
+  the report's `mutations`; each survivor also gets a `deviations` entry with
+  its triage, because the mutation record has no field for it (a substrate gap
+  in `references/campaign-state.md`). Soul reruns the tool on the range rather than trusting Hands'
   triage.
 - **No committed hand-written mutation suites, and no fallback harness.**
   The operator ruled this on 2026-09-22: "Better to have nothing than a
@@ -322,8 +335,11 @@ not fine in the same working tree, and never while a Soul pass reads that tree.
 ### 4. Soul falsifies
 
 Brief Soul with the `cut_report` id and the session label. The report carries
-the exact range and Hands' promises; the target in force carries the operator
-invariants. Point Soul at the specific places a shortcut would hide. Soul:
+the exact range and Hands' promises. **Soul's claims are not bounded by what
+Hands chose to promise.** Soul also views every ruling the `cut_spec` cites and
+makes one claim per ruling, and measures the target invariants the cut touches.
+Hands' self-report is one input to attack, never the list of what gets checked.
+Point Soul at the specific places a shortcut would hide. Soul:
 
 - reruns builds, tests and captures itself instead of trusting the report;
 - reruns a selection of Hands' mutations, and designs its own that are not plain
@@ -333,8 +349,8 @@ invariants. Point Soul at the specific places a shortcut would hide. Soul:
   real compiler, run the other runtime's decoder;
 - checks the invariant at the layer where it would actually fail (wire bytes,
   another runtime, the editor, the GPU), not only in the unit test;
-- admits one `verdict`, measuring every promise in the report, together with
-  its `finding`s: each `Confirmed` or `Plausible`, with locations, a failure
+- admits one `verdict`, with a claim for every promise and for every cited
+  ruling, together with its `finding`s: each `Confirmed` or `Plausible`, with locations, a failure
   scenario, a severity and the target invariants it breaks.
 
 Soul works read-only on repos. It creates temporary worktrees for anything that
@@ -358,8 +374,8 @@ exists.
 
 For each finding in force, decide:
 
-- **fix now:** brief Hands with the finding's id; the landing closes it
-  `Fixed`;
+- **fix now:** brief Hands with the finding's id. Only Self closes the finding
+  `Fixed`, and only after a Soul pass on the fix's report holds;
 - **operator fork:** a `question` raised in the finding, with a recommendation;
 - **defer:** a `follow_up` with the reason it can wait, and the finding
   resolved `Deferred` to it;
@@ -408,7 +424,8 @@ later.
 After each cut:
 
 - Progress is a query, not a section to update: the recipes for specs with no
-  report, reports with no verdict, and open items.
+  report (minus those blocked on a question), reports with no verdict, and open
+  questions, follow-ups and findings.
 - Self reconciles the subtraction ledger with the ledger recipe (each spec's
   `estimate` against its reports' `structural_delta`). A miss is allowed, but
   it must be explained. The CultCache core missed its size
@@ -429,10 +446,11 @@ and reconciles the target doc with the Body.
   query it. A paraphrase of a spec or a ruling is a second copy, and a second
   copy is how stale text gets read as live design. Tell the operator what
   matters in words. Tell agents the id.
-- **When the organ is unreachable, stop.** Say so to the operator and wait, or
-  work on something that does not touch campaign state. Never keep the record in
-  prose or memory "until it is back": that is a second copy, and it breaks the
-  invariant that the mind is the only store.
+- **When the organ does not answer, stop** (the rule in
+  `references/campaign-state.md`). Say so to the operator. Continue a stopped
+  agent with `SendMessage` once `whoami` answers. Never keep the record in prose
+  or memory "until it is back": that is a second copy, and the mind is the only
+  store.
 - **Keep the prose map current.** After a ruling changes a design, sweep the
   map's body facts and rationale, and the target doc, for the old version the
   same day. The specs and rulings need no sweep, because their resolutions
@@ -479,7 +497,8 @@ and reconciles the target doc with the Body.
   is remembered only as "the docs got messy". This is not a reason to wait on
   the missing thing or route work to it: work around it and leave evidence. The
   evidence is a `follow_up` whose source is the document where the run felt the
-  gap, and whose owner is the missing thing's owner.
+  gap, and whose owner is the missing thing's owner. The gaps already known are
+  listed in `references/campaign-state.md`.
 - **Never claim an agent's result before its notification arrives.**
 
 ## Git and tooling rules (scars)

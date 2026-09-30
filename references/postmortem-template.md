@@ -1,8 +1,10 @@
 # Postmortem template
 
-Write the postmortem when the migration closes, from evidence: commits, the cut
-map, Soul reports and transcripts. Use an Eyes pass to gather facts first. Report
-the delta and the scars, not a victory lap.
+Write the postmortem when the migration closes, from evidence: commits, the
+campaign's mind, the prose map and transcripts. From the mind, take each cut's
+record, each subject's history and the ledger (recipes in `campaign-state.md`);
+cite document ids rather than restating them. Use an Eyes pass to gather facts
+first. Report the delta and the scars, not a victory lap.
 
 ```
 # <Migration> postmortem
@@ -19,7 +21,7 @@ there was one.
 One row per cut: dates, SHA ranges, Soul passes, and the notable finding.
 
 ## Structural delta
-Estimate against actual, per repo. What was deleted, added and parked.
+Estimate against actual, per repo, from the ledger recipe. What was deleted, added and parked.
 
 ## What Soul caught
 Defects that green tests had passed, grouped by kind (concurrency, wire parity,

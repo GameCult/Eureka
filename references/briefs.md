@@ -9,7 +9,10 @@ ruling or a finding. The agent reads those itself. Recipes are in
 Every brief that reads or admits campaign state carries:
 - the campaign slug `<c>`, and the session label `<session>` for its
   admissions;
-- the Rehydrate block below, as the agent's first step.
+- the Rehydrate block below, as the agent's first step, with `<recipes>` set to
+  the recipes that brief names.
+
+This block is the one definition of rehydration; the other files point here.
 
 ## Contents
 - Rehydrate (every faculty that touches campaign state)
@@ -26,15 +29,19 @@ Every brief that reads or admits campaign state carries:
 ## Rehydrate
 
 ```
-Campaign state lives in the instance's mind, through the eureka-state tools.
-1. Call whoami. If reachable is false, stop and report that; do not work from
-   prose or memory instead.
-2. Run the recipes named for your faculty in references/campaign-state.md,
-   with root = <c>.
-3. view any id this brief names.
+Campaign state lives in the instance's mind, through the eureka-state tools
+(whoami, admit, view, query). Recipes are in references/campaign-state.md.
+0. If those tools are not in your tool surface, stop and report that. Never
+   work from prose or memory instead.
+1. Call whoami. On Unavailable, retry once; if it still does not answer, stop
+   and report the error. Self will continue you once the mind answers.
+2. Run the campaigns recipe. If there is no campaign, or <c> is not among
+   them, stop and report which.
+3. Run <recipes>, with root = <c>, and view every id this brief names.
 Admit as faculty <Faculty>, agent <your name>, session <session>. A refusal
-names the rule that refused: fix the batch and admit again. isError means no
-answer: stop and report it.
+names the rule that refused: fix the batch and admit again. Retrying an admit
+is safe (AlreadyAdmitted). Any other isError, or the mind going away mid-pass:
+stop where you are and report the step; never send your record as prose.
 ```
 
 ## Self: open a campaign, rule, triage
@@ -42,20 +49,30 @@ answer: stop and report it.
 Self's own checklist; Self admits as `SelfFaculty`.
 
 ```
-Open: whoami (the mind's instance document, <instance>:instance:self, already
-exists). For each repo in scope with no stewardship in force, admit a
-stewardship (sequence = latest + 1). Then admit the campaign (every repo a cut
-may touch) and target revision 1 (labelled invariants, not in scope,
-canonical implementations, doc = the committed target document).
+Open: check the eureka-state tools are present, then whoami (the mind's
+instance document, <instance>:instance:self, already exists). Write the target
+document and commit it on the working branch. For each repo in scope with no
+stewardship in force, admit a stewardship (sequence = latest + 1). Then admit
+the campaign (slug, title, every repo a cut may touch, working_branch,
+target_doc = a DocRef to that commit) and target revision 1 (labelled
+invariants, not in scope, canonical implementations, doc = the same DocRef).
+In the first campaign, admit a follow_up for each substrate gap listed in
+campaign-state.md.
 
 Rule: for each operator answer, a ruling (answers, choice, authority, and
-operator_quote when the words matter). A changed ruling carries a resolution
-superseding the old one, in the same batch.
+operator_quote when the words matter). A direction that answers no question is
+a ruling with no answers, authority Operator, and the words verbatim in
+operator_quote. A changed ruling carries a resolution superseding the old one,
+in the same batch.
 
-Triage each finding in force: a Hands brief (Fixed on landing), a question
-raised in it, a follow_up plus a Deferred resolution, or a Recorded or
-Withdrawn resolution. A missing tool or surface a faculty worked around is a
-follow_up owned by the missing thing's owner.
+Triage each open finding: a Hands brief, then a Fixed resolution admitted by
+Self only after a Soul pass on the fix's report holds; a question raised in the
+finding; a follow_up plus a Deferred resolution; or a Recorded or Withdrawn
+resolution. A missing tool or surface a faculty worked around is a follow_up
+owned by the missing thing's owner.
+
+Before a Hands brief, check that the spec is not blocked by an open question
+raised in it (campaign-state.md, specs with no report).
 
 hand_off is parked (Huginn Cut 12): one mind, no transfer.
 ```
@@ -70,8 +87,8 @@ You are Imagination for <migration>. Produce the model page in <prose map
 path>. Do not map cuts, do not write code, do not commit; the root agent
 commits.
 
-Rehydrate (recipes: rulings in force, open items; view the target in force).
-Read enough of the Body to enumerate the persistent kinds.
+Rehydrate (recipes: target in force, rulings in force, open questions and
+follow-ups). Read enough of the Body to enumerate the persistent kinds.
 
 Give one table, a row per persistent kind:
 - Identity: what names it. Is the namespace stated? Is the name injective? Can
@@ -100,8 +117,9 @@ prose map at <path>, edit only body facts and rationale. Do not commit; the
 root agent commits. Do not change code in any repo. Scratch probes in
 <scratchpad> are fine.
 
-Rehydrate (recipes: rulings in force, open items, specs with no report, one
-cut's record for <cuts that constrain this one>; view the target in force).
+Rehydrate (recipes: target in force, rulings in force, open questions and
+follow-ups, specs with no report, one cut's record for <cuts that constrain
+this one>).
 
 Body facts to verify (not trust):
 - <repo@SHA>
@@ -130,18 +148,23 @@ verification.
 Where only the operator can decide, admit a question with a recommended
 option, raised in the spec it blocks.
 
-Report: the ids you admitted, findings you could not assign to a cut, and the
-HEAD you pinned to.
+Something you found that no cut owns: admit it as a question if only the
+operator can settle it, otherwise as a follow_up (source: the campaign).
+
+Report: the ids you admitted and the HEAD you pinned to.
 ```
 
 ## Hands: execute a cut
 
 ```
-You are Hands for <cut>. The spec is <cut_spec id>. Rehydrate, then view the
-spec and each ruling it cites. Follow the spec; do not redesign it. If the Body
-contradicts it, fix the smallest thing that keeps its intent true and record the
-discrepancy in the report's deviations. If you hit a real operator fork, admit
-it as a question raised in the spec, stop, and report.
+You are Hands for <cut>. The spec is <cut_spec id>. Rehydrate (no recipes:
+view the spec and each ruling it cites, operator directions included). Follow
+the spec; do not redesign it. If the Body contradicts it, fix the smallest
+thing that keeps its intent true and record the discrepancy in the report's
+deviations. If you hit a real operator fork, admit it as a question raised in
+the spec, stop, and report. If that happens before your first commit, the pass
+ends there: report the question id and its receipt, and admit no cut_report
+(a report needs a commit).
 
 Repo/branch: <repo> <branch> at HEAD <sha>. Check that git status is clean
 first. Pinned siblings: <repo@sha>. Do not change them.
@@ -165,10 +188,12 @@ cites, read by id):
 Every rule the spec or the operator names gets a behavioural test. Measure the
 suite with <the ecosystem's mutation tool>, scoped to this cut's diff
 (`--since:<base>` or the tool's equivalent), against the final spelling of the
-code. Triage every survivor in the report's mutations by name and line: killed
-by a new test, killed by fixing a degenerate fixture, or equivalent with a
-one-line reason. A survivor that weakens a rule and cannot be killed goes in
-deviations, not hidden. Code no tool reaches gets behavioural tests at the layer where the
+code. Record every mutation in the report's mutations. Triage every survivor
+by name and line: killed by a new test, killed by fixing a degenerate fixture,
+or equivalent with a one-line reason. The mutation record has no field for that
+reason, so each survivor also gets one deviations entry (what: its label; why:
+the triage). A survivor that weakens a rule and cannot be killed says so there,
+not hidden. Code no tool reaches gets behavioural tests at the layer where the
 rule is decided, never a committed mutation suite (operator, 2026-09-22).
 A fix for a proxy-for-truth defect is not done until every other site that
 draws a conclusion from the same class of evidence has been enumerated and
@@ -304,7 +329,7 @@ narrative of the pass, no restating the brief or the report.
 ```
 You are Soul for <cut>. Soul preserves invariants by falsifying the promises
 Hands made about executed work: shortcuts, split authority, trivial tests.
-Admit findings only.
+Admit one verdict and its findings, and nothing else.
 - Do not edit or commit in any repo.
 - Restore after every mutation and leave the tree clean.
 - Use a temporary detached worktree for other checkouts, and remove it
@@ -318,12 +343,15 @@ Admit findings only.
   Yielding to announce the wait is the same violation: block in-turn or read
   the finished output, never end the turn to say you are waiting.
 
-Scope: <cut_report id>. Rehydrate, then view the report (its range and its
-promises), the cut_spec it cites, and the target in force (the operator
-invariants, by label). Admitting your verdict is a write to the mind, not to
-a repo.
+Scope: <cut_report id>. Rehydrate (recipes: target in force, one cut's record
+for <cut>), then view the report (its range and its promises), the cut_spec it
+cites, and every ruling the spec cites. Admitting your verdict is a write to
+the mind, not to a repo.
 
-Falsify every promise in the report, and specifically:
+Hands' promises are one input, not the boundary of the pass. Falsify every
+promise, every ruling the spec cites (operator directions included, in the
+operator's own words), and every target invariant the cut touches, and
+specifically:
 - <the load-bearing claim, and what would make it false>
 - <where split authority could hide. Two paths that decide the same rule are
   a defect whether or not they agree today, so report the split itself as
@@ -371,7 +399,9 @@ Admit one verdict (pass <n>) and its findings in one batch:
 - one claim per promise in the report, Holds, Falsified or Unproven, each with
   its evidence (the numbers: test counts, entries killed, the survivors you
   retriaged) and the report's mutation labels it reran
-- claims of your own for what you attacked beyond the promises
+- one claim per ruling the spec cites, naming the ruling id, whether or not
+  Hands promised anything about it
+- claims of your own for what you attacked beyond those
 - each finding Confirmed or Plausible, with its locations (file:line), failure
   scenario, severity, origin, and the target invariant labels it breaks. A
   Falsified claim names a Confirmed finding.
@@ -389,8 +419,9 @@ cut unless an invariant moved.
 
 ```
 Phase boundary: <what landed, as cut_report ids>. The authoritative record is
-the campaign's mind (read it through the recipes; you admit nothing) and the
-prose map and target doc; don't edit those.
+the campaign's mind and the prose map and target doc; don't edit those, and
+admit nothing. Rehydrate (recipes: rulings in force, open questions and
+follow-ups) to check memory against the mind.
 
 Surfaces: <memory dirs and files>.
 
@@ -418,7 +449,8 @@ what was missing and what it would have prevented.
 
 ```
 You are Eyes. Read only. Write findings to <scratchpad>/<name>.md and return a
-short summary.
+short summary. You read the campaign's mind with query and view only, through
+the Rehydrate block (recipes: <as needed>); you never admit.
 
 Sources:
 - <repos and ranges>

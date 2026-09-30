@@ -41,8 +41,23 @@ The instance and the daemon are the server's configuration
   answers `AlreadyAdmitted`, so retrying a batch is safe.
 - **`isError: true` means no answer:** `Unavailable` (the daemon is down or
   unreachable), `Rejected` (it refused the envelope), `Misconfigured`,
-  `TooLarge`, `Unencodable`, `InvalidInput` or `Internal`. When this happens,
-  stop and say so. Never keep the record somewhere else meanwhile.
+  `TooLarge`, `Unencodable`, `InvalidInput` or `Internal`.
+
+### When the organ does not answer
+
+This is the one rule for every faculty.
+
+1. **The tools are missing** from the session's tool surface: stop and tell the
+   operator (a subagent tells Self). A server registered after the session
+   started appears only in a new session. Never fall back to prose.
+2. **`Unavailable`:** retry the same call once. A cold semantic embed after an
+   idle spell took over 15 s live, which is the client's whole timeout.
+   Retrying `admit` is safe, because an exact replay answers `AlreadyAdmitted`.
+3. **Still no answer, or any other `isError`:** stop. A subagent reports the
+   error and the step it stopped at, and stays resumable: Self continues it
+   with `SendMessage` once `whoami` answers. Never send the record to Self as
+   prose, and never keep it anywhere else meanwhile. The mind is the only
+   store.
 
 ## The document set
 
@@ -57,12 +72,12 @@ mismatch. The root is the campaign slug, or the instance for `instance`,
 | `campaign` | `self` | Self | title, repos (each stewarded), working branch, target doc | |
 | `target` | `r<rev>` | Self | invariants (`label`, `statement`), not in scope, canonical implementations, doc | |
 | `question` | `<label>` | Imagination; Hands or Soul for a fork | title, question, options (≥2), recommended, depends, raised in | `raised_in` |
-| `ruling` | `<label>` | Self | answers, choice, ruling, operator quote, date, authority | `answers` |
+| `ruling` | `<label>` | Self | answers (none for an operator direction), choice, ruling, operator quote, date, authority | `answers` |
 | `cut_spec` | `cut-<cut>.r<rev>` | Imagination | repo, branch, base, depends on, first, deletes, keeps and moves, adds, file changes, authority map, verification, estimate | `rulings`, `questions` |
 | `cut_report` | `cut-<cut>.h<attempt>` | Hands | commits, range, verification evidence, mutations, deviations, forks, structural delta, landed names, undone, promises | `cut_spec`, `forks` |
 | `verdict` | `cut-<cut>.s<pass>` | Soul | range, claims (each with an outcome, evidence, findings, promise, mutations) | `cut_report`, `findings` |
 | `finding` | `cut-<cut>.s<pass>.<label>` | Soul, in the verdict's batch | confidence, severity, claim, invariants, locations, failure scenario, evidence, origin | `verdict` |
-| `follow_up` | `<label>` | Self | source, repo, locations, item, why it can wait, owner | `source` |
+| `follow_up` | `<label>` | Self; Imagination for work no cut owns | source, repo, locations, item, why it can wait, owner | `source` |
 | `resolution` | `<subject kind>.<subject local>.n<seq>` | whoever closes the subject | subject, sequence, outcome, rationale, date | `subject`, and the outcome's referents |
 | `hand_off` | `<to>.<repo>.<date>` | Self (parked: Cut 12) | from, to, repo, documents, reason | `documents` |
 
@@ -78,6 +93,10 @@ Rules that shape a batch (the rest arrive as refusals):
 - A ruling that `answers` a question derives that question's `Answered`
   resolution in the same commit. Its `choice` must be one of the question's
   option labels. `operator_quote` is allowed only with `authority: Operator`.
+- An operator direction that answers no question is a ruling with no
+  `answers` and no `choice`, `authority: Operator`, and the operator's own
+  words in `operator_quote`. Specs and briefs cite it by id, so every agent
+  reads the operator's words rather than a paraphrase.
 - A revision above 1 (of a target or a cut spec) needs, in its own batch, a
   resolution that supersedes the previous revision by it.
 - A cut spec cites only rulings in force, and a report only a spec in force.
@@ -105,6 +124,10 @@ reversal.
 | resolution | `Withdrawn { reason }`, which reopens its subject. It cannot itself be withdrawn: resolve the subject again. |
 
 Campaigns, cut reports, verdicts and instances have no resolution.
+
+Only Self closes a finding `Fixed`, and only after a Soul pass on the fix's
+report holds the claim the finding broke. Hands never resolves a finding: a fix
+that closes itself is the self-grading the pipeline exists to prevent.
 
 ## Selection vocabulary
 
@@ -157,23 +180,31 @@ or `view` one id, to read the prose fields.
 ## Recipes
 
 These are the campaign's progress view. `<c>` is the campaign slug. Each recipe is
-the `query` tool's whole input.
+the `query` tool's whole input. Agents run them from the Rehydrate block in
+`briefs.md`, which is the one definition of rehydration.
 
-**Rehydrate.** Run `whoami`, and stop if `reachable` is false. Then:
+**Campaigns:**
+
+```json
+{ "selection": { "schemas": ["epiphany.pipeline.campaign.v2"] } }
+```
+
+- **No campaign at all:** the mind is new. Self opens one (SKILL.md step 0).
+  Any other faculty stops and reports it.
+- **`<c>` is not in the list:** the slug is wrong or the campaign is in another
+  mind. Stop and report; never create a campaign to fit a brief.
+
+**Stewardships in force** (Self, when opening a campaign):
 
 ```json
 { "selection": { "schemas": ["epiphany.pipeline.stewardship.v2"],
   "fields": [{ "index": "in_force", "op": "any_of", "values": ["true"] }] } }
 ```
-```json
-{ "selection": { "schemas": ["epiphany.pipeline.campaign.v2"] } }
-```
 
-Then run the campaign's rulings in force and open items (below), and `view` its
-target, or query `target` with `root` = `<c>`, `in_force` = `true` and
+**Target in force:** `target`, with `root` = `<c>`, `in_force` = `true` and
 `projection: document`.
 
-**Rulings in force:**
+**Rulings in force**, operator directions included:
 
 ```json
 { "selection": { "schemas": ["epiphany.pipeline.ruling.v2"],
@@ -181,14 +212,30 @@ target, or query `target` with `root` = `<c>`, `in_force` = `true` and
              { "index": "in_force", "op": "any_of", "values": ["true"] }] } }
 ```
 
-**Open items** (questions not answered or withdrawn, findings and follow-ups not
-closed):
+**Open questions and follow-ups:**
 
 ```json
-{ "selection": { "schemas": ["epiphany.pipeline.question.v2", "epiphany.pipeline.finding.v2", "epiphany.pipeline.follow_up.v2"],
+{ "selection": { "schemas": ["epiphany.pipeline.question.v2", "epiphany.pipeline.follow_up.v2"],
   "fields": [{ "index": "root", "op": "any_of", "values": ["<c>"] },
              { "index": "in_force", "op": "any_of", "values": ["true"] }] } }
 ```
+
+A question's header carries `raised_in`. A spec named there is **blocked on the
+operator**, not waiting on Hands.
+
+**Open findings**, admitted by Soul:
+
+```json
+{ "selection": { "schemas": ["epiphany.pipeline.finding.v2"],
+  "fields": [{ "index": "root", "op": "any_of", "values": ["<c>"] },
+             { "index": "in_force", "op": "any_of", "values": ["true"] },
+             { "index": "faculty", "op": "any_of", "values": ["Soul"] }] } }
+```
+
+Add `severity` any of `Blocker` and `High` for the blocking ones. `faculty` is
+declared attribution, not checked by admission (see the gaps below), so a
+finding or verdict from any other faculty is a defect to raise, not a record to
+use.
 
 **Specs with no report.** This is one query: `cited` with `exists: false` is
 the substrate's absent inbound hop.
@@ -200,9 +247,15 @@ the substrate's absent inbound hop.
   "cited": { "role": "cut_spec", "exists": false } } }
 ```
 
+Before briefing Hands on one of them, check whether it is blocked: `question`,
+`in_force` = `true`, with `"cites": { "target": { "schemaId":
+"epiphany.pipeline.cut_spec.v2", "recordKey": "<spec id>" }, "role":
+"raised_in" }`. A match means the spec waits on a ruling.
+
 **Reports with no verdict** (Soul's queue): the same shape, over
 `epiphany.pipeline.cut_report.v2`, with `"cited": { "role": "cut_report",
-"exists": false }` and no `in_force`, because reports are never resolved.
+"exists": false }` and no `in_force`, because reports are never resolved. The
+hop cannot filter the citing verdict's faculty.
 
 **A subject's history**, newest first:
 
@@ -215,10 +268,9 @@ the substrate's absent inbound hop.
 A withdrawn resolution is listed with the withdrawal as its status.
 
 **One cut's record:** `schemas` set to `cut_spec`, `cut_report`, `verdict`,
-`finding` and `resolution`, with `root` = `<c>` and `cut` = `<label>`.
-
-**Blocking findings:** `finding`, with `root`, `in_force` = `true`, and
-`severity` any of `Blocker` and `High`.
+`finding` and `resolution`, with `root` = `<c>` and `cut` = `<label>`. When
+reading its verdicts and findings, check that `admission.provenance.faculty` is
+`Soul`.
 
 **The ledger:** `cut_spec` and `cut_report` with `root` = `<c>` and
 `projection: document`. Compare each spec's `estimate` with its reports'
@@ -228,6 +280,22 @@ A withdrawn resolution is listed with the withdrawal as its status.
 **Precedent** (before raising a question or recommending a mechanism):
 `ruling`, `resolution` and `finding` with `root` = `<c>`, plus
 `"semantic": { "text": "<the question in plain words>", "top_k": 10 }`.
+
+## Substrate gaps
+
+The skill works around each of these, and Self admits each as a `follow_up`
+(source: the campaign, owner as named) in the first campaign, so the gap is
+counted rather than forgotten. Add to this list when a run works around
+something new.
+
+| Gap | What the skill does meanwhile | Owner |
+|---|---|---|
+| `faculty` is attribution only. Admission does not check that verdicts and findings come from Soul, or that rulings come from Self. | Recipes filter `faculty`, and readers check provenance. | Huginn admission, with the Epiphany schema owner |
+| `MutationRecord` has no field for why a survivor is equivalent, and a report holds at most 64 mutations. | Every mutation goes in `mutations`. Each surviving mutation gets one `deviations` entry (`what`: its label; `why`: the triage). Deviations hold at most 32, so more survivors than that means the cut was too big. | `epiphany-pipeline` |
+| A `cut_report` needs a commit (`range.head`), so a pass that stops at a fork before its first commit leaves no report. | Hands admits only the question and reports its id. The blocked-spec check reads it. | `epiphany-pipeline` |
+| The faculty enum says `MindSteward`; the faculty is Life. | Life admits nothing, so nothing is mislabelled today. | `huginn-mind` |
+| No tool supplies the session's id. | Self picks a session label and passes it in every brief. | `eureka-state` |
+| The reports-with-no-verdict hop cannot filter the citer's faculty. | Soul's queue is checked against the verdict's provenance. | CultNet selection |
 
 ## The prose map
 

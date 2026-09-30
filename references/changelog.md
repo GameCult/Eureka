@@ -1181,3 +1181,10 @@ code path", and "such obviously unnecessary split authority should never pass a 
   `verdict` and its findings; admitting is a Mind write, so Soul stays read-only on repos.
 - Self stops when the organ is unreachable and keeps no second copy meanwhile. "Record the substrate you
   needed and did not have" stays, and the record is now a `follow_up`.
+- Soul's first pass on this change (Self's triage, same day) found the claim set bounded by Hands'
+  self-report. Soul now makes one claim per ruling the spec cites, beside the promises; the operator
+  reaffirmed that Soul loops are "the whole thesis behind Eureka". Only Self closes a finding `Fixed`,
+  after a Soul pass on the fix holds. The same batch added: one rule for an organ that does not answer
+  (missing tools, one retry on `Unavailable`, a resumable stop); a Hands exit for a fork before the first
+  commit; operator directions as rulings with no `answers`; the target document committed before its
+  `DocRef`s are admitted; and a substrate-gaps table in `campaign-state.md`.
