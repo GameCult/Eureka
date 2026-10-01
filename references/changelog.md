@@ -2,6 +2,14 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-10-01: waiting costs no wakes, and a shared tools directory
+
+Operator rulings on `references/tool-calling-cut.md`, verbatim: "Q1 A, Q2 yes, Q3 agreed, Q4 B, Q5 yes, but see Epiphany's approach where each subagent gets its own targeted philosophy centered on its role".
+
+Evidence: 602 finish notifications from 245 agents and 1,324 root text-only calls, 596M tokens read, with a 5-minute subagent cache TTL.
+
+What changed. Q1 A amends `92bf6f7`: agents wait in the foreground in calls of at most 270 s and never end a turn before their report, instead of ending the turn on a background waiter. Q3 C: Self rotates at about 300k context or at a phase boundary with a handoff and the operator's `/clear`; agents are capped at about 300k or 150 calls and continued by a fresh agent. Q4 B: shared scripts live in `tools/` with `tools/INDEX.md`, by branch and pull request, Soul before merge for verdict-bearing scripts, pruned when no brief names them. The Yggdrasil verify line in SKILL.md no longer states stale limits (the script sets 5 slots and 6 GiB). Briefs now state that every dispatch names its model. Commit messages go from Git Bash with `git commit -F-`.
+
 ## 2026-10-01: the stopgap no longer forces CARGO_TARGET_DIR
 
 In idunn-watchdog's Idunn incident cut, Soul pass s3 ran cargo-mutants twice

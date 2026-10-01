@@ -12,6 +12,15 @@ Every brief that reads or admits campaign state carries:
 - the Rehydrate block below, as the agent's first step, with `<recipes>` set to
   the recipes that brief names.
 
+Every dispatch names its model: Sonnet for Hands, probes, search and Life; Opus
+for Imagination and for Soul over a cut that puts the foundation at risk.
+Never leave it as "default", which inherits the root's model.
+
+Every agent is capped at about 300k context or 150 calls. At the cap it
+commits what is verified, admits its report with what is undone, and stops;
+Self dispatches a fresh continuation agent with the report id. Do not stop
+because the scope merely looks large.
+
 This block is the one definition of rehydration; the other files point here.
 
 ## Contents
@@ -272,15 +281,15 @@ one head (SKILL.md, step 3); keep it fitting:
   deliverable, and say the budget is sufficient for it. The hand-back clause is
   for a head that is actually full, not for a job that looks big.
 
-Long jobs: wait for them and finish. Never end the turn with a to-do list in
-place of a report. Every turn you take is a paid model call, so waiting must
-cost no calls. Start the job as ONE background shell (run_in_background) whose
-command exits only when the job does: chain build, suite and mutations in one
-script, or block remotely (`until <done-file exists>; do sleep 60; done`). The
-harness wakes you once, when it exits. Never poll in foreground chunks, never
-run a second watcher on the same job, and never use a wait timer shorter than
-60 s. Announcing the wait in a final message is the violation: end the turn
-with the waiter running and say nothing, or read the finished output.
+Long jobs: wait for them and finish, and never end your turn before your
+report. Each turn end reaches Self as a notification and costs a read of its
+whole context. Start the job as one background shell whose command exits only
+when the job does. Then wait in the foreground, one call at a time, each at
+most 270 s so that your cache stays warm: `timeout 270 bash -c 'until [ -e
+<done-file> ]; do sleep 60; done'`, then read the result or call again. A call
+longer than 5 minutes rewrites your whole context. Never run a second watcher
+on the same job, never use a timer shorter than 60 s, and send no interim
+message.
 Mutation tools run on schemata or copies and never edit the tree. A Soul
 probe that mutates by hand works on a scratch copy: the stopgap's container
 or a throwaway clone, never the working tree.
@@ -299,14 +308,14 @@ Commits:
 - Never amend a commit or force-push. Self and other agents commit on the
   same branch while you work. Fix a commit with a new commit. On a rejected
   push, `git pull --rebase`, then push.
-- Write each message with the Write tool to <scratchpad>/<cut>-<n>.txt, then run
-  `git commit -F`.
+- In Git Bash, one call: `git add <paths> && git commit -F- <<'MSG' ... MSG &&
+  git push`. Never commit from PowerShell (it writes a BOM and breaks
+  here-strings).
 - End each message with the attribution trailer.
-- Check each message with `git log -1 --format=%B`.
 - Say in the message which commits don't build.
 
 Verification: <exact builds, tests, captures, negative greps>.
-- Long builds run detached, with a log in the scratchpad; poll the log.
+- Verify through `tools/stopgap/ygg-verify.sh`; read its output tail, and open the full log only at a named failing test, with `grep -n -A 40`.
 - Revert incidental asset churn.
 
 Budget: if the cut can't land coherently, stop at a pushed, building commit
@@ -347,10 +356,12 @@ Admit one verdict and its findings, and nothing else.
 - Use a temporary detached worktree for other checkouts, and remove it
   afterwards.
 - Do not run <expensive runtime> unless told.
-- Long jobs: one background shell per job whose command exits only when the
-  job does (or a remote `until ...; do sleep 60; done`); the harness wakes you
-  once on exit. No foreground poll chunks, no duplicate watchers, no timer
-  under 60 s, and no interim "waiting" messages: each is a paid model call.
+- Long jobs: wait for them and finish, and never end your turn before your
+  report. Run the job as one background shell whose command exits only when the
+  job does, and wait in the foreground in calls of at most 270 s (`timeout 270
+  bash -c 'until [ -e <done-file> ]; do sleep 60; done'`). No second watcher,
+  no timer under 60 s, and no interim message: each turn end is a paid wake of
+  Self.
 
 Scope: <cut_report id>. Rehydrate (recipes: target in force, rulings in force,
 one cut's record for <cut>), then view the report (its range and its promises), the cut_spec it

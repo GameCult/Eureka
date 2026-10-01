@@ -217,6 +217,10 @@ for map cuts and fix batches alike. Sonnet degrades at about 0.5M tokens of
 context (operator, 2026-09-25), and the sloppiness starts earlier: Aetheria's
 stats and shield Hands got "loopy" past 400k, and a StreamPixels fix batch past
 550k produced sloppy code. Treat 0.5M as the danger line, never the target.
+Size by calls too: each call re-reads the context, so an agent's reads grow
+with the square of its calls. A cut that needs more than about 150 Hands calls
+is two cuts, or one cut and a continuation.
+
 Before dispatch, Self estimates what the run will carry:
 
 - the brief, and the `cut_spec` Hands views;
@@ -511,6 +515,25 @@ and reconciles the target doc with the Body.
   follow-ups in the mind; "Substrate gaps" in `references/campaign-state.md`
   gives the query and where a new one is admitted.
 - **Never claim an agent's result before its notification arrives.**
+- **Self's own context is the most expensive in the pipeline.** Every
+  notification re-reads all of it. Rotate at about 300k context or at a phase
+  boundary: write a short handoff (campaign slug, session label, in-flight
+  agent ids, next action) to the scratchpad and ask the operator to `/clear`.
+  Agents are capped at about 300k context or 150 calls, after which a fresh
+  continuation agent takes over. Never read logs or diffs in the root; `view`
+  reports and verdicts.
+- **A subagent that notifies before its report is a brief defect.** Count
+  finished notifications per agent. More than one means a turn ended
+  mid-wait, and the brief template is what gets fixed.
+
+### Shared tools
+
+Scripts that agents share live in this repo under `tools/`. `tools/INDEX.md`
+lists each script, its consumer and the brief that names it; briefs name the
+exact script they want and agents do not browse. Contributions come by branch
+and pull request, never a push to main. A script that verdicts depend on gets
+a Soul pass before merge. A script whose brief no longer names it is pruned.
+Scripts that know a project's layout stay in that project.
 
 ## Git and tooling rules (scars)
 
@@ -539,9 +562,8 @@ and reconciles the target doc with the Body.
   is Idunn's verify transaction (a campaign in progress, ruled 2026-09-22).
   Until it lands, use the stopgap `tools/stopgap/ygg-verify.sh`. It pushes an
   exact revision to a mirror on Yggdrasil and runs one command in a container
-  capped at 4 CPUs and 12 GiB, niced, with at most 3 jobs at a time (raised
-  from 2 by the operator on 2026-09-22: "the other cores are mostly sitting
-  idle"). **The script owns these numbers; where this text and `ygg-verify.sh`
+  capped at 4 CPUs and 6 GiB, niced, with at most 5 jobs at a time. **The script
+  owns these numbers (`CPUS`, `MEM`, `SLOTS`); where this text and `ygg-verify.sh`
   disagree, the script is right** — this line was already stale once. Every
   Hands and Soul brief says so. Starfire runs only what has to run on Windows,
   such as the QUIC win32 scenarios: one job at a time, never burners.
@@ -565,17 +587,17 @@ and reconciles the target doc with the Body.
   Node process on the shared workstation, including other agents' and the
   operator's. Record the PID of every process you launch, and stop only those
   PIDs.
-- **Write commit messages with the Write tool to a uniquely named scratch file,
-  then `git commit -F`.** PowerShell 5 here-strings break `-m` quoting, and its
-  `Out-File`/`Set-Content` write a BOM into message files.
-  Shared filenames like `msg1.txt` collided between parallel agents.
+- **Commit from Git Bash with `git commit -F- <<'MSG'`.** PowerShell 5
+  here-strings break `-m` quoting, and its `Out-File`/`Set-Content` write a BOM
+  into message files.
 - **Push at most three tags per push.** GitHub skips tag-triggered workflows when
   one push carries more tags, so the npm and PyPI publish jobs silently never ran.
 - **Keep release byte checks commit-independent.** Exclude the source revision
   and Source Link from the version, build non-incrementally, and use `/Brepro` for
   native code. A committed DLL otherwise always carries its parent's SHA.
-- **Run long builds detached, with a log and a PID, and poll.** Unity batchmode
-  and similar builds must never be one attached call. Revert incidental asset
+- **Operator-side builds run detached, with a log and a PID.** Unity batchmode
+  and similar builds must never be one attached call. Agents waiting on a job
+  do so in the foreground, in calls of at most 270 s (briefs, Hands). Revert incidental asset
   churn afterwards, such as Unity's SDF font asset.
 - **Before a mass-spawn or process-launching probe, read how the child chooses its
   role.** A probe that relaunched its own executable fork-bombed the workstation
