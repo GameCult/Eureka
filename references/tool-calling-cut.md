@@ -438,3 +438,6 @@ Verbatim: "Q1 A, Q2 yes, Q3 agreed, Q4 B, Q5 yes, but see Epiphany's approach wh
   - Without it, the call read 29,331 and created 83,366, all `ephemeral_5m`; the context had expired and was rewritten.
   - The official docs list only `CLAUDE_CODE_PROMPT_CACHE_TTL`, for the main conversation.
 - **`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`** is documented as a percentage of the auto-compact window. It can only lower the threshold and it applies to subagents too. A value sized for the root would compact subagents early, so the Q3 backstop is not set; rotation carries Q3.
+
+## 10. Q4 superseded (operator, 2026-10-01)
+Q4 is now **A**: the Eureka repo, prose and `tools/`, moves to Yggdrasil's Forgejo and is shipped open source with contributions welcome. See `faculty-philosophy-cut.md` "Rulings" Q3 for the verbatim reason. Contributions use Forgejo PRs. Whether the GitHub copy is archived, mirrored or deleted is still open; ask the operator.

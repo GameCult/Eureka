@@ -552,3 +552,7 @@ is what the worker actually reads, and it is the sharper text.
 6. Soul check: the line-multiset script from step 1 (no line lost, none
    duplicated except marked `[new]` connectors), and a probe dispatch of
    `soul` that reports which instruction files it received.
+
+## Rulings (operator, 2026-10-01)
+- Q1: agent file. Q2: "what you said": keep the two build STOP rules and the long-running-work rules in the core. Q4: not yet. Q5: "you got it". Q6: yes. Q7: `life.md` wins.
+- Q3, verbatim: "yes, but we have a concrete way now for this self-improvement to take place: the Eureka prose and tools repository, which honestly after thinking about it I do want to host on forgejo. GitHub is overloaded with agent spam I don't want to contribute to, which is why I think this belongs on our infra, especially if we're shipping Eureka open source with contributions welcome." Each charter's self-improvement line therefore points at contributing to the Eureka repo: prose and `tools/`.
