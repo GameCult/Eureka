@@ -266,7 +266,7 @@ nothing is pasted or paraphrased. The brief says:
   rerun; the totals (generated, caught, unviable, missed) go in its
   `verification` evidence. Each survivor also gets a `deviations` entry with
   its triage, because the mutation record has no field for it (substrate gap
-  `idunn-watchdog:follow_up:gap-mutation-triage-field`). Soul reruns the tool on the range rather
+  `eureka-substrate:follow_up:gap-mutation-triage-field`). Soul reruns the tool on the range rather
   than trusting Hands' triage.
 - **No committed hand-written mutation suites, and no fallback harness.**
   The operator ruled this on 2026-09-22: "Better to have nothing than a

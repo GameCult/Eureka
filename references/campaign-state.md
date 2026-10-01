@@ -293,14 +293,14 @@ that steer agents are also written into the step or brief that applies them.
 Examples are the mutation triage in `deviations`, the ruling id at the start
 of a claim, and the retry on `Unavailable`.
 
-Every follow-up is rooted in a campaign, so no substrate-rooted home exists
-yet (`idunn-watchdog:follow_up:gap-substrate-followups-campaign-rooted`).
-Until one does, substrate gaps live under the first typed campaign,
-`idunn-watchdog`, with labels starting `gap-`:
+Substrate gaps live under the standing campaign `eureka-substrate`
+(operator ruling `eureka-substrate:ruling:gap-home`), with labels starting
+`gap-`. That campaign is also where the substrate is fixed. Every campaign
+reads its gaps with this query:
 
 ```json
 { "selection": { "schemas": ["epiphany.pipeline.follow_up.v2"],
-  "fields": [{ "index": "root", "op": "any_of", "values": ["idunn-watchdog"] },
+  "fields": [{ "index": "root", "op": "any_of", "values": ["eureka-substrate"] },
              { "index": "in_force", "op": "any_of", "values": ["true"] }] } }
 ```
 

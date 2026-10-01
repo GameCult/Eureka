@@ -58,7 +58,7 @@ stewardship in force, admit a stewardship (sequence = latest + 1).
 Stewardship is universal today: one mind, one steward. The operator said on
 2026-09-30 that leasing it between agents is a deferred cut. The per-repo
 record exists only because admission requires it
-(idunn-watchdog:follow_up:gap-stewardship-ceremony). Then admit the campaign
+(eureka-substrate:follow_up:gap-stewardship-ceremony). Then admit the campaign
 (slug, title, every repo a cut may touch, working_branch, target_doc = a
 DocRef to that commit) and target revision 1 (labelled invariants, not in
 scope, canonical implementations, doc = the same DocRef). Run the
