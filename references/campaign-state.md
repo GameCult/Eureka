@@ -28,7 +28,7 @@ The instance and the daemon are the server's configuration
 | `query` | `{ selection, semantic? }` | `{ matched, as_of, next, items, edges }`. `items` is `Headers([...])` or `Documents([...])`. |
 
 - `faculty` is one of `SelfFaculty`, `Imagination`, `Hands`, `Soul`,
-  `MindSteward`, `Eyes`, `Operator`. It is attribution, not authority.
+  `Life`, `Eyes`, `Operator`. It is attribution, not authority.
 - `agent` names the admitting agent. `session` is the campaign session label
   Self gives in every brief, so that sessions sharing one mind stay tellable
   apart.
@@ -36,9 +36,13 @@ The instance and the daemon are the server's configuration
   kind in snake case (`cut_spec`). A reference is `{ "kind": "<Kind>", "id":
   "<full id>" }`, with the kind in Pascal case (`CutSpec`).
 - **A refusal is an answer.** It names the rule, for example
-  `RepoNotStewarded`, `CitesResolvedDocument`, `ResolutionOutOfSequence` or
+  `CitesResolvedDocument`, `ResolutionOutOfSequence` or
   `PromiseWithoutVerdict`. Fix the batch and admit again. An exact replay
-  answers `AlreadyAdmitted`, so retrying a batch is safe.
+  answers `AlreadyAdmitted`, so retrying a batch is safe. A key, format or
+  bound error arrives as `Refused(Document(..))` with the field and value:
+  fix it and resend. `Refused(Unavailable)` means a store fault: retry once,
+  as for `isError` `Unavailable`. The retired faculty name for `Life` is
+  refused in query selections; stored receipts that carry it still decode.
 - **`isError: true` means no answer:** `Unavailable` (the daemon is down or
   unreachable), `Rejected` (it refused the envelope), `Misconfigured`,
   `TooLarge`, `Unencodable`, `InvalidInput` or `Internal`.
@@ -72,11 +76,11 @@ mismatch. The root is the campaign slug, or the instance for `instance`,
 |---|---|---|---|---|
 | `instance` | `self` | exists (`eureka:instance:self`) | instance, display name, host | |
 | `stewardship` | `<repo>.n<seq>` | Self | instance, repo, sequence, note | |
-| `campaign` | `self` | Self | title, repos (each stewarded), working branch, target doc | |
+| `campaign` | `self` | Self | title, repos, working branch, target doc | |
 | `target` | `r<rev>` | Self | invariants (`label`, `statement`), not in scope, canonical implementations, doc | |
 | `question` | `<label>` | Imagination; Hands or Soul for a fork | title, question, options (≥2), recommended, depends, raised in | `raised_in` |
 | `ruling` | `<label>` | Self | answers (none for an operator direction), choice, ruling, operator quote, date, authority | `answers` |
-| `cut_spec` | `cut-<cut>.r<rev>` | Imagination | repo, branch, base, depends on, first, deletes, keeps and moves, adds, file changes, authority map, verification, estimate | `rulings`, `questions` |
+| `cut_spec` | `cut-<cut>.r<rev>` | Imagination | repo, branch, base, depends on (cut labels, never revision ids; a spec may not depend on its own cut), first, deletes, keeps and moves, adds, file changes, authority map, verification, estimate | `rulings`, `questions` |
 | `cut_report` | `cut-<cut>.h<attempt>` (a fix batch is the next attempt) | Hands | commits, range, verification evidence (mutation totals included), mutations (survivors and the ones Soul should rerun), deviations, forks, structural delta, landed names, undone, promises | `cut_spec`, `forks` |
 | `verdict` | `cut-<cut>.s<pass>` | Soul | range, claims (each with an outcome, evidence, findings, promise, mutations) | `cut_report`, `findings` |
 | `finding` | `cut-<cut>.s<pass>.<label>` | Soul, in the verdict's batch | confidence, severity, claim, invariants, locations, failure scenario, evidence, origin | `verdict` |
@@ -87,12 +91,14 @@ mismatch. The root is the campaign slug, or the instance for `instance`,
 Bounds: `Title` and `Short` are at most 200 bytes, `Line` 1,000, and `Para`
 4,000. Narrative longer than that goes in the prose map, cited by a `DocRef`
 (path, start and end line, commit). A `Label` is `[A-Za-z0-9_-]{1,64}`, and a
-`Date` is `YYYY-MM-DD`.
+`Date` is `YYYY-MM-DD`. A subject's local key (the part after
+`<campaign>:<kind>:`) is at most 64 bytes. A resolution's local is derived from
+its subject's and is at most 111 bytes, so every admitted subject can be
+resolved and withdrawn.
 
 Rules that shape a batch (the rest arrive as refusals):
 
-- A campaign's repos must each have a stewardship in force. A cut spec's repo
-  must be one of its campaign's repos.
+- A cut spec's repo must be one of its campaign's repos.
 - A ruling that `answers` a question derives that question's `Answered`
   resolution in the same commit. Its `choice` must be one of the question's
   option labels. `operator_quote` is allowed only with `authority: Operator`.
@@ -103,7 +109,10 @@ Rules that shape a batch (the rest arrive as refusals):
 - A revision above 1 (of a target or a cut spec) needs, in its own batch, a
   resolution that supersedes the previous revision by it.
 - A cut spec cites only rulings in force, and a report only a spec in force.
-  The report's `range.head` is one of its commits.
+  The report's `range.head` is one of its commits; it may be spelled short or
+  full, and is matched by commit.
+- `depends_on` entries are cut labels naming another cut that has a `cut_spec`
+  in the same campaign. A dependency on another campaign's cut goes in `first`.
 - A verdict measures each of its report's promises exactly once. A `Falsified`
   claim needs a `Confirmed` finding, and an `Unproven` claim may not have one.
   A finding needs evidence and a location, and its invariant labels come from
@@ -121,7 +130,7 @@ reversal.
 | question | `Answered { by: ruling }` (derived), `Withdrawn { reason }` |
 | ruling | `Superseded { by: [ruling] }` |
 | cut_spec | `Superseded { by: [cut_spec of the same cut] }`, `Withdrawn { reason }` |
-| finding | `Fixed { commit, by?: cut_report }`, `Deferred { to: follow_up }`, `Recorded { reason }`, `Withdrawn { reason }` |
+| finding | `Fixed { commit, by?: cut_report }`, `Deferred { to: follow_up or cut_spec }`, `Recorded { reason }`, `Withdrawn { reason }` |
 | follow_up | `Fixed { commit, by?: cut_report }`, `Superseded { by: [follow_up] }`, `Withdrawn { reason }` |
 | stewardship | `Superseded { by: [stewardship] }`, `Withdrawn { reason }` |
 | resolution | `Withdrawn { reason }`, which reopens its subject. It cannot itself be withdrawn: resolve the subject again. |

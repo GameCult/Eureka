@@ -72,7 +72,7 @@ finished when Hands can go straight to the cut.
   branch: its rationale, and the design truths the migration will produce. The
   `campaign` and the `target` cite it by `DocRef`, and a `DocRef` names a
   commit.
-- Then admit the stewardships, the `campaign` and the `target` (Self's
+- Then admit the `campaign` and the `target` (Self's
   checklist in `references/briefs.md`). The target holds the ends, not the means: labelled
   invariants that must survive (wire parity, one owner per decision, what the
   operator refuses to lose), and what is explicitly **not** a consumer. For
@@ -114,7 +114,7 @@ different is not waste; discovering it after the code lands is.
 ### 1. Imagination maps the cut
 
 Brief an Imagination agent to admit the cuts: one `cut_spec` per cut against
-the current Body, ordered by `depends_on`. The fields are the spec standard:
+the current Body, ordered by `depends_on`, which names cut labels. The fields are the spec standard:
 repo, branch and base; `deletes` first, with exact paths and line counts;
 `keeps_moves`; `adds`; `file_changes` at `file:line` **for code that exists**;
 an `authority_map` for anything that changes ownership; `verification` (builds,

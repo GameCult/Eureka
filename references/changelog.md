@@ -2,6 +2,12 @@
 
 Record each change to the skill together with the evidence that motivated it.
 
+## 2026-10-01: the skill follows the mind's correctness core
+
+Campaign `eureka-substrate`, cut `skill-recipes`, after the Huginn admission-rule and `eureka-state` client cuts (cut `ops-mind-upgrade`). Evidence: a census of the live mind found 6 findings that could not be closed and 39 resolutions that could not be withdrawn, from key locals over the bound.
+
+What changed. Faculty `Life` replaces `MindSteward` (the old spelling is refused in queries; stored receipts still decode). Key, format and bound errors arrive as `Refused(Document(..))`; `Refused(Unavailable)` is a store fault. A subject's local key is at most 64 bytes and a resolution's at most 111. A finding may be `Deferred` to a follow_up or a cut_spec. `depends_on` holds cut labels, checked by admission, and a spec may not depend on its own cut. The per-repo stewardship check is gone (ruling `eureka-substrate:ruling:stewardship-rule`), so Self no longer admits stewardships when opening a campaign. A report's head may be spelled short or full.
+
 ## 2026-10-01: waiting costs no wakes, and a shared tools directory
 
 Operator rulings on `references/tool-calling-cut.md`, verbatim: "Q1 A, Q2 yes, Q3 agreed, Q4 B, Q5 yes, but see Epiphany's approach where each subagent gets its own targeted philosophy centered on its role".

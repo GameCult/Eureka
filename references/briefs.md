@@ -62,12 +62,7 @@ Self's own checklist; Self admits as `SelfFaculty`.
 ```
 Open: check the eureka-state tools are present, then whoami (the mind's
 instance document, <instance>:instance:self, already exists). Write the target
-document and commit it on the working branch. For each repo in scope with no
-stewardship in force, admit a stewardship (sequence = latest + 1).
-Stewardship is universal today: one mind, one steward. The operator said on
-2026-09-30 that leasing it between agents is a deferred cut. The per-repo
-record exists only because admission requires it
-(eureka-substrate:follow_up:gap-stewardship-ceremony). Then admit the campaign
+document and commit it on the working branch. Then admit the campaign
 (slug, title, every repo a cut may touch, working_branch, target_doc = a
 DocRef to that commit) and target revision 1 (labelled invariants, not in
 scope, canonical implementations, doc = the same DocRef). Run the
@@ -159,7 +154,7 @@ The cut_spec's fields are the spec standard. Beyond filling them:
   revision N by it, in one batch; never a second spec for the same cut
 
 If a cut would not fit one Hands pass under <Self's context budget, SKILL.md
-step 3>, split it into specs ordered by depends_on, each with its own
+step 3>, split it into specs ordered by depends_on (cut labels), each with its own
 verification.
 
 Where only the operator can decide, admit a question with a recommended
