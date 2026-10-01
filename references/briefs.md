@@ -273,16 +273,14 @@ one head (SKILL.md, step 3); keep it fitting:
   for a head that is actually full, not for a job that looks big.
 
 Long jobs: wait for them and finish. Never end the turn with a to-do list in
-place of a report. "Wait" means a foreground poll you run yourself: a shell
-loop that sleeps and checks the job's status file or log tail, in chunks
-short enough for the tool timeout, repeated until the job exits. Do not
-start a detached job and then end the turn expecting to be woken; nothing
-wakes you, and the tree stays mutated until Self notices.
-Announcing the wait and then yielding is the violation, not a softer form of
-it: "I'll wait for the suite and then report" ends the turn exactly as a
-to-do list does. Aetheria's shield Cut 3 burned two round trips this way, the
-second one after being told. If a run is going, block on it in this turn or
-read its finished output; do not yield to say what you are about to do.
+place of a report. Every turn you take is a paid model call, so waiting must
+cost no calls. Start the job as ONE background shell (run_in_background) whose
+command exits only when the job does: chain build, suite and mutations in one
+script, or block remotely (`until <done-file exists>; do sleep 60; done`). The
+harness wakes you once, when it exits. Never poll in foreground chunks, never
+run a second watcher on the same job, and never use a wait timer shorter than
+60 s. Announcing the wait in a final message is the violation: end the turn
+with the waiter running and say nothing, or read the finished output.
 Mutation tools run on schemata or copies and never edit the tree. A Soul
 probe that mutates by hand works on a scratch copy: the stopgap's container
 or a throwaway clone, never the working tree.
@@ -349,13 +347,10 @@ Admit one verdict and its findings, and nothing else.
 - Use a temporary detached worktree for other checkouts, and remove it
   afterwards.
 - Do not run <expensive runtime> unless told.
-- Long jobs: poll the log until they finish and then report. Never end the
-  turn while a build or a mutation run is still going; a turn that ends on
-  "waiting for cargo" delivers no findings and has to be resumed by hand.
-  Polling is a foreground shell loop you run, in chunks under the tool
-  timeout, until the job exits; nothing wakes you if you stop.
-  Yielding to announce the wait is the same violation: block in-turn or read
-  the finished output, never end the turn to say you are waiting.
+- Long jobs: one background shell per job whose command exits only when the
+  job does (or a remote `until ...; do sleep 60; done`); the harness wakes you
+  once on exit. No foreground poll chunks, no duplicate watchers, no timer
+  under 60 s, and no interim "waiting" messages: each is a paid model call.
 
 Scope: <cut_report id>. Rehydrate (recipes: target in force, rulings in force,
 one cut's record for <cut>), then view the report (its range and its promises), the cut_spec it

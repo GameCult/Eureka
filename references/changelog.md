@@ -1288,3 +1288,12 @@ code path", and "such obviously unnecessary split authority should never pass a 
   this change, is unproven. Soul passes re-derived their verdicts from test output, not from the exit code alone, so
   their CONFIRMED and held claims stand. Hands-reported "green" that rested only on the exit status should be read
   as unverified until re-run.
+
+## 2026-10-01: waiting costs no model calls
+Operator, verbatim: "It's not the chatter, it's the model call, we want you not to activate at all while waiting;
+tools should return on events, not timers (or at least not timers less than a minute long)". The mining Cut 3
+fix Hands woke Self four times with interim results while its suite and mutations ran on Yggdrasil, and the
+brief template prescribed foreground polling in tool-timeout chunks (one model call per chunk). The template
+also claimed "nothing wakes you", which is stale: the harness wakes an agent when its background shell exits.
+Both brief sections now say: one background waiter per job that exits on the event, no timer under 60 s, no
+duplicate watchers, no interim messages.
