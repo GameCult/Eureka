@@ -431,3 +431,10 @@ Verbatim: "Q1 A, Q2 yes, Q3 agreed, Q4 B, Q5 yes, but see Epiphany's approach wh
 - Q3 = C: rotate at about 300k or at a phase boundary, with a handoff and the operator's `/clear`. A lower `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is the backstop.
 - Q4 = B: the shared scripts stay in the skill repo on GitHub (`tools/`, `tools/INDEX.md`), contributed by branch and pull request.
 - Q5 = yes: slim the global CLAUDE.md along Epiphany's per-role philosophy. A separate Imagination pass maps it.
+
+## 9. Probe results (2026-10-01, Haiku 4.5, `claude -p`, a 7-minute idle gap)
+- **`CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL=1h`: CONFIRMED, though undocumented.**
+  - With it, the post-gap call read 112,158 cached tokens and created 401, all `ephemeral_1h`.
+  - Without it, the call read 29,331 and created 83,366, all `ephemeral_5m`; the context had expired and was rewritten.
+  - The official docs list only `CLAUDE_CODE_PROMPT_CACHE_TTL`, for the main conversation.
+- **`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`** is documented as a percentage of the auto-compact window. It can only lower the threshold and it applies to subagents too. A value sized for the root would compact subagents early, so the Q3 backstop is not set; rotation carries Q3.
