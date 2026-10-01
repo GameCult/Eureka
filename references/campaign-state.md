@@ -130,7 +130,7 @@ reversal.
 | question | `Answered { by: ruling }` (derived), `Withdrawn { reason }` |
 | ruling | `Superseded { by: [ruling] }` |
 | cut_spec | `Superseded { by: [cut_spec of the same cut] }`, `Withdrawn { reason }` |
-| finding | `Fixed { commit, by?: cut_report }`, `Deferred { to: follow_up or cut_spec }`, `Recorded { reason }`, `Withdrawn { reason }` |
+| finding | `Fixed { commit, by?: cut_report }`, `Deferred { to: follow_up or cut_spec }` (the spec must be in force), `Recorded { reason }`, `Withdrawn { reason }` |
 | follow_up | `Fixed { commit, by?: cut_report }`, `Superseded { by: [follow_up] }`, `Withdrawn { reason }` |
 | stewardship | `Superseded { by: [stewardship] }`, `Withdrawn { reason }` |
 | resolution | `Withdrawn { reason }`, which reopens its subject. It cannot itself be withdrawn: resolve the subject again. |
@@ -205,13 +205,6 @@ the `query` tool's whole input. Agents run them from the Rehydrate block in
   Any other faculty stops and reports it.
 - **`<c>` is not in the list:** the slug is wrong or the campaign is in another
   mind. Stop and report; never create a campaign to fit a brief.
-
-**Stewardships in force** (Self, when opening a campaign):
-
-```json
-{ "selection": { "schemas": ["epiphany.pipeline.stewardship.v2"],
-  "fields": [{ "index": "in_force", "op": "any_of", "values": ["true"] }] } }
-```
 
 **Target in force:** `target`, with `root` = `<c>`, `in_force` = `true` and
 `projection: document`.
