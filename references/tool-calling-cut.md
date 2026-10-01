@@ -423,3 +423,11 @@ lines, so a compound call counts once, under its first matching class. Before
 reordering, the "verify.launch" class absorbed poll loops that grep for
 "ygg-verify:" in logs. The tables above are from the corrected ordering.
 Parallelism was not measured.
+
+## 8. Rulings (operator, 2026-10-01)
+Verbatim: "Q1 A, Q2 yes, Q3 agreed, Q4 B, Q5 yes, but see Epiphany's approach where each subagent gets its own targeted philosophy centered on its role".
+- Q1 = A: subagents wait in the foreground, in calls of at most 270 s, and never end a turn before their report. This supersedes `92bf6f7`.
+- Q2 = A: Self runs one bounded probe of `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL=1h`.
+- Q3 = C: rotate at about 300k or at a phase boundary, with a handoff and the operator's `/clear`. A lower `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is the backstop.
+- Q4 = B: the shared scripts stay in the skill repo on GitHub (`tools/`, `tools/INDEX.md`), contributed by branch and pull request.
+- Q5 = yes: slim the global CLAUDE.md along Epiphany's per-role philosophy. A separate Imagination pass maps it.
